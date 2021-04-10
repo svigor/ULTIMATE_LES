@@ -1,5 +1,11 @@
 from django import forms
-from .models import Sala
+from .models import Sala, Edificio
+
+def funcao():
+    s = Edificio.objects.all()
+    return [(choice.pk,choice.nome) for choice in s] 
+    #return [(Edificio.objects(pk=choice.id),choice.nome) for choice in s]
+
 
 class InserirSalaForm(forms.ModelForm):
     capacidade = forms.IntegerField(label='capacidade',max_value=2000, widget = forms.NumberInput (
@@ -14,19 +20,21 @@ class InserirSalaForm(forms.ModelForm):
         attrs= {'class': 'input'}
     ) )
 
-    mobilidade_reduzida = forms.BooleanField( label='mobilidade_reduzida',required=True, initial=False,
+    mobilidade_reduzida = forms.BooleanField( label='mobilidade_reduzida',required=False, initial=False,
         widget= forms.CheckboxInput(
            attrs= {'class': ''}
         )
     )
 
-    
-    #edificioid = forms.CharField( label='edificioid',max_length=255,
-     #   widget= forms.Select(
-      #     attrs= {'class': ''}
-       # )
-    #)
-    
+
+    edificioid = forms.ModelChoiceField(
+        queryset=Edificio.objects.all(),
+        label='edificioid',
+        widget= forms.Select(
+           attrs= {'class': ''}
+        )    
+    )
+
 
     class Meta:
         model = Sala
