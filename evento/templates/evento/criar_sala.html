@@ -1,8 +1,5 @@
 {% extends 'evento/app.html' %}
-{% load crispy_forms_tags %}
 
-
-{% block title %}- Recuperar Password{% endblock title %}
 
 
 
@@ -27,8 +24,6 @@
 
             </div>
             <div class="message-body">
-                Insira o seu email
-
 
                 <div class="control is-clearfix">
                     <form action="{% url 'criar_sala' %}" method="POST" class="form">{% csrf_token %}

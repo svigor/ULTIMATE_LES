@@ -4,29 +4,27 @@ from .models import Sala, Edificio
 
 
 class InserirSalaForm(forms.ModelForm):
-    capacidade = forms.IntegerField(label='capacidade',max_value=2000, widget = forms.NumberInput (
+    capacidade = forms.IntegerField(label='Capacidade',max_value=2000, widget = forms.NumberInput (
         attrs= {'class': 'input'}
     ) )
 
-    fotos = forms.IntegerField(label='fotos',max_value=2000, widget = forms.NumberInput (
+    fotos = forms.IntegerField(label='Fotos',max_value=2000, widget = forms.NumberInput (
         attrs= {'class': 'input'}
     ) )
 
-    nome = forms.CharField(label='nome',max_length=255, widget = forms.TextInput (
+    nome = forms.CharField(label='Nome',max_length=255, widget = forms.TextInput (
         attrs= {'class': 'input'}
     ) )
 
-    mobilidade_reduzida = forms.BooleanField( label='mobilidade_reduzida',required=False, initial=False,
+    mobilidade_reduzida = forms.BooleanField( label='Mobilidade reduzida',required=False, initial=False,
         widget= forms.CheckboxInput(
            attrs= {'class': 'box'}
         )
     )
    
-
-
     edificioid = forms.ModelChoiceField(
         queryset=Edificio.objects.all(),
-        label='edificioid',
+        label='Edifício',
         widget= forms.Select(
            attrs= {'class': 'input'}
         )    

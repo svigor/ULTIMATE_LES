@@ -32,10 +32,10 @@ def SalaCreateView(request):
             mobilidade_reduzida_r = request.POST.get('mobilidade_reduzida')
             print(request.POST.get('mobilidade_reduzida'))
             mobilidade_reduzida_r = 0
+            
             if request.POST.get('mobilidade_reduzida') == 'on':
                 mobilidade_reduzida_r = 1
 
-            print(mobilidade_reduzida_r)
             Sala_r = Sala(capacidade=capacidade_r, fotos=fotos_r, nome=nome_r,
                           mobilidade_reduzida=mobilidade_reduzida_r,edificioid=Edificio_r)
             Sala_r.save()
