@@ -26,10 +26,33 @@
             <div class="message-body">
 
                 <div class="control is-clearfix">
-                    <form action="{% url 'criar_sala' %}" method="POST" class="form">{% csrf_token %}
+                    <form action="{% url 'criar_sala' %}" method="POST" enctype="multipart/form-data" class="form">{% csrf_token %}
 
                         <fieldset class="form">
-                            {{ form }}
+                            {{ form.capacidade.label}}
+                            {{ form.capacidade }}
+
+                            <div style="margin-top: 2%;">
+                               
+                                {{ form.fotos.label}}
+                                {{ form.fotos }}</div>
+                            
+
+                            <div style="margin-top: 2%; margin-bottom: 2%;">{{ form.nome.label}}
+                                 {{ form.nome }}
+                            </div>
+                            
+
+
+                            {{ form.mobilidade_reduzida.label}}
+                            <div style="margin-left: 35%; margin-top: -3.5%;">{{ form.mobilidade_reduzida }}</div>
+                            
+                            
+                            
+                            <div style="margin-top: 2.1%;">{{ form.edificioid.label}}
+                                {{ form.edificioid }}</div>
+                            
+                            
                         </fieldset>
 
 

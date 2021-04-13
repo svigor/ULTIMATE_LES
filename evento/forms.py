@@ -8,9 +8,8 @@ class InserirSalaForm(forms.ModelForm):
         attrs= {'class': 'input'}
     ) )
 
-    fotos = forms.IntegerField(label='Fotos',max_value=2000, widget = forms.NumberInput (
-        attrs= {'class': 'input'}
-    ) )
+    fotos = forms.ImageField(label='Fotos'
+    ) 
 
     nome = forms.CharField(label='Nome',max_length=255, widget = forms.TextInput (
         attrs= {'class': 'input'}
