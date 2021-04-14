@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .forms import InserirSalaForm
+from .forms import InserirSalaForm, CriarFormulario
 from django.http import HttpResponseRedirect
 from django.views.generic import(
     ListView,
     CreateView,
 )
-from .models import Sala, Edificio
+from .models import Sala, Edificio, TipoDeFormulario, Formulario
 # Create your views here.
 
 
@@ -39,3 +39,27 @@ def SalaCreateView(request):
         form = InserirSalaForm()
 
     return render(request, 'evento/criar_sala.html', {'form': form})
+
+def CriarFormularioView(request):
+
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = CriarFormulario(request.POST)
+        # check whether it's valid:
+      
+        
+       
+        if form.is_valid():
+            tipo_de_formulario_r = request.POST.get('tipo_de_formulario')
+            tipo = TipoDeFormulario.objects.get(pk=tipo_de_formulario_r)
+            
+
+            Formulario_r = Formulario(tipo_de_formulario=tipo)
+            Formulario_r.save()
+            return HttpResponseRedirect('http://127.0.0.1:8000/formulario/new/')
+
+    else:
+        form = CriarFormulario()
+
+    return render(request, 'evento/criar_formulario.html', {'form': form})

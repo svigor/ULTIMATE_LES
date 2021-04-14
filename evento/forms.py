@@ -1,5 +1,11 @@
 from django import forms
+<<<<<<< Updated upstream
 from .models import Sala
+=======
+from .models import Sala, Edificio, TipoDeFormulario, Formulario
+
+
+>>>>>>> Stashed changes
 
 class InserirSalaForm(forms.ModelForm):
     capacidade = forms.IntegerField(label='capacidade',max_value=2000, widget = forms.NumberInput (
@@ -33,3 +39,17 @@ class InserirSalaForm(forms.ModelForm):
         fields = ['capacidade', 'fotos', 'nome', 'mobilidade_reduzida', 'edificioid']
 
     
+class CriarFormulario(forms.ModelForm):
+    tipo_de_formulario = forms.ModelChoiceField(
+        queryset=TipoDeFormulario.objects.all(),
+        label='Tipo de Formulário',
+        empty_label='(Selecione um tipo de formulário)',
+        widget= forms.Select(
+           attrs= {'class': 'input'}
+        )    
+    )
+
+    class Meta:
+        model = Formulario
+        fields = ['tipo_de_formulario']
+        
