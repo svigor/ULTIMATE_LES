@@ -24,6 +24,7 @@ class InserirSalaForm(forms.ModelForm):
     edificioid = forms.ModelChoiceField(
         queryset=Edificio.objects.all(),
         label='Edifício',
+        empty_label='Escolhe uma das opções',
         widget= forms.Select(
            attrs= {'class': 'input'}
         )    
