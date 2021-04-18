@@ -148,7 +148,7 @@ def criar_utilizador(request, id):
                 user.save()
                 p=1
             else:
-                user.valido = 'True'
+                user.valido = 'False'
                 user.save()
                 p=1
                 #user.valido = 'False'
@@ -364,9 +364,7 @@ def apagar_utilizador(request, id):
     if request.user.is_authenticated:    
         user = get_user(request)
         if user.groups.filter(name = "Administrador").exists():
-            u = "Administrador"   
-        elif user.groups.filter(name = "Coordenador").exists():
-            u = "Coordenador"       
+            u = "Administrador"      
         else:
             return redirect('utilizadores:mensagem',5) 
     else:
@@ -374,23 +372,10 @@ def apagar_utilizador(request, id):
 
     user = User.objects.get(id=id)
     # try:
-    if user.groups.filter(name = "Coordenador").exists():
-        u = Coordenador.objects.get(id=id)
+    if user.groups.filter(name = "Proponente").exists():
+        u = Proponente.objects.get(id=id)
     elif user.groups.filter(name = "Administrador").exists():
         u = Administrador.objects.get(id=id)
-    elif user.groups.filter(name = "ProfessorUniversitario").exists():
-        u = ProfessorUniversitario.objects.get(id=id)
-    elif user.groups.filter(name = "Colaborador").exists():
-        u = Colaborador.objects.get(id=id)
-        for tarefa in Tarefa.objects.filter(colab=u):
-            if tarefa.estado=="Iniciada":
-                return redirect('utilizadores:mensagem',14)
-            elif tarefa.estado=="Concluida":
-                tarefa.delete()
-            else:    
-                tarefa.estado="naoAtribuida"
-                tarefa.colab=None
-                tarefa.save()
     elif user.groups.filter(name="Participante").exists():
         u = Participante.objects.get(id=id)
         for inscricao in Inscricao.objects.filter(participante=u):
@@ -518,7 +503,7 @@ def apagar_proprio_utilizador(request):
 def enviar_email_validar(request,nome,id):
     ''' Envio de email quando o utilizador é validado na pagina consultar utilizadores '''  
     msg="A enviar email a "+nome+" a informar que o seu registo foi validado"
-    user_check_var = user_check(request=request, user_profile=[Coordenador, Administrador])
+    user_check_var = user_check(request=request, user_profile=[Administrador])
     if user_check_var.get('exists') == False: 
         return user_check_var.get('render')
     request.session['consultar_utilizadores'] = request.META.get('HTTP_REFERER', '/')
@@ -531,7 +516,7 @@ def enviar_email_validar(request,nome,id):
 def enviar_email_rejeitar(request,nome,id):  
     ''' Envio de email quando o utilizador é rejeitado na pagina consultar utilizadores '''
     msg="A enviar email a "+nome+" a informar que o seu registo foi rejeitado"
-    user_check_var = user_check(request=request, user_profile=[Coordenador, Administrador])
+    user_check_var = user_check(request=request, user_profile=[Administrador])
     if user_check_var.get('exists') == False: 
         return user_check_var.get('render')
     request.session['consultar_utilizadores'] = request.META.get('HTTP_REFERER', '/')
