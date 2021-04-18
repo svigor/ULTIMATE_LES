@@ -65,7 +65,7 @@ class consultar_utilizadores(SingleTableMixin, FilterView):
 
     def dispatch(self, request, *args, **kwargs):
         user_check_var = user_check(
-            request=request, user_profile=[Coordenador, Administrador])
+            request=request, user_profile=[Administrador])
         if not user_check_var.get('exists'):
             return user_check_var.get('render')
         return super().dispatch(request, *args, **kwargs)

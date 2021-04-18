@@ -99,12 +99,8 @@ class UtilizadoresTable(django_tables.Table):
         terceiro_botao = ""
         if record.firstProfile == 'Participante':
             alerta = "Tem a certeza que pretende eliminar este utilizador?<br><br><b>Atenção!</b><br><br>A <b>incrição</b> deste participante será apagada permanentemente."
-        elif record.firstProfile == 'Colaborador':
+        elif record.firstProfile == 'Proponente':
             alerta = "Tem a certeza que pretende eliminar este utilizador?<br><br><b>Atenção!</b><br><br>As suas <b>tarefas</b> deixarão de estar atribuídas."
-        elif record.firstProfile == 'ProfessorUniversitario':
-            alerta = "Tem a certeza que pretende eliminar este utilizador?<br><br><b>Atenção!</b><br><br>As <b>atividades</b> pelo qual este professor está responsável serão apagadas permanentemente."
-        elif record.firstProfile == 'Coordenador':
-            alerta = "Tem a certeza que pretende eliminar este utilizador?<br><br><b>Atenção!</b><br><br> As <b>atividades dos departamentos</b> pelo qual este coordenador está responsável serão apagadas permanentemente.<br><br>As <b>tarefas dos colaboradores</b> pelo qual este coordenador está responsável serão apagadas permanentemente."
         elif record.firstProfile == 'Administrador':
             if not self.request.user.groups.filter(name='Administrador').exists():
                 terceiro_botao = " "
