@@ -1,5 +1,5 @@
 
-{% extends 'app.html' %}
+{% extends 'evento/app.html' %}
 
 
 
@@ -12,19 +12,11 @@
 
 
 
-               {% if registo == 1 or registo == 5 %}
+               
                <form method="post">
                 {% csrf_token %}
-                {% elif registo == 2  %}      
-                <form method="post" id="ProfessorUniversitarioRegisterForm" data-departamentos-url="{% url 'utilizadores:ajax_load_departamentos' %}" novalidate>
-                {% csrf_token %}
-                {% elif registo == 3  %}      
-                <form method="post" id="CoordenadorRegisterForm" data-departamentos-url="{% url 'utilizadores:ajax_load_departamentos' %}" novalidate>
-                {% csrf_token %}
-                {% elif registo == 4  %}      
-                <form method="post" id="ColaboradorRegisterForm" data-departamentos-url="{% url 'utilizadores:ajax_load_departamentos' %}"  data-cursos-url="{% url 'utilizadores:ajax_load_cursos' %}" novalidate>
-                {% csrf_token %}
-                {% endif %}
+              
+               
                 
                     <div style="padding: 1rem 2vw 0px;">
                     <hr>
@@ -99,127 +91,8 @@
                     <hr>
                     </div>
 
-            {% if registo == 2 or registo == 3 %}
-
-                    <div class="columns">
-                    <div class="column">
-                    <div class="field">
-                    <label class="label">Faculdade</label>
-                    <div class="control is-clearfix">
-
-                            <div class="field">
-                                <!---->
-                                <div class="control is-expanded">
-                                    <span class="select is-fullwidth is-empty">
-                                        {{form.faculdade}}
-                                    </span>
-                                    <!---->
-                                </div>
-                                <!---->
-                            </div>
-
-                    </div>
-                    <!---->
-                    </div>
-                    </div>
-                    <div class="column">
-                    <div class="field">
-                    <label class="label">Departamento</label>
-                    <div class="control is-clearfix">
-                    
-                            <div class="field">
-                                <!---->
-                                <div class="control is-expanded">
-                                    <span class="select is-fullwidth is-empty">
-                                        {{form.departamento}}
-                                    </span>
-                                    <!---->
-                                </div>
-                                <!---->
-                            </div>
-
-                    </div>
-                    <!---->
-                    </div>
-                    </div>
-                    <div class="column">
-                    <div class="field">
-                    <label class="label">Gabinete</label>
-                    <div class="control is-clearfix">
-                    <input class="input" name="gabinete"id="id_gabinete"  value="{{form.gabinete.value|default_if_none:gabinete}}" type="text" style="" maxlength="255">
-                    </div>
-                    <!---->
-                    </div>
-                    </div>
-                    <hr>
-                    </div>
-            {% elif registo == 4%}
-
-
-                    <div class="columns">
-                    <div class="column">
-                    <div class="field">
-                    <label class="label">Faculdade</label>
-                    <div class="control is-clearfix">
-
-                            <div class="field">
-                                <!---->
-                                <div class="control is-expanded">
-                                    <span class="select is-fullwidth is-empty">
-                                        {{form.faculdade}}
-                                    </span>
-                                    <!---->
-                                </div>
-                                <!---->
-                            </div>
-
-                    </div>
-                    <!---->
-                    </div>
-                    </div>
-                    <div class="column">
-                    <div class="field">
-                    <label class="label">Departamento</label>
-                    <div class="control is-clearfix">
-                    
-                            <div class="field">
-                                <!---->
-                                <div class="control is-expanded">
-                                    <span class="select is-fullwidth is-empty">
-                                        {{form.departamento}}
-                                    </span>
-                                    <!---->
-                                </div>
-                                <!---->
-                            </div>
-
-                    </div>
-                    <!---->
-                    </div>
-                    </div>
-                    <div class="column">
-                    <div class="field">
-                    <label class="label">Curso</label>
-                    <div class="control is-clearfix">
-                    
-                            <div class="field">
-                                <!---->
-                                <div class="control is-expanded">
-                                    <span class="select is-fullwidth is-empty">
-                                        {{form.curso}}
-                                    </span>
-                                    <!---->
-                                </div>
-                                <!---->
-                            </div>
-
-                    </div>
-                    <!---->
-                    </div>
-                    </div>
-                    <hr>
-                    </div>
-                {% elif registo == 5%}
+            
+                {% if registo == 3%}
 
                     <div class="columns" style="margin-right:66.6%;">
                     <div class="column">

@@ -1,5 +1,5 @@
 from django.urls import path, include
-#from .views import consultar_utilizadores
+from .views import consultar_utilizadores
 from .views import escolher_perfil
 from .views import criar_utilizador
 from .views import apagar_utilizador
@@ -17,7 +17,7 @@ app_name = 'utilizadores'
 
 
 urlpatterns = [
-    #path('consultarutilizadores', consultar_utilizadores.as_view(),name='consultar-utilizadores'),
+    path('consultarutilizadores', consultar_utilizadores.as_view(),name='consultar-utilizadores'),
     path('escolherperfil', escolher_perfil,name='escolher-perfil'),    
     path('criarutilizadores/<int:id>', criar_utilizador, name='criar-utilizador'),
     path('alterarpassword',alterar_password,name='alterar-password'),

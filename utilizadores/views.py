@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from .models import Utilizador, Participante, Proponente
 from django.shortcuts import redirect
 from .forms import *
-#from .tables import UtilizadoresTable
+from .tables import UtilizadoresTable
 from .filters import UtilizadoresFilter
 from django.contrib import messages
 from django.contrib.auth import *
@@ -20,7 +20,7 @@ from django.db import transaction
 #from notificacoes.models import *
 #from coordenadores.models import Tarefa
 from django.db.models import F
-#from django_tables2 import SingleTableMixin
+from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 
 
@@ -54,7 +54,7 @@ def user_check(request, user_profile = None):
 
 
 
-#class consultar_utilizadores(SingleTableMixin, FilterView):
+class consultar_utilizadores(SingleTableMixin, FilterView):
     ''' Consultar todos os utilizadores com as funcionalidades dos filtros '''
     table_class = UtilizadoresTable
     template_name = 'utilizadores/consultar_utilizadores.html'
@@ -930,14 +930,10 @@ def mudar_perfil_escolha(request):
     Redireciona para uma pagina onde é possível escolher o perfil que quer alterar '''
     if request.user.is_authenticated:    
         user = get_user(request)
-        if user.groups.filter(name = "Coordenador").exists():
-            u = "Coordenador"
+        if user.groups.filter(name = "Proponente").exists():
+            u = "Proponente"
         elif user.groups.filter(name = "Administrador").exists():
             u = "Administrador"
-        elif user.groups.filter(name = "ProfessorUniversitario").exists():
-            u = "ProfessorUniversitario"
-        elif user.groups.filter(name = "Colaborador").exists():
-            u = "Colaborador"
         elif user.groups.filter(name = "Participante").exists():
             u = "Participante" 
         else:
@@ -947,21 +943,16 @@ def mudar_perfil_escolha(request):
 
     user=User.objects.get(id=user.id)  
     
-    if user.groups.filter(name = "Coordenador").exists():           
-        x = "Coordenador"
+    if user.groups.filter(name = "Proponente").exists():           
+        x = "Proponente"
     elif user.groups.filter(name = "Administrador").exists():
         x = "Administrador"
-    elif user.groups.filter(name = "ProfessorUniversitario").exists():
-        x = "ProfessorUniversitario"
-    elif user.groups.filter(name = "Colaborador").exists():        
-        x = "Colaborador"
     elif user.groups.filter(name = "Participante").exists():
         x = "Participante" 
     else:
         return redirect('utilizadores:mensagem',5)     
 
-    utilizadores = ["Participante",
-                    "Professor Universitário", "Coordenador", "Colaborador","Administrador"]
+    utilizadores = ["Participante", "Proponente","Administrador"]
     return render(request=request, template_name='utilizadores/mudar_perfil_escolha.html', context={"utilizadores": utilizadores,'u': u,'id':id ,'x':x})
 
 
@@ -986,43 +977,23 @@ def mudar_perfil_admin(request,tipo,id):
         form = ParticipanteAlterarPerfilForm()
         perfil = "Participante"
     elif tipo == 2:
-        form = ProfessorUniversitarioAlterarPerfilForm()
-        perfil = "Professor Universitario"
+        form = ProponenteAlterarPerfilForm()
+        perfil = "Proponente"
     elif tipo == 3:
-        form = CoordenadorAlterarPerfilForm()
-        perfil = "Coordenador"
-    elif tipo == 4:
-        form = ColaboradorAlterarPerfilForm()
-        perfil = "Colaborador"
-    elif tipo == 5:
         form = AdministradorAlterarPerfilForm()
         perfil = "Administrador" 
     else:
         return redirect('utilizadores:mensagem',5) 
 
     user=User.objects.get(id=id)
-    if user.groups.filter(name = "Coordenador").exists():         
-        utilizador_object = Coordenador.objects.get(id=user.id)
-        gabinete=utilizador_object.gabinete
-        if tipo!=1 and tipo!=5:
-            form.fields['departamento'].initial =utilizador_object.departamento.id
-            form.fields['faculdade'].initial =utilizador_object.faculdade.id
-
-    elif user.groups.filter(name = "Administrador").exists():
+    
+    if user.groups.filter(name = "Administrador").exists():
         utilizador_object = Administrador.objects.get(id=user.id)
         gabinete=utilizador_object.gabinete
-    elif user.groups.filter(name = "ProfessorUniversitario").exists():
-        utilizador_object = ProfessorUniversitario.objects.get(id=user.id)
-        gabinete=utilizador_object.gabinete
-        if tipo!=1 and tipo!=5:
-            form.fields['departamento'].initial =utilizador_object.departamento.id
-            form.fields['faculdade'].initial =utilizador_object.faculdade.id
-    elif user.groups.filter(name = "Colaborador").exists():
-        utilizador_object = Colaborador.objects.get(id=user.id) 
-        gabinete=""
-        if tipo!=1 and tipo!=5:
-            form.fields['departamento'].initial =utilizador_object.departamento.id
-            form.fields['faculdade'].initial = utilizador_object.faculdade.id
+    
+    elif user.groups.filter(name = "Proponente").exists():
+        utilizador_object = Proponente.objects.get(id=user.id)  
+        gabinete=""  
     elif user.groups.filter(name = "Participante").exists():
         utilizador_object = Participante.objects.get(id=user.id)  
         gabinete=""   
@@ -1035,15 +1006,9 @@ def mudar_perfil_admin(request,tipo,id):
             form = ParticipanteAlterarPerfilForm(submitted_data)
             my_group = Group.objects.get(name='Participante')
         elif tipo == 2:
-            form = ProfessorUniversitarioAlterarPerfilForm(submitted_data)
-            my_group = Group.objects.get(name='ProfessorUniversitario')
+            form = ProponenteAlterarPerfilForm(submitted_data)
+            my_group = Group.objects.get(name='Proponente')
         elif tipo == 3:
-            form = CoordenadorAlterarPerfilForm(submitted_data)
-            my_group = Group.objects.get(name='Coordenador')
-        elif tipo == 4:
-            form = ColaboradorAlterarPerfilForm(submitted_data)
-            my_group = Group.objects.get(name='Colaborador')
-        elif tipo == 5:
             form = AdministradorAlterarPerfilForm(submitted_data)
             my_group = Group.objects.get(name='Administrador')  
         else:
@@ -1103,14 +1068,10 @@ def mudar_perfil(request,tipo):
     if request.user.is_authenticated:    
         user = get_user(request)
         id=user.id
-        if user.groups.filter(name = "Coordenador").exists():
-            u = "Coordenador"
+        if user.groups.filter(name = "Proponente").exists():
+            u = "Proponente"
         elif user.groups.filter(name = "Administrador").exists():
             u = "Administrador"
-        elif user.groups.filter(name = "ProfessorUniversitario").exists():
-            u = "ProfessorUniversitario"
-        elif user.groups.filter(name = "Colaborador").exists():
-            u = "Colaborador"
         elif user.groups.filter(name = "Participante").exists():
             u = "Participante" 
         else:
@@ -1122,46 +1083,24 @@ def mudar_perfil(request,tipo):
         form = ParticipanteAlterarPerfilForm()
         perfil = "Participante"
     elif tipo == 2:
-        form = ProfessorUniversitarioAlterarPerfilForm()
-        perfil = "Professor Universitario"
+        form = ProponenteAlterarPerfilForm()
+        perfil = "Proponente"
     elif tipo == 3:
-        form = CoordenadorAlterarPerfilForm()
-        perfil = "Coordenador"
-    elif tipo == 4:
-        form = ColaboradorAlterarPerfilForm()
-        perfil = "Colaborador"
-    elif tipo == 5:
         form = AdministradorAlterarPerfilForm()
         perfil = "Administrador" 
     else:
         return redirect('utilizadores:mensagem',5) 
 
     user=User.objects.get(id=user.id)
-    if user.groups.filter(name = "Coordenador").exists():         
-        utilizador_object = Coordenador.objects.get(id=user.id)
-        gabinete=utilizador_object.gabinete
-        if tipo!=1 and tipo!=5:
-            form.fields['departamento'].initial =utilizador_object.departamento.id
-            form.fields['faculdade'].initial =utilizador_object.faculdade.id
-
-    elif user.groups.filter(name = "Administrador").exists():
+    if user.groups.filter(name = "Administrador").exists():
         utilizador_object = Administrador.objects.get(id=user.id)
         gabinete=utilizador_object.gabinete
-    elif user.groups.filter(name = "ProfessorUniversitario").exists():
-        utilizador_object = ProfessorUniversitario.objects.get(id=user.id)
-        gabinete=utilizador_object.gabinete
-        if tipo!=1 and tipo!=5:
-            form.fields['departamento'].initial =utilizador_object.departamento.id
-            form.fields['faculdade'].initial =utilizador_object.faculdade.id
-    elif user.groups.filter(name = "Colaborador").exists():
-        utilizador_object = Colaborador.objects.get(id=user.id) 
-        gabinete=""
-        if tipo!=1 and tipo!=5:
-            form.fields['departamento'].initial =utilizador_object.departamento.id
-            form.fields['faculdade'].initial = utilizador_object.faculdade.id
     elif user.groups.filter(name = "Participante").exists():
         utilizador_object = Participante.objects.get(id=user.id)  
-        gabinete=""   
+        gabinete=""
+    elif user.groups.filter(name = "Proponente").exists():
+        utilizador_object = Proponente.objects.get(id=user.id)  
+        gabinete=""       
     else:
         return redirect('utilizadores:mensagem',5) 
     msg=False
@@ -1171,17 +1110,11 @@ def mudar_perfil(request,tipo):
             form = ParticipanteAlterarPerfilForm(submitted_data)
             my_group = Group.objects.get(name='Participante')
         elif tipo == 2:
-            form = ProfessorUniversitarioAlterarPerfilForm(submitted_data)
-            my_group = Group.objects.get(name='ProfessorUniversitario')
+            form = ProponenteAlterarPerfilForm(submitted_data)
+            my_group = Group.objects.get(name='Proponente')
         elif tipo == 3:
-            form = CoordenadorAlterarPerfilForm(submitted_data)
-            my_group = Group.objects.get(name='Coordenador')
-        elif tipo == 4:
-            form = ColaboradorAlterarPerfilForm(submitted_data)
-            my_group = Group.objects.get(name='Colaborador')
-        elif tipo == 5:
             form = AdministradorAlterarPerfilForm(submitted_data)
-            my_group = Group.objects.get(name='Administrador')  
+            my_group = Group.objects.get(name='Administrador')
         else:
             return redirect('utilizadores:mensagem',5) 
 
