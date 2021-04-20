@@ -1,16 +1,46 @@
 from django.shortcuts import render
 from .forms import InserirSalaForm
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
 from django.http import HttpResponseRedirect
 from django.views.generic import(
     ListView,
     CreateView,
 )
 from .models import Sala, Edificio
+from utilizadores.models import Administrador
+from utilizadores.views import user_check
+from evento.tables import SalaTable
+from evento.filters import SalasFilter
 # Create your views here.
 
 
 def home(request):
     return render(request, 'evento/inicio.html')
+
+class consultar_salas(SingleTableMixin, FilterView):
+    ''' Consultar todos os utilizadores com as funcionalidades dos filtros '''
+    table_class = SalaTable
+    template_name = 'evento/consultar_salas.html'
+    filterset_class = SalasFilter
+    table_pagination = {
+        'per_page': 10
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        user_check_var = user_check(
+            request=request, user_profile=[Administrador])
+        if not user_check_var.get('exists'):
+            return user_check_var.get('render')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SingleTableMixin, self).get_context_data(**kwargs)
+        table = self.get_table(**self.get_table_kwargs())
+        table.request = self.request
+        table.fixed = True
+        context[self.get_context_table_name(table)] = table
+        return context
 
 
 def SalaCreateView(request):
