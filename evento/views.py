@@ -1,11 +1,11 @@
-from django.shortcuts import render
-from .forms import InserirSalaForm, CriarFormulario
+from django.shortcuts import render, redirect
+from .forms import InserirSalaForm, CriarFormulario, EscolherPergunta, EscolherTipoDeEvento
 from django.http import HttpResponseRedirect
 from django.views.generic import(
     ListView,
     CreateView,
 )
-from .models import Sala, Edificio, TipoDeFormulario, Formulario
+from .models import Sala, Edificio, TipoDeFormulario, Formulario, Pergunta
 # Create your views here.
 
 
@@ -52,14 +52,20 @@ def CriarFormularioView(request):
        
         if form.is_valid():
             tipo_de_formulario_r = request.POST.get('tipo_de_formulario')
+            print(tipo_de_formulario_r)
             tipo = TipoDeFormulario.objects.get(pk=tipo_de_formulario_r)
             
 
-            Formulario_r = Formulario(tipo_de_formulario=tipo)
+            Formulario_r = Formulario(tipo_de_formularioid=tipo)
             Formulario_r.save()
-            return HttpResponseRedirect('http://127.0.0.1:8000/formulario/new/')
+            return redirect(PerguntasFormularios)
 
     else:
         form = CriarFormulario()
+        form1 = EscolherTipoDeEvento()
 
-    return render(request, 'evento/criar_formulario.html', {'form': form})
+    return render(request, 'evento/criar_formulario.html', {'form': form, 'form1': form1})
+
+def PerguntasFormularios(request):
+    form = EscolherPergunta()
+    return render(request, 'evento/perguntas_formularios.html', {'form': form})

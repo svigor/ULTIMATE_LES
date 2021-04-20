@@ -1,38 +1,34 @@
 from django import forms
-<<<<<<< Updated upstream
-from .models import Sala
-=======
-from .models import Sala, Edificio, TipoDeFormulario, Formulario
+from .models import Sala, Edificio, TipoDeFormulario, Formulario, Pergunta, TipoDeEvento
 
 
->>>>>>> Stashed changes
 
 class InserirSalaForm(forms.ModelForm):
-    capacidade = forms.IntegerField(label='capacidade',max_value=2000, widget = forms.NumberInput (
+    capacidade = forms.IntegerField(label='Capacidade',max_value=2000, widget = forms.NumberInput (
         attrs= {'class': 'input'}
     ) )
 
-    fotos = forms.IntegerField(label='fotos',max_value=2000, widget = forms.NumberInput (
+    fotos = forms.ImageField(label='Fotos'
+    ) 
+
+    nome = forms.CharField(label='Nome',max_length=255, widget = forms.TextInput (
         attrs= {'class': 'input'}
     ) )
 
-    nome = forms.CharField(label='nome',max_length=255, widget = forms.TextInput (
-        attrs= {'class': 'input'}
-    ) )
-
-    mobilidade_reduzida = forms.BooleanField( label='mobilidade_reduzida',required=True, initial=False,
+    mobilidade_reduzida = forms.BooleanField( label='Mobilidade reduzida',required=False, initial=False,
         widget= forms.CheckboxInput(
-           attrs= {'class': ''}
+           attrs= {'class': 'box'}
         )
     )
+   
+    edificioid = forms.ModelChoiceField(
+        queryset=Edificio.objects.all(),
+        label='Edifício',
+        widget= forms.Select(
+           attrs= {'class': 'input'}
+        )    
+    )
 
-    
-    #edificioid = forms.CharField( label='edificioid',max_length=255,
-     #   widget= forms.Select(
-      #     attrs= {'class': ''}
-       # )
-    #)
-    
 
     class Meta:
         model = Sala
@@ -52,4 +48,28 @@ class CriarFormulario(forms.ModelForm):
     class Meta:
         model = Formulario
         fields = ['tipo_de_formulario']
+
+class EscolherTipoDeEvento(forms.ModelForm):
+    nome = forms.ModelChoiceField(
+        queryset=TipoDeEvento.objects.all(),
+        label='Tipo de Evento',
+        empty_label='(Selecione um tipo de evento)',
+        widget= forms.Select(
+           attrs= {'class': 'input'}
+        )    
+    )
+
+    class Meta:
+        model = TipoDeEvento
+        fields = ['nome']
         
+class EscolherPergunta(forms.ModelForm):
+    # nome = forms.ModelT(
+    #     label='Pergunta x',
+        
+    # )
+
+    class Meta:
+        model = Pergunta
+        fields = ['titulo', 'tipo_de_perguntaid']
+

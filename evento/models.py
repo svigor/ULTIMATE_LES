@@ -75,7 +75,7 @@ class Feedback(models.Model):
 
 class Formulario(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    tipo_de_eventoid = models.ForeignKey('TipoDeEvento', models.DO_NOTHING, db_column='Tipo de EventoID')  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    tipo_de_eventoid = models.ForeignKey('TipoDeEvento', models.DO_NOTHING, db_column='Tipo de EventoID', null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
     tipo_de_formularioid = models.ForeignKey('TipoDeFormulario', models.DO_NOTHING, db_column='Tipo de FormularioID')  # Field name made lowercase. Field renamed to remove unsuitable characters.
 
     class Meta:
@@ -246,7 +246,6 @@ class Servicos(models.Model):
 class TipoDeEvento(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -268,6 +267,9 @@ class TipoDeFormulario(models.Model):
 class TipoDePergunta(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
+
+    def __str__ (self) :
+        return self.nome
 
     class Meta:
         managed = True

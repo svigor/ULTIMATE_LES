@@ -3,11 +3,13 @@ from .views import (
     SalaCreateView,
     home,
     CriarFormularioView,
+    PerguntasFormularios,
 )
 from . import views
 
 urlpatterns = [
     path('',home,name ='home'),
     path('sala/new/',SalaCreateView , name='criar_sala'),
-    path('formulario/new/', CriarFormularioView, name='criar_formulario')
+    path('formulario/new/', CriarFormularioView, name='criar_formulario'),
+    path('formulario/perguntas/', PerguntasFormularios, name='perguntas_formularios')
 ]
