@@ -1,35 +1,38 @@
 from django import forms
-from .models import Sala
+from .models import TipoDeEvento, Campus
 
-class InserirSalaForm(forms.ModelForm):
-    capacidade = forms.IntegerField(label='capacidade',max_value=2000, widget = forms.NumberInput (
-        attrs= {'class': 'input'}
-    ) )
 
-    fotos = forms.IntegerField(label='fotos',max_value=2000, widget = forms.NumberInput (
-        attrs= {'class': 'input'}
-    ) )
-
-    nome = forms.CharField(label='nome',max_length=255, widget = forms.TextInput (
-        attrs= {'class': 'input'}
-    ) )
-
-    mobilidade_reduzida = forms.BooleanField( label='mobilidade_reduzida',required=True, initial=False,
-        widget= forms.CheckboxInput(
-           attrs= {'class': ''}
+class opcaoevento(forms.ModelForm):
+    nome = forms.ModelChoiceField(
+        queryset=TipoDeEvento.objects.all(),
+        empty_label='Escolha uma das Soluções:',
+        label='',
+        widget=forms.Select(
+            attrs={'class': 'input'}
         )
     )
 
-    
-    #edificioid = forms.CharField( label='edificioid',max_length=255,
-     #   widget= forms.Select(
-      #     attrs= {'class': ''}
-       # )
-    #)
-    
-
     class Meta:
-        model = Sala
-        fields = ['capacidade', 'fotos', 'nome', 'mobilidade_reduzida', 'edificioid']
+        model = TipoDeEvento
+        fields = ['nome']
 
-    
+
+class r_a_form(forms.Form):
+    r_a = forms.CharField(label='', max_length=1500, required=True, min_length=5,
+                          widget=forms.Textarea(attrs={'class': 'textarea', 'style': 'resize: none'}))
+
+
+class r_c_form(forms.Form):
+    r_c = forms.CharField(label='', required=True, max_length=255, widget=forms.TextInput(attrs={'class': 'input'}))
+
+
+class c_s_form(forms.Form):
+    choice = Campus.objects.all()
+    choii = []
+    for choicez in choice:
+        choii.append(choicez.nome)
+    c_s = forms.CharField(label='', widget=forms.Select(choices=choii))
+
+
+class n_tel(forms.Form):
+    n_tel = forms.IntegerField(label='', min_value=900000000, max_value=999999999, widget=forms.NumberInput(attrs={'class': 'input' }))

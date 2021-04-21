@@ -1,41 +1,51 @@
-from django.shortcuts import render
-from .forms import InserirSalaForm
-from django.http import HttpResponseRedirect
-from django.views.generic import(
-    ListView,
-    CreateView,
-)
-from .models import Sala, Edificio
-# Create your views here.
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .forms import opcaoevento, r_a_form, r_c_form, c_s_form, n_tel
+from django import forms as f
+from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus
 
 
-def home(request):
-    return render(request, 'evento/inicio.html')
+def homepage(request):
+    return render(request, 'evento/homepage.html')
 
 
-def SalaCreateView(request):
+def criarevento(request):
+    title = 'Criar Evento'
+    opcoes = 'Escolha o Tipo de Evento'
+    form_opcao = opcaoevento()
+    return render(request, 'evento/criarevento.html', {'title': title, 'opcoes': opcoes, 'form': form_opcao})
 
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = InserirSalaForm(request.POST)
-        # check whether it's valid:
+
+def atr_opcao(request):
+    if not request.POST.get('nome'):
+        return redirect(criarevento)
+    elif request.method == 'POST':
+        form = opcaoevento(request.POST)
         if form.is_valid():
-            edificio_id_r = request.POST.get('edificioid')
-            Edificio_r = Edificio.objects.get(pk=edificio_id_r)
-            capacidade_r = request.POST.get('capacidade')
-            fotos_r = request.POST.get('fotos')
-            nome_r = request.POST.get('nome')
-            mobilidade_reduzida_r = ('mobilidade_reduzida')
-            if mobilidade_reduzida_r == 'mobilidade_reduzida':
-                mobilidade_reduzida_r = 1
-            Sala_r = Sala(capacidade=capacidade_r, fotos=fotos_r, nome=nome_r,
-                          mobilidade_reduzida=mobilidade_reduzida_r, edificioid=Edificio_r)
-            Sala_r.save()
-            # return HttpResponseRedirect('')
+            tipodeevento = request.POST.get('nome')
+            opcao = TipoDeEvento.objects.get(pk=tipodeevento)
+            formulario = Formulario.objects.get(tipo_de_eventoid=opcao)
+            perguntas = Pergunta.objects.all().filter(formularioid=formulario)
+            pergunta_relat = {}
+            for pergunta in perguntas:
+                pergunta_relat.update({pergunta.titulo: TipoDePergunta.objects.get(pk=pergunta.tipo_de_perguntaid_id)})
 
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = InserirSalaForm()
+            forms = {}
+            for elem in pergunta_relat:
+                if pergunta_relat[elem].nome == "Resposta Curta":
+                    if elem.title() == 'Nº De Telefone':
+                        print('cona')
+                        r_c = n_tel()
+                    else:
+                        r_c = r_c_form()
+                    forms.update({elem.title() + ":": r_c})
+                elif pergunta_relat[elem].nome == "Resposta Aberta":
+                    r_a = r_a_form()
+                    forms.update({elem.title() + ":": r_a})
+                elif pergunta_relat[elem].nome == "Caixa de Seleção":
+                    c_s = c_s_form()
+                    forms.update({elem.title() + ":" + '_1': c_s})
 
-    return render(request, 'evento/criar_sala.html', {'form': form})
+            opcoes = 'Preencha o Formulário'
+            title = 'Criar Eventos'
+            return render(request, 'evento/criarevento2.html', {'title': title, 'opcoes': opcoes, 'forms': forms})

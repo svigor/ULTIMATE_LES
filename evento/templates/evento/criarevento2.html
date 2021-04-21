@@ -1,0 +1,68 @@
+{% extends 'evento/base.html' %}
+
+
+{% block title %}- Recuperar Password{% endblock title %}
+
+
+
+{% block content %}
+
+<div>
+    <div style="margin-bottom:3%;margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Criar Eventos</h2>
+    </div>
+
+
+    {% if msg %}
+    <p style="color: #ff0000; text-align:center; margin-bottom:4%">{{error}}</p>
+    {% endif %}
+
+
+
+    <div style="margin-left:35%; margin-right:35%">
+        <article class="message is-info">
+            <div class="message-header">
+
+
+            </div>
+            <div class="message-body">
+            <div style="margin-bottom: 2%;">{{ opcoes }}:</div>
+
+
+
+                <div class="control is-clearfix">
+                    <form action="{% url 'atr_opcao' %}" method="POST" class="form">{% csrf_token %}
+
+                        {% for key,value in forms.items %}
+                        <fieldset class="form" style="margin-bottom: 2%;">
+                                {% if '_1' not in key %}
+                                    <label>{{ key }}</label>
+                                    {{ value }}
+                                {% else %}
+                                    <label for="{{ key|slice:7 }}">{{ key|slice:7 }}</label>
+                                    <select class="input" id="{{ key|slice:7 }}" name="{{ key|slice:7 }}">
+                                        {% for choices in value.choice %}
+                                            {{ choices.nome }}
+                                            <option value="{{ choices.nome }}">{{ choices.nome }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+
+                        </fieldset>
+                        {% endfor %}
+
+
+                        <div style="margin-top:7%;text-align: center;position:center;">
+                            <button type="submit" class="button is-info is-outlined">
+                                <span>Continuar</span>
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+{% endblock %}

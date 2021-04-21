@@ -1,11 +1,8 @@
 from django.urls import path
-from .views import (
-    SalaCreateView,
-    home,
-)
 from . import views
 
 urlpatterns = [
-    path('',home,name ='home'),
-    path('sala/new/',SalaCreateView , name='criar_sala'),
+    path('', views.homepage, name='evento-home'),
+    path('criarevento/', views.criarevento, name='evento-criar'),
+    path('atr_opcao/', views.atr_opcao, name='atr_opcao')
 ]
