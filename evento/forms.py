@@ -35,4 +35,19 @@ class InserirSalaForm(forms.ModelForm):
         model = Sala
         fields = ['capacidade', 'fotos', 'nome', 'mobilidade_reduzida', 'edificioid']
 
+
+class InscricaoForm(forms.ModelForm):
+    requer_certificado = forms.BooleanField( label='Requer certificado?',required=False, initial=False,
+        widget= forms.CheckboxInput(
+           attrs= {'class': 'box'}
+        )
+    )
+
+
+    class Meta:
+        model = Sala
+        fields = ['requer_certificado']
+
+
+
     

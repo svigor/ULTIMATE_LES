@@ -24,7 +24,7 @@
           Configurações
         </a>
         <div class="navbar-dropdown">
-          <a href="{% url 'criar_sala' %}" class="navbar-item">Unidades Organicas</a>
+          <a href="{% url 'consultar-salas' %}" class="navbar-item">Salas</a>
           <a href="{% url 'criar_sala' %}" class="navbar-item">Edificios e Espaços</a>
           <a href="{% url 'criar_sala' %}" class="navbar-item">Departamentos</a>
           <a href="{% url 'criar_sala' %}" class="navbar-item">Cursos</a>
@@ -36,7 +36,7 @@
       <a href="{% url 'criar_sala' %}" class="navbar-item">
         Dias Abertos
       </a>
-      <a href="{% url 'criar_sala' %}" class="navbar-item">
+      <a href="{% url 'utilizadores:consultar-utilizadores' %}" class="navbar-item">
         Utilizadores
       </a>
       <a href="{% url 'criar_sala' %}" class="navbar-item">
@@ -173,7 +173,7 @@
               <div role="menu" class="dropdown-content">
 
                 <div role="menuitem" tabindex="0" class="dropdown-item">
-                  <a href="{% url 'criar_sala' %}" role="listitem" tabindex="0" class="dropdown-item is-disabled">
+                  <a href="{% url 'utilizadores:alterar-utilizador' %}" role="listitem" tabindex="0" class="dropdown-item is-disabled">
                     <span class="icon">
                       <i class="mdi mdi-account-edit mdi-24px"></i>
                     </span>

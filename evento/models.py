@@ -195,14 +195,17 @@ class Respostas(models.Model):
 class Sala(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     capacidade = models.IntegerField(db_column='Capacidade')  # Field name made lowercase.
-    fotos = models.ImageField(db_column='Fotos',upload_to='evento/static/img', null=True)  # Field name made lowercase.
+    fotos = models.ImageField(db_column='Fotos',upload_to='salas', null=True)  # Field name made lowercase.
     nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
     mobilidade_reduzida = models.BooleanField(db_column='Mobilidade reduzida')  # Field name made lowercase. Field renamed to remove unsuitable characters. This field type is a guess.
     edificioid = models.ForeignKey(Edificio, models.DO_NOTHING, db_column='EdificioID')  # Field name made lowercase.
 
+   
+
     class Meta:
         managed = True
         db_table = 'sala'
+    
         
     def get_absolute_url(self):
         return reverse('home')

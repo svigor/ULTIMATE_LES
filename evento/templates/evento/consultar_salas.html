@@ -86,9 +86,9 @@
                 </li>
             </ul>
         </nav>
-        <a href="{% url 'utilizadores:escolher-perfil' %}">
+        <a href="{% url 'criar_sala' %}">
             <button type="button" class="button is-success is-outlined" style="margin-bottom: 1rem;"><span
-                    class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Adicionar Utilizador</span>
+                    class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Adicionar Sala</span>
             </button>
         </a>
         {% render_table table 'evento/consultar_salas_tabela.html' %}

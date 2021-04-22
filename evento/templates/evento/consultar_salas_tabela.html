@@ -13,21 +13,13 @@
             <td><strong>Adequado para mobilidade reduzida:</strong></td>
             <td>{{row.record.mobilidade_reduzida}}</td>
         </tr>
-        <tr>
-            <td><strong>Username:</strong></td>
-            <td>{{row.record.username}}</td>
-        </tr>
-        <tr>
-            <td><strong>Contacto:</strong></td>
-            <td>{{row.record.contacto}}</td>
-        </tr>
  
         <tr>
-            <td><strong>Edificio:</strong></td>
-            <td>{{row.record.fotos}}</td>
+            <img src="{{row.record.fotos.url}}" alt="">     
         </tr>
 
     </tbody>
 </table>
+
 
 {% endblock details_content %}
