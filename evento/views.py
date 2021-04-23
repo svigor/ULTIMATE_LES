@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import InserirSalaForm, InscricaoForm
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
@@ -9,9 +9,11 @@ from django.views.generic import(
 )
 from .models import Sala, Edificio
 from utilizadores.models import Administrador
-from utilizadores.views import user_check
+from utilizadores.views import user_check, mensagem
 from evento.tables import SalaTable
 from evento.filters import SalasFilter
+from django.contrib.auth import *
+from django.contrib import messages
 # Create your views here.
 
 
@@ -119,3 +121,16 @@ def InscricaoView(request):
         form = InserirSalaForm()
 
     return render(request, 'evento/criar_sala.html', {'form': form})
+
+def apagar_sala(request, id):
+    if request.user.is_authenticated:
+        user = get_user(request)
+        if user.groups.filter(name = "Administrador").exists():
+            u = "Administrador"
+        else:
+            return redirect('utilizadores:mensagem',5)
+    Sala.objects.filter(id=id).delete()
+    return redirect('utilizadores:mensagem',19)
+
+
+

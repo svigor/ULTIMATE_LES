@@ -862,6 +862,9 @@ def mensagem(request, id, *args, **kwargs):
     elif id == 18:
         m = "Antes de poder ver dados e estatísticas é preciso configurar um Dia Aberto."
         tipo = "error"
+    elif id == 19:
+        m = "A sala foi apagada."
+        tipo = "success"
     else:
         m = "Esta pagina não existe"
         tipo = "error"                                     
