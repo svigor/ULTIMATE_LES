@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import InserirSalaForm, InscricaoForm
+from .forms import InserirSalaForm, InscricaoForm, AlterarSalaForm
+    
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from django.http import HttpResponseRedirect
@@ -76,13 +77,15 @@ def SalaCreateView(request):
             Sala_r = Sala(capacidade=capacidade_r, fotos=fotosw, nome=nome_r,
                           mobilidade_reduzida=mobilidade_reduzida_r,edificioid=Edificio_r)
             Sala_r.save()
-            return HttpResponseRedirect('http://127.0.0.1:8000/sala/new/')
+            return redirect('consultar-salas')
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = InserirSalaForm()
 
     return render(request, 'evento/criar_sala.html', {'form': form})
+
+
 
 def InscricaoView(request):
 
@@ -132,5 +135,62 @@ def apagar_sala(request, id):
     Sala.objects.filter(id=id).delete()
     return redirect('utilizadores:mensagem',19)
 
+def alterar_sala(request,id):
+    if request.user.is_authenticated:
+        user = get_user(request)
+        if user.groups.filter(name="Administrador").exists():
+            u = "Administrador"
+        else:
+            return redirect('utilizadores:mensagem',5)
 
+    
+    if request.method == 'POST':
+        sala_object = Sala.objects.get(id=id)
+        submited_data = request.POST.copy()
+        form = AlterarSalaForm(submited_data, request.FILES.copy(), instance=sala_object)
+        
+
+        nome = request.POST.get('nome')
+        erros = []
+
+        if nome and Sala.objects.exclude(nome = nome).filter(nome = nome).exists():
+            erros.append('A sala com esse nome já existe') 
+    
+        if form.is_valid() and len(erros)==0:
+            mobilidade_reduzida_r = 0
+            
+            if request.POST.get('mobilidade_reduzida') == 'on':
+                mobilidade_reduzida_r = 1
+            
+            Sala1 = sala_object
+            Sala1.capacidade = request.POST.get('capacidade')
+            Sala1.fotos = request.FILES.get('fotos')
+            Sala1.nome = request.POST.get('nome')
+            Sala1.mobilidade_reduzida = mobilidade_reduzida_r
+            Edificio1 = Edificio.objects.get(pk=request.POST.get('edificioid'))
+            Sala1.edificioid = Edificio1
+            Sala1.save()
+            return redirect('consultar-salas')
+
+        else:
+            
+            return render(
+                request= request,
+                template_name='evento/alterarsala.html',
+                context={
+                    'form':form, 'msg':msg, 'erros':erros, 'id':id
+                }
+            )
+    else:
+        #form = AlterarSalaForm(instance=sala_object)
+        sala_object = Sala.objects.get(id=id)
+        form = AlterarSalaForm(initial={'capacidade':sala_object.capacidade,'nome':sala_object.nome})
+        return render(
+                request,
+                'evento/alterarsala.html',
+                {'form': form, 'id':id}
+                
+            )
+
+        
 

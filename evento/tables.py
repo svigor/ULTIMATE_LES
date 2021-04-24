@@ -20,6 +20,7 @@ class SalaTable(django_tables.Table):
 
     def before_render(self,request):
         self.columns.hide('fotos')
+        self.columns.hide('id')
        
 
     def render_acoes(self, record):
@@ -28,7 +29,7 @@ class SalaTable(django_tables.Table):
         primeiro_botao = ""
         if self.request.user.groups.filter(name='Administrador').exists():
             primeiro_botao = f"""
-            <a href='{reverse('utilizadores:apagar-utilizador', args=[record.id])}'
+            <a href='{reverse('alterar-sala', args=[record.id])}'
                 data-tooltip="Editar">
                 <span class="icon">
                     <i class="mdi mdi-circle-edit-outline mdi-24px"></i>

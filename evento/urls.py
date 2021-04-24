@@ -4,12 +4,15 @@ from .views import (
     home,
     consultar_salas,
     apagar_sala,
+    alterar_sala
 )
-from . import views
+from evento import views
 
 urlpatterns = [
     path('',home,name ='home'),
     path('sala/new/',SalaCreateView , name='criar_sala'),
     path('consultarsalas', consultar_salas.as_view(), name='consultar-salas'),
     path('apagarsala/<int:id>', apagar_sala, name = 'apagar-sala'),
+    path('alterar/<int:id>', alterar_sala, name = 'alterar-sala'),
+
 ]

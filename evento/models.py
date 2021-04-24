@@ -200,12 +200,10 @@ class Sala(models.Model):
     mobilidade_reduzida = models.BooleanField(db_column='Mobilidade reduzida')  # Field name made lowercase. Field renamed to remove unsuitable characters. This field type is a guess.
     edificioid = models.ForeignKey(Edificio, models.DO_NOTHING, db_column='EdificioID')  # Field name made lowercase.
 
-   
 
     class Meta:
         managed = True
         db_table = 'sala'
-    
         
     def get_absolute_url(self):
         return reverse('home')
