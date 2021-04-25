@@ -182,9 +182,9 @@ def alterar_sala(request,id):
                 }
             )
     else:
-        #form = AlterarSalaForm(instance=sala_object)
         sala_object = Sala.objects.get(id=id)
-        form = AlterarSalaForm(initial={'capacidade':sala_object.capacidade,'nome':sala_object.nome})
+        form = AlterarSalaForm(instance=sala_object)
+        #form = AlterarSalaForm(initial={'capacidade':sala_object.capacidade,'nome':sala_object.nome})
         return render(
                 request,
                 'evento/alterarsala.html',

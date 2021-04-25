@@ -15,7 +15,7 @@ class InserirSalaForm(forms.ModelForm):
         attrs= {'class': 'input'}
     ) )
 
-    mobilidade_reduzida = forms.BooleanField( label='Mobilidade reduzida',required=False, initial=False,
+    mobilidade_reduzida = forms.BooleanField(label='Mobilidade reduzida',required=False, initial=False,
         widget= forms.CheckboxInput(
            attrs= {'class': 'box'}
         )

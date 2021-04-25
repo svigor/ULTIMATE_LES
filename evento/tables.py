@@ -9,7 +9,7 @@ class SalaTable(django_tables.Table):
     #Os nomes que aparecem na tabela
     capacidade = django_tables.Column(empty_values=(), order_by='Capacidade')
     nome = django_tables.Column('Nome')
-    mobilidade_reduzida = django_tables.Column('Apropriado para a mobilidade reduzida')
+    mobilidade_reduzida = django_tables.Column('Apropriado para as pessoas com a mobilidade reduzida?')
     edificioid = django_tables.Column('Edifício')
     acoes = django_tables.Column('Ações', empty_values=(),
                                  orderable=False, attrs={"th": {"width": "150"}})
@@ -22,6 +22,12 @@ class SalaTable(django_tables.Table):
         self.columns.hide('fotos')
         self.columns.hide('id')
        
+    def render_mobilidade_reduzida(self,value):
+        print(value)
+        if value == True:
+            return "Sim"
+        else:
+            return "Não"
 
     def render_acoes(self, record):
         primeiro_botao = """<span class="icon"></span>"""
