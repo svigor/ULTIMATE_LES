@@ -146,15 +146,17 @@ def alterar_sala(request,id):
     
     if request.method == 'POST':
         sala_object = Sala.objects.get(id=id)
-        submited_data = request.POST.copy()
-        form = AlterarSalaForm(submited_data, request.FILES.copy(), instance=sala_object)
+        # submited_data = request.POST.copy()
+        # form = AlterarSalaForm(submited_data, request.FILES.copy(), instance=sala_object)
+    
+        form = AlterarSalaForm(request.POST, request.FILES, instance=sala_object)
         
 
         nome = request.POST.get('nome')
         erros = []
 
         if nome and Sala.objects.exclude(nome = nome).filter(nome = nome).exists():
-            erros.append('A sala com esse nome já existe') 
+            erros.append('A sala com esse nome já existe')
     
         if form.is_valid() and len(erros)==0:
             mobilidade_reduzida_r = 0

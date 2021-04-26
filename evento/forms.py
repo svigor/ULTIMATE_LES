@@ -8,7 +8,8 @@ class InserirSalaForm(forms.ModelForm):
         attrs= {'class': 'input'}
     ) )
 
-    fotos = forms.ImageField(label='Fotos'
+    fotos = forms.ImageField(label='Fotos',required=False,
+    widget=forms.FileInput()
     ) 
 
     nome = forms.CharField(label='Nome',max_length=255, widget = forms.TextInput (
@@ -42,7 +43,8 @@ class AlterarSalaForm(forms.ModelForm):
         attrs= {'class': 'input'}
     ) )
 
-    fotos = forms.ImageField(label='Fotos'
+    fotos = forms.ImageField(label='Fotos', required=False,
+        widget=forms.ClearableFileInput()
     ) 
 
     nome = forms.CharField(label='Nome',max_length=255, widget = forms.TextInput (
