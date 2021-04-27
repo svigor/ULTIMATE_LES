@@ -164,11 +164,9 @@ def alterar_sala(request,id):
             
             Sala1 = sala_object
             Sala1.capacidade = request.POST.get('capacidade')
-            if request.FILES.get('fotos') is not False:
-                print("fotos is", request.FILES.get('fotos'))
-            else:
+            if not request.FILES.get('fotos') is not False:
                 Sala1.fotos = request.FILES.get('fotos')
-
+           
             Sala1.nome = request.POST.get('nome')
             Sala1.mobilidade_reduzida = mobilidade_reduzida_r
             Edificio1 = Edificio.objects.get(pk=request.POST.get('edificioid'))
