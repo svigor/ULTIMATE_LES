@@ -7,7 +7,7 @@ from django.urls import reverse
 
 class SalaTable(django_tables.Table):
     #Os nomes que aparecem na tabela
-    capacidade = django_tables.Column(empty_values=(), order_by='Capacidade')
+    capacidade = django_tables.Column(empty_values=(), order_by='capacidade')
     nome = django_tables.Column('Nome')
     mobilidade_reduzida = django_tables.Column('Apropriado para as pessoas com a mobilidade reduzida?')
     edificioid = django_tables.Column('Edifício')

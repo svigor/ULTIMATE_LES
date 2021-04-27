@@ -68,7 +68,6 @@ def SalaCreateView(request):
             fotosw = request.FILES.get('fotos')
             nome_r = request.POST.get('nome')
             mobilidade_reduzida_r = request.POST.get('mobilidade_reduzida')
-            print(request.POST.get('mobilidade_reduzida'))
             mobilidade_reduzida_r = 0
             
             if request.POST.get('mobilidade_reduzida') == 'on':
@@ -108,7 +107,6 @@ def InscricaoView(request):
             fotosw = request.FILES.get('fotos')
             nome_r = request.POST.get('nome')
             mobilidade_reduzida_r = request.POST.get('mobilidade_reduzida')
-            print(request.POST.get('mobilidade_reduzida'))
             mobilidade_reduzida_r = 0
             
             if request.POST.get('mobilidade_reduzida') == 'on':
@@ -166,7 +164,11 @@ def alterar_sala(request,id):
             
             Sala1 = sala_object
             Sala1.capacidade = request.POST.get('capacidade')
-            Sala1.fotos = request.FILES.get('fotos')
+            if request.FILES.get('fotos') is not False:
+                print("fotos is", request.FILES.get('fotos'))
+            else:
+                Sala1.fotos = request.FILES.get('fotos')
+
             Sala1.nome = request.POST.get('nome')
             Sala1.mobilidade_reduzida = mobilidade_reduzida_r
             Edificio1 = Edificio.objects.get(pk=request.POST.get('edificioid'))
