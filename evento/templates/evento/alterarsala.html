@@ -12,18 +12,30 @@
 
 
     {% if msg %}
-    <p style="color: #ff0000; text-align:center; margin-bottom:4%">{{error}}</p>
-    {% endif %}
+    <div  style="margin-left:30%;margin-right:30%; margin-top:3%">
+      <div style="margin-top:7%;text-align: center;position:center;">
+      <article class="message is-danger">
+          <div class="message-body">
+          <p style="text-align: center;">
+          <strong>{{ msg }}</strong>
+          </p>
+          </div>
+      </article>  
+      </div>
+    </div>
+  {% endif %}
 
+    <div style="margin-top: 2%;"></div>
 
 
     <div style="margin-left:35%; margin-right:35%">
         <article class="message is-info">
             <div class="message-header">
-
+             
 
             </div>
             <div class="message-body">
+
 
                 <div class="control is-clearfix">
                     <form action="{% url 'alterar-sala' id=id %}" method="POST" enctype="multipart/form-data" class="form">{% csrf_token %}

@@ -50,6 +50,8 @@ def SalaCreateView(request):
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
+        if Sala.objects.filter(nome = request.POST.get('nome')).exists():
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'A sala com esse nome já existe','link':'consultar-salas'})
         # create a form instance and populate it with data from the request:
         form = InserirSalaForm(request.POST, request.FILES)
         # check whether it's valid:
@@ -60,8 +62,6 @@ def SalaCreateView(request):
             edificio_id_r = request.POST.get('edificioid')
             Edificio_r = Edificio.objects.get(pk=edificio_id_r)
             ##Edificio_r = Edificio.objects.filter(pk=edificio_id_r)
-            
-            
 
             capacidade_r = request.POST.get('capacidade')
             #fotos_r = request.POST.get('fotos')
@@ -129,7 +129,7 @@ def apagar_sala(request, id):
         if user.groups.filter(name = "Administrador").exists():
             u = "Administrador"
         else:
-            return redirect('utilizadores:mensagem',5)
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
     Sala.objects.filter(id=id).delete()
     return redirect('utilizadores:mensagem',19)
 
@@ -139,7 +139,7 @@ def alterar_sala(request,id):
         if user.groups.filter(name="Administrador").exists():
             u = "Administrador"
         else:
-            return redirect('utilizadores:mensagem',5)
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
 
     
     if request.method == 'POST':
@@ -153,8 +153,11 @@ def alterar_sala(request,id):
         nome = request.POST.get('nome')
         erros = []
 
-        if nome and Sala.objects.exclude(nome = nome).filter(nome = nome).exists():
-            erros.append('A sala com esse nome já existe')
+
+        if Sala.objects.exclude(nome = sala_object.nome).filter(nome = request.POST.get('nome')).exists():
+            msg = "A sala com esse nome já existe"
+            return render(request,'evento/alterarsala.html',{'msg':msg,'id':id,'form':form})
+
     
         if form.is_valid() and len(erros)==0:
             mobilidade_reduzida_r = 0
@@ -172,7 +175,8 @@ def alterar_sala(request,id):
             Edificio1 = Edificio.objects.get(pk=request.POST.get('edificioid'))
             Sala1.edificioid = Edificio1
             Sala1.save()
-            return redirect('consultar-salas')
+            return render(request,'evento/mensagem.html',{'tipo':'success','m':'A sala foi alterada com o sucesso','link':'consultar-salas'})
+
 
         else:
             
