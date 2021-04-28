@@ -130,8 +130,10 @@ def apagar_sala(request, id):
             u = "Administrador"
         else:
             return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
+    Sala.objects.get(id=id).fotos.delete(save=True)
     Sala.objects.filter(id=id).delete()
-    return redirect('utilizadores:mensagem',19)
+
+    return render(request,'evento/mensagem.html',{'tipo':'success','m':'A sala foi apagada com o sucesso','link':'consultar-salas'})
 
 def alterar_sala(request,id):
     if request.user.is_authenticated:
