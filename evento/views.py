@@ -76,7 +76,15 @@ def SalaCreateView(request):
             Sala_r = Sala(capacidade=capacidade_r, fotos=fotosw, nome=nome_r,
                           mobilidade_reduzida=mobilidade_reduzida_r,edificioid=Edificio_r)
             Sala_r.save()
-            return redirect('consultar-salas')
+            return render(
+                request,
+                'evento/mensagem.html',
+                {
+                    'tipo':'success',
+                    'm':'A sala foi criada com o sucesso',
+                    'link':'consultar-salas'
+                }
+            )
 
     # if a GET (or any other method) we'll create a blank form
     else:

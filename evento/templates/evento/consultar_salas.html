@@ -25,34 +25,19 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="field">
-                            <label>Tipos:</label>
-                        </div>
-                        <ul>
-                            {% for value, label in filter.form.fields.groups.choices %}
-                            <div class="field" style="padding-left: 1rem;">
-                                <label class="checkbox">
-                                    <input type="checkbox" name="{{filter.form.groups.name}}"
-                                        value="{{value|stringformat:'s'}}"
-                                        {% if value|stringformat:'s' in filter.form.groups.value %}checked{% endif %}>
-                                    {% if label == "ProfessorUniversitario" %}Professor
-                                    Univesitário{% else %}{{label}}{% endif %}
-                                </label>
-                            </div>
-                            {% endfor %}
-                        </ul>
+                      
                     </li>
                     <li>
                         <div class="field">
-                            <label>Estados:</label>
+                            <label>Mobilidade reduzida:</label>
                         </div>
                         <ul>
-                            {% for value, label in filter.form.fields.valido.choices %}
+                            {% for value, label in filter.form.fields.mobilidade_reduzida.choices %}
                             <div class="field" style="padding-left: 1rem;">
                                 <label class="checkbox">
-                                    <input type="checkbox" name="{{filter.form.valido.name}}"
+                                    <input type="checkbox" name="{{filter.form.mobilidade_reduzida.name}}"
                                         value="{{value|stringformat:'s'}}"
-                                        {% if value|stringformat:'s' in filter.form.valido.value %}checked{% endif %}>
+                                        {% if value|stringformat:'s' in filter.form.m_r.value %}checked{% endif %}>
                                     {{label}}
                                 </label>
                             </div>
@@ -63,7 +48,7 @@
                 <div class="field is-grouped">
                     <p class="control is-expanded">
                         <input class="button is-light is-fullwidth" type="reset"
-                            onclick="event.preventDefault(); window.location='{% url 'utilizadores:consultar-utilizadores' %}';"
+                            onclick="event.preventDefault(); window.location='{% url 'consultar-salas' %}';"
                             value="Limpar">
                     </p>
                     <p class="control is-expanded">
@@ -82,7 +67,7 @@
         <nav aria-label="breadcrumbs" class="breadcrumb">
             <ul>
                 <li><a href="{% url 'home' %}">Início</a></li>
-                <li class="is-active"><a href="{% url 'utilizadores:consultar-utilizadores' %}">Utilizadores</a>
+                <li class="is-active"><a href="{% url 'consultar-salas' %}">Salas</a>
                 </li>
             </ul>
         </nav>
