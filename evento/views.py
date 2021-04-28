@@ -163,14 +163,21 @@ def alterar_sala(request,id):
     
         if form.is_valid() and len(erros)==0:
             mobilidade_reduzida_r = 0
-            
             if request.POST.get('mobilidade_reduzida') == 'on':
                 mobilidade_reduzida_r = 1
+            
+            
+            if(sala_object.fotos):
+                Sala.objects.get(id=id).fotos.delete(save=True)
+                Sala.objects.filter(id=id).delete()
             
             Sala1 = sala_object
             Sala1.capacidade = request.POST.get('capacidade')
             if not request.FILES.get('fotos') is not False:
                 Sala1.fotos = request.FILES.get('fotos')
+            if request.FILES.get('fotos') is None:
+                Sala.objects.get(id=id).fotos.delete(save=True)
+                Sala.objects.filter(id=id).delete()
            
             Sala1.nome = request.POST.get('nome')
             Sala1.mobilidade_reduzida = mobilidade_reduzida_r
