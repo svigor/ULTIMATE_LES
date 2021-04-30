@@ -8,22 +8,23 @@ from django.urls import reverse
 class SalaTable(django_tables.Table):
     #Os nomes que aparecem na tabela
     capacidade = django_tables.Column(empty_values=(), order_by='capacidade')
-    nome = django_tables.Column('Nome')
+    nome = django_tables.Column('Sala')
     mobilidade_reduzida = django_tables.Column('Apropriado para as pessoas com a mobilidade reduzida?')
     edificioid = django_tables.Column('Edifício')
-    acoes = django_tables.Column('Ações', empty_values=(),
-                                 orderable=False, attrs={"th": {"width": "150"}})
+    acoes = django_tables.Column('Ações', empty_values=(), orderable=False, attrs={"th": {"width": "150"}})
+    campus = django_tables.Column('Campus', accessor='edificioid.campusid.nome')
 
     class Meta:
         model = Sala
-        sequence = ('capacidade', 'nome', 'mobilidade_reduzida', 'edificioid', 'acoes')
+        sequence = ('campus','mobilidade_reduzida','edificioid', 'nome','capacidade',  'acoes')
 
     def before_render(self,request):
         self.columns.hide('fotos')
         self.columns.hide('id')
-       
+        self.columns.hide('mobilidade_reduzida')
+    
+
     def render_mobilidade_reduzida(self,value):
-        print(value)
         if value == True:
             return "Sim"
         else:

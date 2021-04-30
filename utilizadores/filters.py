@@ -8,7 +8,6 @@ get_valido_choices = [
     ('Rejeitado', 'Rejeitado'),
 ]
 
-
 def filter_nome(queryset, name, value):
     for term in value.split():
         queryset = queryset.filter(Q(first_name__icontains=term)

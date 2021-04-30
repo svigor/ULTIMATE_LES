@@ -56,7 +56,6 @@ def SalaCreateView(request):
         form = InserirSalaForm(request.POST, request.FILES)
         # check whether it's valid:
       
-        
        
         if form.is_valid():
             edificio_id_r = request.POST.get('edificioid')

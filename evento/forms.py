@@ -36,6 +36,8 @@ class InserirSalaForm(forms.ModelForm):
         model = Sala
         fields = ['capacidade', 'fotos', 'nome', 'mobilidade_reduzida', 'edificioid']
 
+    
+
 
 class AlterarSalaForm(forms.ModelForm):
     

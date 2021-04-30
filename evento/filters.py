@@ -8,6 +8,8 @@ get_mobilidade_reduzida_choices = [
 ]
 
 
+
+
 class SalasFilter(django_filters.FilterSet):
     mobilidade_reduzida = django_filters.MultipleChoiceFilter(choices=get_mobilidade_reduzida_choices)
 
