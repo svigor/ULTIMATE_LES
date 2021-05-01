@@ -6,17 +6,14 @@
 <table>
     <tbody>
         <tr>
-            <td><strong>Capacidade:</strong></td>
-            <td>{{row.record.capacidade}}</td>
+            <td><strong>Adequado para as pessoas com a mobilidade reduzida:</strong></td>
+            <td>{{row.record.mobilidade_reduzida|yesno:"Sim,Não"}}</td>
         </tr>
+        {% if row.record.fotos.url is not None %}
         <tr>
-            <td><strong>Adequado para mobilidade reduzida:</strong></td>
-            <td>{{row.record.mobilidade_reduzida}}</td>
+            <img src="{{row.record.fotos.url}}" alt="static/img/home-banner-2020-02-min.jpg">    
         </tr>
- 
-        <tr>
-            <img src="{{row.record.fotos.url}}" alt="">     
-        </tr>
+        {% endif %} 
 
     </tbody>
 </table>
