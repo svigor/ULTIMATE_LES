@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ULTIMATE_LES-Criar-evento.iml" filepath="$PROJECT_DIR$/.idea/ULTIMATE_LES-Criar-evento.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/gestao_eventos.iml" filepath="$PROJECT_DIR$/.idea/gestao_eventos.iml" />
     </modules>
   </component>
 </project>

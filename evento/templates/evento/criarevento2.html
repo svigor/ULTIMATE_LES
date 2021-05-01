@@ -31,22 +31,28 @@
 
 
                 <div class="control is-clearfix">
-                    <form action="{% url 'atr_opcao' %}" method="POST" class="form">{% csrf_token %}
+                    <form action="{% url 'concluir' %}" method="POST" class="form">{% csrf_token %}
 
-                        {% for key,value in forms.items %}
+                        {% for key,valuez in forms.items %}
                         <fieldset class="form" style="margin-bottom: 2%;">
-                                {% if '_1' not in key %}
-                                    <label>{{ key }}</label>
-                                    {{ value }}
-                                {% else %}
-                                    <label for="{{ key|slice:7 }}">{{ key|slice:7 }}</label>
-                                    <select class="input" id="{{ key|slice:7 }}" name="{{ key|slice:7 }}">
-                                        {% for choices in value.choice %}
-                                            {{ choices.nome }}
-                                            <option value="{{ choices.nome }}">{{ choices.nome }}</option>
-                                        {% endfor %}
-                                    </select>
-                                {% endif %}
+                        <label>{{ key }}</label>
+                        {% if key == 'Nome Do Proponente' %}
+                            <input class="input" style="background: #eef6fc; color: black" disabled name="{{ request.session.nome_completo }}" value="{{ request.session.nome_completo }}">
+                        {% elif key == 'Nº De Telefone' %}
+                            <input class="input" style="background: #eef6fc; color: black" disabled name="{{ request.session.n_telefone }}" value="{{ request.session.n_telefone }}">
+                        {% elif valuez == 'Resposta Curta' %}
+                            <input class="input" name="{{ key }}" type="text">
+                        {% elif valuez == 'Resposta Aberta' %}
+                            <textarea class="textarea" style="resize: none" rows="5" cols="60"  name="{{ key }}"></textarea>
+                        {% elif key == "Campus" %}
+                            <select class="input" name="{{ key }}" id="{{ key }}">
+                                {% for option in valuez.dict %}
+                                    <option value="{{ option }}">{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                        <input hidden value="{{ tipo}}" name="tipodeevento">
+
 
                         </fieldset>
                         {% endfor %}

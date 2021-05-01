@@ -2,8 +2,8 @@
 
 <nav id="main-navbar" class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <a class="navbar-item logo" href="">
-      <img src="{% static 'evento/img/logo-navbar.png' %}" alt="Dia Aberto">
+    <a class="navbar-item logo" href="{% url 'evento-home' %}">
+      <img src="{% static 'evento/img/logo-navbar - Copy.png' %}" alt="Dia Aberto">
     </a>
 
     <a role="button" class="navbar-burger burger" onclick="onclick_burger(event)" data-target="navbarBasicExample">
@@ -36,12 +36,16 @@
       <a href="" class="navbar-item">
         Dias Abertos
       </a>
+        {% if request.session.role == 'Administrador' %}
       <a href="" class="navbar-item">
         Utilizadores
       </a>
-      <a href="" class="navbar-item">
-        Atividades
+        {% endif %}
+    {% if request.session.role == 'Administrador' %}
+      <a href="{% url 'consultar' %}" class="navbar-item">
+        Consultar Eventos
       </a>
+    {% endif %}
       <a href="" class="navbar-item">
         Inscrições
       </a>
@@ -55,7 +59,7 @@
   <div class="navbar-end">
     <div class="navbar-item">
 
-
+        {% if user.is_authenticated %}
         <div class="dropdown is-bottom-left is-mobile-modal">
 
           <div onclick="notificacoes()">
@@ -84,7 +88,6 @@
               </span>
             </div>
           </div>
-
           <div id="ver_notificacoes" class="modal">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -119,7 +122,10 @@
               </section>
             </div>
           </div>
+        {% endif %}
 
+
+        {% if user.is_authenticated %}
           <div id="mensagens-dropdown" class="dropdown is-right"
             onclick="event.currentTarget.classList.toggle('is-active')">
             <div class="dropdown-trigger">
@@ -153,6 +159,7 @@
               </div>
             </div>
           </div>
+        {% endif %}
 
           <div onclick="definicoes()">
             <div id="dropdown_definicoes" class="dropdown is-right">
@@ -171,6 +178,7 @@
               <div class="background" aria-hidden="true"></div>
               <div class="dropdown-menu" aria-hidden="true">
                 <div role="menu" class="dropdown-content">
+                {% if user.is_authenticated %}
 
                   <div role="menuitem" tabindex="0" class="dropdown-item">
                     <a href="" role="listitem" tabindex="0"
@@ -196,6 +204,10 @@
                       <strong>Alterar palavra-passe</strong>
 
                     </a>
+                  </div>
+                  {% else %}
+                {% endif %}
+
 
 
 
@@ -205,7 +217,7 @@
 
 
           {% if user.is_authenticated %}
-          <a href="">
+          <a href="{% url 'logout' %}">
             <div type="button" class="button">
               <span class="icon is-small">
                 <i class="mdi mdi-login-variant"></i>
@@ -218,8 +230,8 @@
 
           <div class="navbar-end">
             <div class="navbar-item">
-              <div class="buttons">
-                <a href="">
+              <div class="buttons" style="margin-left: -30%">
+                <a href="{% url 'register' %}" >
                   <bottom class="button is-primary">
                     <strong>Registar</strong>
                 </a>
@@ -229,8 +241,8 @@
           </div>
 
 
-          <a href="">
-            <div type="button" class="button">
+          <a href="{% url 'login' %}">
+            <div type="button" class="button" style="margin-left: 30%">
               <span class="icon is-small">
                 <i class="mdi mdi-login-variant"></i>
               </span>

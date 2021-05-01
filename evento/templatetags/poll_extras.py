@@ -1,7 +1,7 @@
 from datetime import date
 
 from django import template
-from utilizadores.models import Utilizador, Participante, Proponente, Administrador
+from users.models import MyUser
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 register = template.Library()
@@ -43,7 +43,7 @@ def get_email(id):
 @register.filter(name='get_user_type')
 def get_user_type(id):
     try:
-        user = User.objects.get(id=id)
+        user = MyUser.objects.get(id=id)
 
         if user.groups.filter(name="Participante").exists():
             result = "Participante"
@@ -62,14 +62,14 @@ def get_user_type(id):
 
 @register.filter(name='get_gabinete_admin')
 def get_gabinete_admin(user,id):
-    utilizador = Administrador.objects.get(id=id)
+    utilizador = MyUser.role.objects.get(id=id)
     return utilizador.gabinete
 
 
 
 @register.filter(name='apagar_admin')
 def apagar_admin(user,id):
-    utilizadores = Administrador.objects.filter(valido="True")
+    utilizadores = MyUser.role.objects.filter(valido="True")
     return len(utilizadores)>1
 
 
