@@ -91,7 +91,12 @@ def SalaCreateView(request):
 
     return render(request, 'evento/criar_sala.html', {'form': form})
 
-
+def load_edificios(request):
+    campus_id = request.GET.get('campus')
+    edificios = Edificio.objects.filter(campusid=campus_id).order_by('nome')
+    print("CAMPUSID", campus_id)
+    print("EDIFICIOS ",edificios)
+    return render(request, 'evento/edificios_dropdown_list.html', {'edificios': edificios})
 
 def InscricaoView(request):
 

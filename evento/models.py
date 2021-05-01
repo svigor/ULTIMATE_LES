@@ -22,6 +22,9 @@ class Campus(models.Model):
         managed = True
         db_table = 'campus'
 
+    def __str__(slef):
+        return slef.nome
+
 
 class Edificio(models.Model):
     # Field name made lowercase.
