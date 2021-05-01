@@ -38,8 +38,8 @@
 
 
                 <div class="control is-clearfix">
-                    <form action="{% url 'alterar-sala' id=id %}" method="POST" enctype="multipart/form-data" class="form">{% csrf_token %}
-
+                    <form action="{% url 'alterar-sala' id=id %}" method="POST" enctype="multipart/form-data" class="form" id="AlterarSalaForm" data-edificios-url="{% url 'ajax_load_edificios' %}">
+                        {% csrf_token %}
                         <fieldset class="form">
                             {{ form.capacidade.label}}
                             {{ form.capacidade }}
@@ -61,8 +61,12 @@
                                 {{ form.mobilidade_reduzida }}
                             </div>
                             
+                            <div style="margin-top: 2.1%;">
+                                {{ form.campus.label}}
+                                {{ form.campus }}
+                            </div>
                             
-                            
+
                             <div style="margin-top: 2.1%;">
                                 {{ form.edificioid.label}}
                                 {{ form.edificioid }}
@@ -79,6 +83,26 @@
                         </div>
 
                     </form>
+
+
+                    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+                    <script>
+                        
+                        $("#id_campus").change(function () {
+                        var url = $("#AlterarSalaForm").attr("data-edificios-url");  // get the url of the `load_cities` view
+                        var campusId = $(this).val();  // get the selected country ID from the HTML input
+                        $.ajax({                       // initialize an AJAX request
+                            url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                            data: {
+                            'campus': campusId       // add the country id to the GET parameters
+                            },
+                            success: function (data) {   // `data` is the return of the `load_cities` view function
+                            $("#id_edificioid").html(data);  // replace the contents of the city input with the data that came from the server
+                            }
+                        });
+
+                        });
+                    </script>
 
                 </div>
             </div>

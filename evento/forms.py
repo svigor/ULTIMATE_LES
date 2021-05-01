@@ -82,6 +82,15 @@ class AlterarSalaForm(forms.ModelForm):
         )
     )
    
+    campus = forms.ModelChoiceField(
+        queryset=Campus.objects.all(),
+        label='Campus',
+        empty_label='Escolhe uma das opções',
+        widget= forms.Select(
+           attrs= {'class': 'input'}
+        )    
+    )
+    
     edificioid = forms.ModelChoiceField(
         queryset=Edificio.objects.all(),
         label='Edifício',
@@ -94,7 +103,23 @@ class AlterarSalaForm(forms.ModelForm):
 
     class Meta:
         model = Sala
-        fields = ['capacidade', 'fotos', 'nome', 'mobilidade_reduzida', 'edificioid']
+        fields = ['capacidade', 'fotos', 'nome', 'mobilidade_reduzida','campus' ,'edificioid']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
+        self.fields['edificioid'].queryset = Edificio.objects.none()
+    
+        if 'campus' in self.data:
+            try:
+                campus_id = int(self.data.get('campus'))
+                self.fields['edificioid'].queryset = Edificio.objects.filter(campusid=campus_id).order_by("nome")
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty City queryset
+        elif self.instance.pk:
+            print("PK",self.instance.pk)
+            self.fields['edificioid'].queryset = Edificio.objects.filter(campusid=self.instance.edificioid.campusid)
+            
     
     def clean(self):
         capacidade = self.cleaned_data.get('capacidade')

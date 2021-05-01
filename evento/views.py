@@ -160,8 +160,7 @@ def alterar_sala(request,id):
         sala_object = Sala.objects.get(id=id)
         # submited_data = request.POST.copy()
         # form = AlterarSalaForm(submited_data, request.FILES.copy(), instance=sala_object)
-    
-        form = AlterarSalaForm(request.POST, request.FILES, instance=sala_object)
+        form = AlterarSalaForm(request.POST, request.FILES, instance=sala_object,initial={'campus':sala_object.edificioid.campusid.pk})
         
 
         nome = request.POST.get('nome')
@@ -210,7 +209,7 @@ def alterar_sala(request,id):
             )
     else:
         sala_object = Sala.objects.get(id=id)
-        form = AlterarSalaForm(instance=sala_object)
+        form = AlterarSalaForm(instance=sala_object,initial={'campus':sala_object.edificioid.campusid.pk})
         #form = AlterarSalaForm(initial={'capacidade':sala_object.capacidade,'nome':sala_object.nome})
         return render(
                 request,
