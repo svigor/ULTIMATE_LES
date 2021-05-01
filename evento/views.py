@@ -1,7 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .forms import opcaoevento, r_a_form, r_c_form, c_s_form, n_tel
-from django import forms as f
+from .forms import opcaoevento, r_a_form, r_c_form, n_tel
 from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus
 
 
@@ -43,7 +41,7 @@ def atr_opcao(request):
                     r_a = r_a_form()
                     forms.update({elem.title() + ":": r_a})
                 elif pergunta_relat[elem].nome == "Caixa de Seleção":
-                    c_s = c_s_form()
+                    c_s = 'ola'
                     forms.update({elem.title() + ":" + '_1': c_s})
 
             opcoes = 'Preencha o Formulário'

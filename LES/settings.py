@@ -31,8 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'utilizadores',
-    'django_tables2',
+    'phonenumber_field',
+    'users',
     'evento',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -82,9 +82,9 @@ WSGI_APPLICATION = 'LES.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'LES',
-        'USER': 'root',
-        'PASSWORD': 'password',
+        'NAME': 'les',
+        'USER': 'root1',
+        'PASSWORD': '',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
@@ -133,3 +133,4 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'users.MyUser'

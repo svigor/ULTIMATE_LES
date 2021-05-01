@@ -26,12 +26,7 @@ class r_c_form(forms.Form):
     r_c = forms.CharField(label='', required=True, max_length=255, widget=forms.TextInput(attrs={'class': 'input'}))
 
 
-class c_s_form(forms.Form):
-    choice = Campus.objects.all()
-    choii = []
-    for choicez in choice:
-        choii.append(choicez.nome)
-    c_s = forms.CharField(label='', widget=forms.Select(choices=choii))
+
 
 
 class n_tel(forms.Form):

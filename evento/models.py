@@ -6,16 +6,7 @@
 #   * Remove `managed = True` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-from utilizadores.models import Proponente, Utilizador, Administrador
-
-
-class Admin(models.Model):
-    utilizadorid = models.OneToOneField('Utilizador', models.DO_NOTHING, db_column='UtilizadorID',
-                                        primary_key=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = True
-        db_table = 'admin'
+from users.models import Roles
 
 
 class Campus(models.Model):
@@ -24,7 +15,15 @@ class Campus(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'campus'
+        db_table = 'Campus'
+
+class Admin(models.Model):
+    utilizadorid = models.OneToOneField(Roles, models.DO_NOTHING, db_column='UtilizadorID',
+                                        primary_key=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'admin'
 
 
 class Edificio(models.Model):
@@ -57,7 +56,7 @@ class Evento(models.Model):
     hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True,
                                       null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
     duracao = models.IntegerField(db_column='Duracao')  # Field name made lowercase.
-    campusid = models.IntegerField(db_column='CampusID', blank=True, null=True)  # Field name made lowercase.
+    campusid = models.ForeignKey(Campus, models.DO_NOTHING, db_column='CampusID')  # Field name made lowercase.
     formularioinscricaoid = models.ForeignKey('Formulario', models.DO_NOTHING,
                                               db_column='FormularioInscricaoID')  # Field name made lowercase.
     formulariofeedbackid = models.ForeignKey('Formulario', models.DO_NOTHING, db_column='FormularioFeedbackID',
@@ -101,7 +100,7 @@ class Inscricao(models.Model):
                                           null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. This field type is a guess.
     presenca = models.TextField(db_column='Presenca', blank=True,
                                 null=True)  # Field name made lowercase. This field type is a guess.
-    participanteutilizadorid = models.ForeignKey('Participante', models.DO_NOTHING,
+    participanteutilizadorid = models.ForeignKey(Roles, models.DO_NOTHING,
                                                  db_column='ParticipanteUtilizadorID', blank=True,
                                                  null=True)  # Field name made lowercase.
 
@@ -158,12 +157,12 @@ class Opcoes(models.Model):
 
 
 class Participante(models.Model):
-    utilizadorid = models.OneToOneField('Utilizador', models.DO_NOTHING, db_column='UtilizadorID',
+    utilizadorid = models.OneToOneField(Roles, models.DO_NOTHING, db_column='UtilizadorID',
                                         primary_key=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
-        db_table = 'participante'
+        db_table = 'participantesw'
 
 
 class Pergunta(models.Model):
@@ -235,12 +234,12 @@ class PeriodoServico(models.Model):
 
 
 class Proponente(models.Model):
-    utilizadorid = models.OneToOneField('Utilizador', models.DO_NOTHING, db_column='UtilizadorID',
+    utilizadorid = models.OneToOneField(Roles, models.DO_NOTHING, db_column='UtilizadorID',
                                         primary_key=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
-        db_table = 'proponente'
+        db_table = 'proponentesw'
 
 
 class Respostas(models.Model):
@@ -342,22 +341,3 @@ class TiposDeRecursos(models.Model):
     class Meta:
         managed = True
         db_table = 'tipos de recursos'
-
-
-class Utilizador(models.Model):
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    email = models.CharField(db_column='Email', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    numero_telefone = models.CharField(db_column='Numero telefone', max_length=255, blank=True,
-                                       null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
-    interno = models.TextField(db_column='Interno', blank=True,
-                               null=True)  # Field name made lowercase. This field type is a guess.
-    password = models.CharField(db_column='Password', max_length=255)  # Field name made lowercase.
-    username = models.CharField(db_column='UserName', max_length=255, blank=True,
-                                null=True)  # Field name made lowercase.
-    notificacoesid = models.ForeignKey(Notificacoes, models.DO_NOTHING,
-                                       db_column='NotificacoesID')  # Field name made lowercase.
-
-    class Meta:
-        managed = True
-        db_table = 'utilizador'
