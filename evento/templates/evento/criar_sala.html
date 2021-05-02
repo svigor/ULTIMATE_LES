@@ -17,7 +17,7 @@
 
 
 
-    <div style="margin-left:35%; margin-right:35%">
+    <div style="margin-left:35%; margin-right:35%;">
         <article class="message is-info">
             <div class="message-header">
 
@@ -30,6 +30,7 @@
                         {% csrf_token %}
 
                         <fieldset class="form">
+                            
                             {{ form.capacidade.label}}
                             {{ form.capacidade }}
 
@@ -65,7 +66,7 @@
 
                         <div style="margin-top:7%;text-align: center;position:center;">
                             <button type="submit" class="button is-info is-outlined">
-                                <span>Continuar</span>
+                                <span>Confirmar</span>
                             </button>
                         </div>
 

@@ -28,17 +28,18 @@
                       
                     </li>
                     
+
                     <li>
                         <div class="field">
-                            <label>Capacidade:</label>
+                            <label>Campus:</label>
                         </div>
                         <ul>
-                            {% for value, label in filter.form.fields.capacidade.choices %}
+                            {% for value, label in filter.form.fields.edificioid.campusid.choices %}
                             <div class="field" style="padding-left: 1rem;">
                                 <label class="checkbox">
-                                    <input type="checkbox" name="{{filter.form.capacidade.name}}"
+                                    <input type="checkbox" name="{{filter.form.edificioid.campusid.name}}"
                                         value="{{value|stringformat:'s'}}"
-                                        {% if value|stringformat:'s' in filter.form.capacidade.value %}checked{% endif %}>
+                                        {% if value|stringformat:'s' in filter.form.m_r.value %}checked{% endif %}>
                                     {{label}}
                                 </label>
                             </div>

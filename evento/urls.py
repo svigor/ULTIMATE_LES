@@ -5,7 +5,8 @@ from .views import (
     consultar_salas,
     apagar_sala,
     alterar_sala,
-    load_edificios
+    load_edificios,
+    criar_servico
 )
 from evento import views
 
@@ -17,4 +18,6 @@ urlpatterns = [
     path('alterar/<int:id>', alterar_sala, name = 'alterar-sala'),
 
     path('ajax/load-edificios/', views.load_edificios, name='ajax_load_edificios'),
+
+    path('servico/new/',criar_servico, name='criar_servico')
 ]

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import InserirSalaForm, InscricaoForm, AlterarSalaForm
+from .forms import InserirSalaForm, InscricaoForm, AlterarSalaForm, CriarServicoForm
     
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
@@ -8,7 +8,7 @@ from django.views.generic import(
     ListView,
     CreateView,
 )
-from .models import Sala, Edificio
+from .models import Sala, Edificio, Servicos, TipoServico
 from utilizadores.models import Administrador
 from utilizadores.views import user_check, mensagem
 from evento.tables import SalaTable
@@ -22,7 +22,6 @@ def home(request):
     return render(request, 'evento/inicio.html')
 
 class consultar_salas(SingleTableMixin, FilterView):
-    ''' Consultar todos os utilizadores com as funcionalidades dos filtros '''
     table_class = SalaTable
     template_name = 'evento/consultar_salas.html'
     filterset_class = SalasFilter
@@ -215,6 +214,33 @@ def alterar_sala(request,id):
                 {'form': form, 'id':id}
                 
             )
+
+
+def criar_servico(request):
+    if request.method == 'POST':
+        form = CriarServicoForm(request.POST)
+
+        if form.is_valid():
+            nome = request.POST.get('nome')
+            preco_base = request.POST.get('preco_base')
+            tipo_de_servico = request.POST.get('tipo_de_servico')
+
+            servico = TipoServico.objects.get(pk=tipo_de_servico)
+            new_Servico = Servicos(nome=nome, preco_base=preco_base, tipo_servicoid=servico)
+            new_Servico.save()
+
+            return render(
+                request,
+                'evento/mensagem.html',
+                {
+                    'tipo':'success',
+                    'm':'O servico foi criado com o sucesso',
+                    'link':'home'
+                }
+            )
+    else:
+        form = CriarServicoForm()
+    return render(request, 'evento/criar_servico.html', {'form':form})
 
         
 

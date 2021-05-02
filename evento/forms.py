@@ -1,5 +1,5 @@
 from django import forms
-from .models import Sala, Edificio, Campus
+from .models import Sala, Edificio, Campus, TipoServico, Servicos
 
 
 
@@ -53,11 +53,11 @@ class InserirSalaForm(forms.ModelForm):
         if 'campus' in self.data:
             try:
                 campus_id = int(self.data.get('campus'))
-                self.fields['edificioid'].queryset = Edificio.objects.all()
+                self.fields['edificioid'].queryset = Edificio.objects.filter(campusid=campus_id).order_by("nome")
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty City queryset
         elif self.instance.pk:
-            self.fields['edificioid'].queryset = Edificio.objects.all()
+            self.fields['edificioid'].queryset = Edificio.objects.filter(campusid=self.instance.edificioid.campusid)
 
     
 
@@ -147,5 +147,24 @@ class InscricaoForm(forms.ModelForm):
         fields = ['requer_certificado']
 
 
+class CriarServicoForm(forms.ModelForm):
+    nome = forms.CharField(label='Nome',max_length=255, widget=forms.TextInput(
+        attrs={'class':'input'}
+    ))
 
-    
+    preco_base = forms.IntegerField(label='Preço', widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+    tipo_de_servico = forms.ModelChoiceField(
+        queryset=TipoServico.objects.all(),
+        label='Tipo de serviço',
+        empty_label='Escolhe um serviço',
+        widget = forms.Select(
+            attrs= {'class': 'input'}
+        )
+    )
+
+    class Meta:
+        model = Servicos
+        fields = ['nome', 'preco_base', 'tipo_de_servico']
