@@ -242,5 +242,30 @@ def criar_servico(request):
         form = CriarServicoForm()
     return render(request, 'evento/criar_servico.html', {'form':form})
 
+
+# class consultar_servicos(SingleTableMixin, FilterView):
+#     table_class = ServicoTable
+#     template_name = 'evento/consultar_servicos.html'
+#     filterset_class = ServicoFilter
+#     table_pagination = {
+#         'per_page':10
+#     }
+
+#     def dispatch(self, request, *args, **kwargs):
+#         user_check_var = user_check(
+#             request=request, user_profile=[Administrador]
+#         )
+#         if not user_check_var.get('exists'):
+#             return user_check_var.get('render')
+#         return super().dispatch(request, *args, **kwargs)
+
+#     def get_context_data(self, **kwargs):
+#         context = super(SingleTableMixin, self).get_context_data(**kwargs)
+#         table = self.get_table(**self.get_table_kwargs())
+#         table.request = self.request
+#         table.fixed = True
+#         context[self.get_context_table_name(table)] = table
+#         return context
+
         
 

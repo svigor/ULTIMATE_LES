@@ -15,6 +15,7 @@ class SalaTable(django_tables.Table):
     campus = django_tables.Column('Campus', accessor='edificioid.campusid.nome')
 
     class Meta:
+        #template_name = 'evento/bulma_table_details'
         model = Sala
         sequence = ('campus','mobilidade_reduzida','edificioid', 'nome','capacidade',  'acoes')
 
