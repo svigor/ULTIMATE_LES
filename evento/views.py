@@ -5,8 +5,8 @@ from .tables import consultarEvento
 from django.template.defaultfilters import register
 from django.contrib.sessions.backends.base import SessionBase
 
-from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis
-from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario
+from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm
+from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala
 
 
 def homepage(request):
@@ -83,3 +83,57 @@ class consultar_evento(SingleTableView):
     table_class = consultarEvento
     template_name = 'evento/consultar_eventos.html'
     extra_context = {'Campus': Campus.objects.all(), 'Tipo': TipoDeEvento.objects.all()}
+
+
+
+def SalaCreateView(request):
+
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        if Sala.objects.filter(nome = request.POST.get('nome')).exists():
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'A sala com esse nome já existe','link':'consultar-salas'})
+        # create a form instance and populate it with data from the request:
+        form = InserirSalaForm(request.POST, request.FILES)
+        # check whether it's valid:
+      
+       
+        if form.is_valid():
+            edificio_id_r = request.POST.get('edificioid')
+            Edificio_r = Edificio.objects.get(pk=edificio_id_r)
+            ##Edificio_r = Edificio.objects.filter(pk=edificio_id_r)
+
+            capacidade_r = request.POST.get('capacidade')
+            #fotos_r = request.POST.get('fotos')
+            fotosw = request.FILES.get('fotos')
+            nome_r = request.POST.get('nome')
+            mobilidade_reduzida_r = request.POST.get('mobilidade_reduzida')
+            mobilidade_reduzida_r = 0
+            
+            if request.POST.get('mobilidade_reduzida') == 'on':
+                mobilidade_reduzida_r = 1
+
+            Sala_r = Sala(capacidade=capacidade_r, fotos=fotosw, nome=nome_r,
+                          mobilidade_reduzida=mobilidade_reduzida_r,edificioid=Edificio_r)
+            Sala_r.save()
+            return render(
+                request,
+                'evento/mensagem.html',
+                {
+                    'tipo':'success',
+                    'm':'A sala foi criada com o sucesso',
+                    'link':'consultar-salas'
+                }
+            )
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = InserirSalaForm()
+
+    return render(request, 'evento/criar_sala.html', {'form': form})
+
+def load_edificios(request):
+    campus_id = request.GET.get('campus')
+    edificios = Edificio.objects.filter(campusid=campus_id).order_by('nome')
+    print("CAMPUSID", campus_id)
+    print("EDIFICIOS ",edificios)
+    return render(request, 'evento/edificios_dropdown_list.html', {'edificios': edificios})

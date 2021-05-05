@@ -7,4 +7,11 @@ urlpatterns = [
     path('atr_opcao/', views.atr_opcao, name='atr_opcao'),
     path('concluir/', views.concluir_pre_evento, name='concluir'),
     path('consultar/', views.consultar_evento.as_view(), name='consultar'),
+
+    path('criarsala/',views.SalaCreateView , name='criar_sala'),
+    # path('consultarsalas/', consultar_salas.as_view(), name='consultar-salas'),
+    # path('apagarsala/<int:id>', apagar_sala, name = 'apagar-sala'),
+    # path('alterar/<int:id>', alterar_sala, name = 'alterar-sala'),
+
+    path('ajax/load-edificios/', views.load_edificios, name='ajax_load_edificios'),
 ]

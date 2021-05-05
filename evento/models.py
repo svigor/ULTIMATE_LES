@@ -10,21 +10,31 @@ from users.models import MyUser
 
 
 class Campus(models.Model):
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    nome = models.IntegerField(db_column='Nome', blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'Campus'
+        db_table = 'campus'
 
-    def __str__(self):
-        return self.nome
+    def __str__(slef):
+        return slef.nome
 
 
 class Edificio(models.Model):
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    campusid = models.ForeignKey(Campus, models.DO_NOTHING, db_column='CampusID')  # Field name made lowercase.
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    nome = models.CharField(
+        db_column='Nome', max_length=255, blank=True, null=True)
+    # Field name made lowercase.
+    campusid = models.ForeignKey(
+        Campus, models.DO_NOTHING, db_column='CampusID')
+
+    def __str__(self):
+        return self.nome
 
     class Meta:
         managed = True
@@ -233,17 +243,35 @@ class Respostas(models.Model):
 
 
 class Sala(models.Model):
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    capacidade = models.IntegerField(db_column='Capacidade')  # Field name made lowercase.
-    fotos = models.IntegerField(db_column='Fotos', blank=True, null=True)  # Field name made lowercase.
-    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    mobilidade_reduzida = models.TextField(
-        db_column='Mobilidade reduzida')  # Field name made lowercase. Field renamed to remove unsuitable characters. This field type is a guess.
-    edificioid = models.ForeignKey(Edificio, models.DO_NOTHING, db_column='EdificioID')  # Field name made lowercase.
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    capacidade = models.IntegerField(db_column='Capacidade')
+    # Field name made lowercase.
+    fotos = models.ImageField(
+        db_column='Fotos', upload_to='salas', null=True, blank=True)
+    # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True)
+    # Field name made lowercase. Field renamed to remove unsuitable characters. This field type is a guess.
+    mobilidade_reduzida = models.BooleanField(db_column='Mobilidade reduzida')
+    # Field name made lowercase.
+    edificioid = models.ForeignKey(
+        Edificio, models.DO_NOTHING, db_column='EdificioID')
 
     class Meta:
         managed = True
         db_table = 'sala'
+
+    def get_absolute_url(self):
+        return reverse('home')
+
+    def delete(self, *args, **kwargs):
+        # You have to prepare what you need before delete the model
+        storage, path = self.image.storage, self.image.path
+        # Delete the model before the file
+        super(Sala, self).delete(*args, **kwargs)
+        # Delete the file after the model
+        storage.delete(path)
 
 
 class Servicos(models.Model):
