@@ -10,8 +10,8 @@ urlpatterns = [
 
     path('criarsala/',views.SalaCreateView , name='criar_sala'),
     path('consultarsalas/', views.consultar_salas.as_view(), name='consultar-salas'),
-    # path('apagarsala/<int:id>', apagar_sala, name = 'apagar-sala'),
-    # path('alterar/<int:id>', alterar_sala, name = 'alterar-sala'),
+    path('apagarsala/<int:id>', views.apagar_sala, name = 'apagar-sala'),
+    path('alterarsala/<int:id>', views.alterar_sala, name = 'alterar-sala'),
 
     path('ajax/load-edificios/', views.load_edificios, name='ajax_load_edificios'),
 ]

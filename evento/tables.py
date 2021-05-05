@@ -2,6 +2,8 @@ from datetime import date
 
 import django_tables2 as django_tables
 from .models import Evento, Sala, Campus, Edificio
+from django.utils.html import format_html
+from django.urls import reverse
 
 
 class consultarEvento(django_tables.Table):
@@ -25,31 +27,34 @@ class consultarEvento(django_tables.Table):
         model = Evento
         template_name = 'evento/bulma_table_details.html'
         fields = (
-        "id", "capacidade", "aprovado", "dia", "hora_de_inicio", "duracao", "campusid", "proponenteutilizadorid",
-        "tipo_de_eventoid")
+            "id", "capacidade", "aprovado", "dia", "hora_de_inicio", "duracao", "campusid", "proponenteutilizadorid",
+            "tipo_de_eventoid")
 
 
 class SalaTable(django_tables.Table):
-    #Os nomes que aparecem na tabela
+    # Os nomes que aparecem na tabela
     capacidade = django_tables.Column(empty_values=(), order_by='capacidade')
     nome = django_tables.Column('Sala')
-    mobilidade_reduzida = django_tables.Column('Apropriado para as pessoas com a mobilidade reduzida?')
+    mobilidade_reduzida = django_tables.Column(
+        'Apropriado para as pessoas com a mobilidade reduzida?')
     edificioid = django_tables.Column('Edifício')
-    acoes = django_tables.Column('Ações', empty_values=(), orderable=False, attrs={"th": {"width": "150"}})
-    campus = django_tables.Column('Campus', accessor='edificioid.campusid.nome')
+    acoes = django_tables.Column('Ações', empty_values=(
+    ), orderable=False, attrs={"th": {"width": "150"}})
+    campus = django_tables.Column(
+        'Campus', accessor='edificioid.campusid.nome')
 
     class Meta:
         #template_name = 'evento/bulma_table_details'
         model = Sala
-        sequence = ('campus','mobilidade_reduzida','edificioid', 'nome','capacidade',  'acoes')
+        sequence = ('campus', 'mobilidade_reduzida',
+                    'edificioid', 'nome', 'capacidade',  'acoes')
 
-    def before_render(self,request):
+    def before_render(self, request):
         self.columns.hide('fotos')
         self.columns.hide('id')
         self.columns.hide('mobilidade_reduzida')
-    
 
-    def render_mobilidade_reduzida(self,value):
+    def render_mobilidade_reduzida(self, value):
         if value == True:
             return "Sim"
         else:
@@ -61,13 +66,28 @@ class SalaTable(django_tables.Table):
         primeiro_botao = ""
         if self.request.user.role.role == 'Administrador':
             primeiro_botao = f"""
-           
+            <a href='{reverse('alterar-sala', args=[record.id])}'
+                data-tooltip="Editar">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
             """
         
         segundo_botao = ""
         alerta = "Tem certeza que quer apagar a sala?"
-        if self.request.user != record.id and segundo_botao == "":
+        if segundo_botao == "":
             segundo_botao = f"""
-               
+                <a onclick="alert.render('{alerta}','{reverse('apagar-sala', args=[record.id])}')"
+                    data-tooltip="Apagar">
+                    <span class="icon has-text-danger">
+                        <i class="mdi mdi-trash-can mdi-24px"></i>
+                    </span>
+                </a>
             """
-  
+        return format_html(f"""
+        <div>
+            {primeiro_botao}
+            {segundo_botao}
+        </div>
+        """)
