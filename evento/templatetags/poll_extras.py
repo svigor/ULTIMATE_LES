@@ -1,5 +1,7 @@
+from datetime import date
+
 from django import template
-from utilizadores.models import Utilizador, Participante, Proponente, Administrador
+from users.models import MyUser
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 register = template.Library()
@@ -19,58 +21,58 @@ def get_due_date_string(value):
         return "In %s days" % delta.days
 
 
-@register.filter(name='get_user_name') 
+@register.filter(name='get_user_name')
 def get_user_name(id):
     try:
         user = User.objects.get(id=id)
         nome = user.first_name+" "+user.last_name
-        return nome  
+        return nome
     except :
         return "Esta notificação foi gerada automáticamente"
 
 
-@register.filter(name='get_email') 
+@register.filter(name='get_email')
 def get_email(id):
     try:
         user = User.objects.get(id=id)
         email = user.email
-        return email  
+        return email
     except :
         return ""
 
-@register.filter(name='get_user_type') 
+@register.filter(name='get_user_type')
 def get_user_type(id):
     try:
-        user = User.objects.get(id=id)
+        user = MyUser.objects.get(id=id)
 
         if user.groups.filter(name="Participante").exists():
-            result = "Participante"  
+            result = "Participante"
         elif user.groups.filter(name="Proponente").exists():
-            result =  "Proponente"   
+            result =  "Proponente"
         elif user.groups.filter(name="Administrador").exists():
-            result =  "Administrador"  
-        else: 
+            result =  "Administrador"
+        else:
             result = ""
         return result
     except :
-        return 0             
+        return 0
 
 
 
 
-@register.filter(name='get_gabinete_admin') 
+@register.filter(name='get_gabinete_admin')
 def get_gabinete_admin(user,id):
-    utilizador = Administrador.objects.get(id=id)
-    return utilizador.gabinete  
+    utilizador = MyUser.role.objects.get(id=id)
+    return utilizador.gabinete
 
 
 
-@register.filter(name='apagar_admin') 
+@register.filter(name='apagar_admin')
 def apagar_admin(user,id):
-    utilizadores = Administrador.objects.filter(valido="True")
-    return len(utilizadores)>1    
+    utilizadores = MyUser.role.objects.filter(valido="True")
+    return len(utilizadores)>1
 
 
-@register.filter(name='has_group') 
+@register.filter(name='has_group')
 def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
