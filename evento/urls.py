@@ -9,7 +9,7 @@ urlpatterns = [
     path('consultar/', views.consultar_evento.as_view(), name='consultar'),
 
     path('criarsala/',views.SalaCreateView , name='criar_sala'),
-    # path('consultarsalas/', consultar_salas.as_view(), name='consultar-salas'),
+    path('consultarsalas/', views.consultar_salas.as_view(), name='consultar-salas'),
     # path('apagarsala/<int:id>', apagar_sala, name = 'apagar-sala'),
     # path('alterar/<int:id>', alterar_sala, name = 'alterar-sala'),
 

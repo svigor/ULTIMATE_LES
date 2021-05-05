@@ -4,9 +4,13 @@ from django_tables2 import SingleTableView
 from .tables import consultarEvento
 from django.template.defaultfilters import register
 from django.contrib.sessions.backends.base import SessionBase
+from django_tables2 import SingleTableMixin
+from django_filters.views import FilterView
+from .tables import SalaTable
 
 from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm
 from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala
+from .filters import SalasFilter
 
 
 def homepage(request):
@@ -134,6 +138,28 @@ def SalaCreateView(request):
 def load_edificios(request):
     campus_id = request.GET.get('campus')
     edificios = Edificio.objects.filter(campusid=campus_id).order_by('nome')
-    print("CAMPUSID", campus_id)
-    print("EDIFICIOS ",edificios)
     return render(request, 'evento/edificios_dropdown_list.html', {'edificios': edificios})
+
+
+
+class consultar_salas(SingleTableMixin, FilterView):
+    table_class = SalaTable
+    template_name = 'evento/consultar_salas.html'
+    filterset_class = SalasFilter
+    table_pagination = {
+        'per_page': 10
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.role.role == 'Administrador':
+            redirect(homepage)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SingleTableMixin, self).get_context_data(**kwargs)
+        table = self.get_table(**self.get_table_kwargs())
+        table.request = self.request
+        table.fixed = True
+        context[self.get_context_table_name(table)] = table
+        return context
+
