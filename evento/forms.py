@@ -1,5 +1,5 @@
 from django import forms
-from .models import TipoDeEvento, Campus, Sala, Edificio
+from .models import TipoDeEvento, Campus, Sala, Edificio, TipoServico, Servicos
 
 
 class returnedstring():
@@ -183,3 +183,26 @@ class AlterarSalaForm(forms.ModelForm):
             raise forms.ValidationError(f'Todos os campos são o brigatórios!')
         if len(erros) > 0:
             raise ValidationError([erros])
+
+
+class CriarServicoForm(forms.ModelForm):
+    nome = forms.CharField(label='Nome',max_length=255, widget=forms.TextInput(
+        attrs={'class':'input'}
+    ))
+
+    preco_base = forms.IntegerField(label='Preço', widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+    tipo_de_servico = forms.ModelChoiceField(
+        queryset=TipoServico.objects.all(),
+        label='Tipo de serviço',
+        empty_label='Escolhe um serviço',
+        widget = forms.Select(
+            attrs= {'class': 'input'}
+        )
+    )
+
+    class Meta:
+        model = Servicos
+        fields = ['nome', 'preco_base', 'tipo_de_servico']

@@ -8,8 +8,8 @@ from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from .tables import SalaTable
 
-from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm
-from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala
+from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm
+from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos
 from .filters import SalasFilter
 
 
@@ -237,4 +237,32 @@ def apagar_sala(request, id):
     Sala.objects.filter(id=id).delete()
 
     return render(request,'evento/mensagem.html',{'tipo':'success','m':'A sala foi apagada com o sucesso','link':'consultar-salas'})
+
+
+
+def criar_servico(request):
+    if request.method == 'POST':
+        form = CriarServicoForm(request.POST)
+
+        if form.is_valid():
+            nome = request.POST.get('nome')
+            preco_base = request.POST.get('preco_base')
+            tipo_de_servico = request.POST.get('tipo_de_servico')
+
+            servico = TipoServico.objects.get(pk=tipo_de_servico)
+            new_Servico = Servicos(nome=nome, preco_base=preco_base, tipo_servicoid=servico)
+            new_Servico.save()
+
+            return render(
+                request,
+                'evento/mensagem.html',
+                {
+                    'tipo':'success',
+                    'm':'O servico foi criado com o sucesso',
+                    'link':'evento-home'
+                }
+            )
+    else:
+        form = CriarServicoForm()
+    return render(request, 'evento/criar_servico.html', {'form':form})
 
