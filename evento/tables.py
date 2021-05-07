@@ -1,7 +1,7 @@
 from datetime import date
 
 import django_tables2 as django_tables
-from .models import Evento, Sala, Campus, Edificio
+from .models import Evento, Sala, Campus, Edificio, Servicos
 from django.utils.html import format_html
 from django.urls import reverse
 
@@ -59,6 +59,58 @@ class SalaTable(django_tables.Table):
             return "Sim"
         else:
             return "Não"
+
+    def render_acoes(self, record):
+        primeiro_botao = """<span class="icon"></span>"""
+       
+        primeiro_botao = ""
+        if self.request.user.role.role == 'Administrador':
+            primeiro_botao = f"""
+            <a href='{reverse('alterar-sala', args=[record.id])}'
+                data-tooltip="Editar">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+            """
+        
+        segundo_botao = ""
+        alerta = "Tem certeza que quer apagar a sala?"
+        if segundo_botao == "":
+            segundo_botao = f"""
+                <a onclick="alert.render('{alerta}','{reverse('apagar-sala', args=[record.id])}')"
+                    data-tooltip="Apagar">
+                    <span class="icon has-text-danger">
+                        <i class="mdi mdi-trash-can mdi-24px"></i>
+                    </span>
+                </a>
+            """
+        return format_html(f"""
+        <div>
+            {primeiro_botao}
+            {segundo_botao}
+        </div>
+        """)
+
+
+
+
+class ServicoTable(django_tables.Table):
+    nome = django_tables.Column('Nome')
+    preco_base = django_tables.Column('Preço')
+    tipo_servicoid = django_tables.Column('Tipo', accessor='tipo_servicoid.nome')
+    acoes = django_tables.Column('Ações', empty_values=(
+    ), orderable=False, attrs={"th": {"width": "150"}})
+    
+
+    class Meta:
+        model = Servicos
+        sequence = ('tipo_servicoid', 'nome', 'preco_base', 'acoes')
+
+    def before_render(self, request):
+        self.columns.hide('id')
+
+
 
     def render_acoes(self, record):
         primeiro_botao = """<span class="icon"></span>"""

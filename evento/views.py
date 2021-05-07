@@ -6,11 +6,11 @@ from django.template.defaultfilters import register
 from django.contrib.sessions.backends.base import SessionBase
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
-from .tables import SalaTable
+from .tables import SalaTable, ServicoTable
 
 from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm
 from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos
-from .filters import SalasFilter
+from .filters import SalasFilter, ServicosFilter
 
 
 def homepage(request):
@@ -265,4 +265,30 @@ def criar_servico(request):
     else:
         form = CriarServicoForm()
     return render(request, 'evento/criar_servico.html', {'form':form})
+
+
+
+class consultar_servicos(SingleTableMixin, FilterView):
+    table_class = ServicoTable
+    template_name = 'evento/consultar_servicos.html'
+    filterset_class = ServicosFilter
+    table_pagination = {
+        'per_page': 10
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.role.role == 'Administrador':
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'A sala foi apagada com o sucesso','link':'evento-home'})
+        return super().dispatch(request, *args, **kwargs)
+
+    
+    def get_context_data(self, **kwargs):
+        context = super(SingleTableMixin, self).get_context_data(**kwargs)
+        table = self.get_table(**self.get_table_kwargs())
+        table.request = self.request
+        table.fixed = True
+        context[self.get_context_table_name(table)] = table
+        return context
+        
+
 

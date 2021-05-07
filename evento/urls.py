@@ -15,4 +15,5 @@ urlpatterns = [
     path('ajax/load-edificios/', views.load_edificios, name='ajax_load_edificios'),
     
     path('criarservico/', views.criar_servico, name='criar-servico'),
+    path('consultarservicos/', views.consultar_servicos.as_view(), name='consultar-servicos'),
 ]
