@@ -119,7 +119,7 @@ class ServicoTable(django_tables.Table):
         primeiro_botao = ""
         if self.request.user.role.role == 'Administrador':
             primeiro_botao = f"""
-            <a href='{reverse('alterar-sala', args=[record.id])}'
+            <a href='{reverse('alterar-servico', args=[record.id])}'
                 data-tooltip="Editar">
                 <span class="icon">
                     <i class="mdi mdi-circle-edit-outline mdi-24px"></i>

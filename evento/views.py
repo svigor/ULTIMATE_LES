@@ -8,7 +8,7 @@ from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from .tables import SalaTable, ServicoTable
 
-from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm
+from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm
 from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos
 from .filters import SalasFilter, ServicosFilter
 
@@ -167,7 +167,7 @@ class consultar_salas(SingleTableMixin, FilterView):
 
 def alterar_sala(request,id):
     if not request.user.is_authenticated and request.user.role.role == 'Administrador':
-        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
     if request.method == 'POST':
         sala_object = Sala.objects.get(id=id)
@@ -297,6 +297,54 @@ def apagar_sevico(request, id):
         return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Não é permetido','link':'evento-home'})
     Servicos.objects.get(id=id).delete()
     return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'O serviço foi apagado com o sucesso','link':'consultar-servicos'})
+
+
+
+
+def alterar_servico(request,id):
+    if not request.user.is_authenticated and request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    
+    if request.method == 'POST':
+        servico_object = Servicos.objects.get(id=id)
+        form = AlterarServicoForm(request.POST, instance=servico_object, initial={'tipo_se_Servico':servico_object.tipo_servicoid.pk})
+                        
+        nome = request.POST.get('nome')
+
+        if Servicos.objects.exclude(nome = servico_object.nome).filter(nome = request.POST.get('nome')).exists():
+            msg = "O serviço com esse nome já existe"
+            return render(request,'evento/alterarservico.html',{'m':msg,'id':id,'form':form})
+
+    
+        if form.is_valid():
+            Servico1 = servico_object
+            
+            Servico1.nome = request.POST.get('nome')
+            Servico1.preco_base = request.POST.get('preco_base')
+            TipoServico1 = TipoServico.objects.get(pk=request.POST.get('tipo_de_servico'))
+
+            Servico1.tipo_servicoid = TipoServico1
+            Servico1.save()
+
+            return render(request,'evento/mensagem.html',{'tipo':'success','m':'O servico foi alterado com o sucesso','link':'consultar-servicos'})
+
+        else:
+            
+            return render(
+                request= request,
+                template_name='evento/alterarservico.html',
+                context={
+                    'form':form, 'm':msg, 'id':id
+                }
+            )
+    else:
+        servico_object = Servicos.objects.get(id=id)
+        form = AlterarServicoForm(instance=servico_object,initial={'tipo_de_servico':servico_object.tipo_servicoid.pk})
+        return render(
+                request,
+                'evento/alterarservico.html',
+                {'form': form, 'id':id}            
+            )
         
 
 

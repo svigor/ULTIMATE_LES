@@ -210,3 +210,30 @@ class CriarServicoForm(forms.ModelForm):
     class Meta:
         model = Servicos
         fields = ['nome','descricao', 'preco_base', 'tipo_de_servico']
+
+
+class AlterarServicoForm(forms.ModelForm):
+    nome = forms.CharField(label='Nome',max_length=255, widget=forms.TextInput(
+        attrs={'class':'input'}
+    ))
+
+    descricao = forms.CharField(label='Descricao',max_length=255, required=False,widget=forms.TextInput(
+        attrs={'class':'input'}
+    ))
+
+    preco_base = forms.IntegerField(label='Preço', widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+    tipo_de_servico = forms.ModelChoiceField(
+        queryset=TipoServico.objects.all(),
+        label='Tipo de serviço',
+        empty_label='Escolhe um serviço',
+        widget = forms.Select(
+            attrs= {'class': 'input'}
+        )
+    )
+
+    class Meta:
+        model = Servicos
+        fields = ['nome','descricao', 'preco_base', 'tipo_de_servico']
