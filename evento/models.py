@@ -277,6 +277,7 @@ class Sala(models.Model):
 class Servicos(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    descricao = models.CharField(db_column='Descricao', max_length=255, blank=True, null=True)
     preco_base = models.FloatField(
         db_column='Preco base')  # Field name made lowercase. Field renamed to remove unsuitable characters.
     tipo_servicoid = models.ForeignKey('TipoServico', models.DO_NOTHING,

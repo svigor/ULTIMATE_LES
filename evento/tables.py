@@ -97,7 +97,7 @@ class SalaTable(django_tables.Table):
 
 class ServicoTable(django_tables.Table):
     nome = django_tables.Column('Nome')
-    preco_base = django_tables.Column('Preço')
+    preco_base = django_tables.Column('Preço em €')
     tipo_servicoid = django_tables.Column('Tipo', accessor='tipo_servicoid.nome')
     acoes = django_tables.Column('Ações', empty_values=(
     ), orderable=False, attrs={"th": {"width": "150"}})
@@ -105,10 +105,11 @@ class ServicoTable(django_tables.Table):
 
     class Meta:
         model = Servicos
-        sequence = ('tipo_servicoid', 'nome', 'preco_base', 'acoes')
+        sequence = ('tipo_servicoid', 'nome', 'preco_base', 'acoes','descricao')
 
     def before_render(self, request):
         self.columns.hide('id')
+        self.columns.hide('descricao')
 
 
 
@@ -130,7 +131,7 @@ class ServicoTable(django_tables.Table):
         alerta = "Tem certeza que quer apagar a sala?"
         if segundo_botao == "":
             segundo_botao = f"""
-                <a onclick="alert.render('{alerta}','{reverse('apagar-sala', args=[record.id])}')"
+                <a onclick="alert.render('{alerta}','{reverse('apagar-servico', args=[record.id])}')"
                     data-tooltip="Apagar">
                     <span class="icon has-text-danger">
                         <i class="mdi mdi-trash-can mdi-24px"></i>

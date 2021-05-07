@@ -248,9 +248,10 @@ def criar_servico(request):
             nome = request.POST.get('nome')
             preco_base = request.POST.get('preco_base')
             tipo_de_servico = request.POST.get('tipo_de_servico')
+            descricao = request.POST.get('descricao')
 
             servico = TipoServico.objects.get(pk=tipo_de_servico)
-            new_Servico = Servicos(nome=nome, preco_base=preco_base, tipo_servicoid=servico)
+            new_Servico = Servicos(nome=nome,descricao=descricao, preco_base=preco_base, tipo_servicoid=servico)
             new_Servico.save()
 
             return render(
@@ -259,7 +260,7 @@ def criar_servico(request):
                 {
                     'tipo':'success',
                     'm':'O servico foi criado com o sucesso',
-                    'link':'evento-home'
+                    'link':'consultar-servicos'
                 }
             )
     else:
@@ -289,6 +290,13 @@ class consultar_servicos(SingleTableMixin, FilterView):
         table.fixed = True
         context[self.get_context_table_name(table)] = table
         return context
+
+
+def apagar_sevico(request, id):
+    if not request.user.role.role == 'Administrador' and request.user.is_authenticated:
+        return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Não é permetido','link':'evento-home'})
+    Servicos.objects.get(id=id).delete()
+    return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'O serviço foi apagado com o sucesso','link':'consultar-servicos'})
         
 
 

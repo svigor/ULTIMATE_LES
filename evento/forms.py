@@ -190,6 +190,10 @@ class CriarServicoForm(forms.ModelForm):
         attrs={'class':'input'}
     ))
 
+    descricao = forms.CharField(label='Descricao',max_length=255, required=False,widget=forms.TextInput(
+        attrs={'class':'input'}
+    ))
+
     preco_base = forms.IntegerField(label='Preço', widget= forms.NumberInput(
         attrs={'class':'input'}
     ))
@@ -205,4 +209,4 @@ class CriarServicoForm(forms.ModelForm):
 
     class Meta:
         model = Servicos
-        fields = ['nome', 'preco_base', 'tipo_de_servico']
+        fields = ['nome','descricao', 'preco_base', 'tipo_de_servico']

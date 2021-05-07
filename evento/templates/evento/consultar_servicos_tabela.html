@@ -5,7 +5,16 @@
 
 <table>
     <tbody>
-      
+        {% if row.record.descricao %}
+        <tr>
+            <td><strong>Descricao:</strong></td>
+            <td>{{row.record.descricao}}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td><strong>Sem descriçao</strong></td>
+        </tr>
+        {% endif %}
     </tbody>
 </table>
 
