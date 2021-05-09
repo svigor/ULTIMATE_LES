@@ -1,49 +1,93 @@
 from django.shortcuts import render, redirect
-from .forms import InserirSalaForm, InscricaoForm, AlterarSalaForm
-    
+from django.views.generic import ListView
+from django_tables2 import SingleTableView
+from .tables import consultarEvento
+from django.template.defaultfilters import register
+from django.contrib.sessions.backends.base import SessionBase
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
-from django.http import HttpResponseRedirect
-from django.views.generic import(
-    ListView,
-    CreateView,
-)
-from .models import Sala, Edificio
-from utilizadores.models import Administrador
-from utilizadores.views import user_check, mensagem
-from evento.tables import SalaTable
-from evento.filters import SalasFilter
-from django.contrib.auth import *
-from django.contrib import messages
-# Create your views here.
+from .tables import SalaTable, ServicoTable
+
+from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm
+from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos
+from .filters import SalasFilter, ServicosFilter
 
 
-def home(request):
-    return render(request, 'evento/inicio.html')
+def homepage(request):
+    return render(request, 'evento/homepage.html')
 
-class consultar_salas(SingleTableMixin, FilterView):
-    ''' Consultar todos os utilizadores com as funcionalidades dos filtros '''
-    table_class = SalaTable
-    template_name = 'evento/consultar_salas.html'
-    filterset_class = SalasFilter
-    table_pagination = {
-        'per_page': 10
-    }
 
-    def dispatch(self, request, *args, **kwargs):
-        user_check_var = user_check(
-            request=request, user_profile=[Administrador])
-        if not user_check_var.get('exists'):
-            return user_check_var.get('render')
-        return super().dispatch(request, *args, **kwargs)
+def criarevento(request):
+    print(request.user.role.role)
+    if request.user.is_authenticated and (
+            request.user.role.role == 'Proponente' or request.user.role.role == 'Administrador'):
+        title = 'Criar Evento'
+        opcoes = 'Escolha o Tipo de Evento'
+        form_opcao = opcaoevento()
+        return render(request, 'evento/criarevento.html', {'title': title, 'opcoes': opcoes, 'form': form_opcao})
+    else:
+        return redirect(homepage)
 
-    def get_context_data(self, **kwargs):
-        context = super(SingleTableMixin, self).get_context_data(**kwargs)
-        table = self.get_table(**self.get_table_kwargs())
-        table.request = self.request
-        table.fixed = True
-        context[self.get_context_table_name(table)] = table
-        return context
+
+def atr_opcao(request):
+    if not request.POST.get('nome'):
+        return redirect(criarevento)
+    elif request.method == 'POST':
+        form = opcaoevento(request.POST)
+        if form.is_valid():
+            tipodeevento = request.POST.get('nome')
+            opcao = TipoDeEvento.objects.get(pk=tipodeevento)
+            tipo_formulario = TipoDeFormulario.objects.get(nome='pré-evento')
+            formulario = Formulario.objects.get(tipo_de_eventoid=opcao, tipo_de_formularioid=tipo_formulario)
+            perguntas = Pergunta.objects.all().filter(formularioid=formulario)
+            pergunta_relat = {}
+            for pergunta in perguntas:
+                pergunta_relat.update({pergunta.titulo: TipoDePergunta.objects.get(pk=pergunta.tipo_de_perguntaid_id)})
+
+            forms = {}
+            for elem in pergunta_relat:
+                if pergunta_relat[elem].nome == "Resposta Curta" or pergunta_relat[elem].nome == 'Resposta Aberta':
+                    forms.update({elem.title(): pergunta_relat[elem].nome})
+                elif pergunta_relat[elem].nome == 'Caixa de Seleção':
+                    forms.update({elem.title(): c_s_form})
+
+            opcoes = 'Preencha o Formulário'
+            title = 'Criar Eventos'
+
+            return render(request, 'evento/criarevento2.html',
+                          {'title': title, 'opcoes': opcoes, 'forms': forms, 'tipo': tipodeevento})
+
+
+def concluir_pre_evento(request):
+    if request.method == 'POST':
+        dict = []
+        fields_final = {}
+        for field in request.POST:
+            dict.append(field)
+
+        for values in dict:
+            value = request.POST.get(values)
+            fields_final.update({values: value})
+        print(fields_final)
+        campus = Campus.objects.get(nome=fields_final.get('Campus'))
+        print(campus)
+        evnt = TipoDeEvento.objects.get(pk=fields_final.get('tipodeevento'))
+        tipo_form = TipoDeFormulario.objects.get(nome='Inscrição')
+        inscricao_form = Formulario.objects.get(tipo_de_eventoid=evnt, tipo_de_formularioid=tipo_form)
+        evento1 = Evento(capacidade=fields_final.get('Lotação'), aprovado='0', dia=fields_final.get('Dia'),
+                         hora_de_inicio=fields_final.get('Hora De Inicio'), duracao=fields_final.get('Duração'),
+                         campusid=campus, formularioinscricaoid=inscricao_form, formulariofeedbackid=None,
+                         proponenteutilizadorid=request.user, tipo_de_eventoid=evnt)
+        evento1.save()
+        return render(request, 'evento/concluir_pre-evento.html')
+
+
+class consultar_evento(SingleTableView):
+    model = Evento
+    table_class = consultarEvento
+    template_name = 'evento/consultar_eventos.html'
+    extra_context = {'Campus': Campus.objects.all(), 'Tipo': TipoDeEvento.objects.all()}
+
 
 
 def SalaCreateView(request):
@@ -94,67 +138,36 @@ def SalaCreateView(request):
 def load_edificios(request):
     campus_id = request.GET.get('campus')
     edificios = Edificio.objects.filter(campusid=campus_id).order_by('nome')
-    print("CAMPUSID", campus_id)
-    print("EDIFICIOS ",edificios)
     return render(request, 'evento/edificios_dropdown_list.html', {'edificios': edificios})
 
-def InscricaoView(request):
 
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = InscricaoForm(request.POST, request.FILES)
-        # check whether it's valid:
-        
-       
-        if form.is_valid():
-            edificio_id_r = request.POST.get('edificioid')
-            Edificio_r = Edificio.objects.get(pk=edificio_id_r)
-            ##Edificio_r = Edificio.objects.filter(pk=edificio_id_r)
-            
-            
 
-            capacidade_r = request.POST.get('capacidade')
-            #fotos_r = request.POST.get('fotos')
-            fotosw = request.FILES.get('fotos')
-            nome_r = request.POST.get('nome')
-            mobilidade_reduzida_r = request.POST.get('mobilidade_reduzida')
-            mobilidade_reduzida_r = 0
-            
-            if request.POST.get('mobilidade_reduzida') == 'on':
-                mobilidade_reduzida_r = 1
+class consultar_salas(SingleTableMixin, FilterView):
+    
+    table_class = SalaTable
+    template_name = 'evento/consultar_salas.html'
+    filterset_class = SalasFilter
+    table_pagination = {
+        'per_page': 10
+    }
 
-            Sala_r = Sala(capacidade=capacidade_r, fotos=fotosw, nome=nome_r,
-                          mobilidade_reduzida=mobilidade_reduzida_r,edificioid=Edificio_r)
-            Sala_r.save()
-            return HttpResponseRedirect('http://127.0.0.1:8000/sala/new/')
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.role.role == 'Administrador':
+            redirect(homepage)
+        return super().dispatch(request, *args, **kwargs)
 
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = InserirSalaForm()
+    def get_context_data(self, **kwargs):
+        context = super(SingleTableMixin, self).get_context_data(**kwargs)
+        table = self.get_table(**self.get_table_kwargs())
+        table.request = self.request
+        table.fixed = True
+        context[self.get_context_table_name(table)] = table
+        return context
 
-    return render(request, 'evento/criar_sala.html', {'form': form})
-
-def apagar_sala(request, id):
-    if request.user.is_authenticated:
-        user = get_user(request)
-        if user.groups.filter(name = "Administrador").exists():
-            u = "Administrador"
-        else:
-            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
-    Sala.objects.get(id=id).fotos.delete(save=True)
-    Sala.objects.filter(id=id).delete()
-
-    return render(request,'evento/mensagem.html',{'tipo':'success','m':'A sala foi apagada com o sucesso','link':'consultar-salas'})
 
 def alterar_sala(request,id):
-    if request.user.is_authenticated:
-        user = get_user(request)
-        if user.groups.filter(name="Administrador").exists():
-            u = "Administrador"
-        else:
-            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
-
+    if not request.user.is_authenticated and request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
     if request.method == 'POST':
         sala_object = Sala.objects.get(id=id)
@@ -178,15 +191,15 @@ def alterar_sala(request,id):
                 mobilidade_reduzida_r = 1
             
             
-            if(sala_object.fotos):
-                Sala.objects.get(id=id).fotos.delete(save=True)
+    
             
             Sala1 = sala_object
             Sala1.capacidade = request.POST.get('capacidade')
-            if not request.FILES.get('fotos') is not False:
+            
+            
+            if request.FILES.get('fotos'):
                 Sala1.fotos = request.FILES.get('fotos')
-            if request.FILES.get('fotos') is None:
-                Sala.objects.get(id=id).fotos.delete(save=True)
+
            
             Sala1.nome = request.POST.get('nome')
             Sala1.mobilidade_reduzida = mobilidade_reduzida_r
@@ -216,5 +229,122 @@ def alterar_sala(request,id):
                 
             )
 
+
+def apagar_sala(request, id):
+    if not request.user.role.role == 'Administrador' and request.user.is_authenticated:
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
+    Sala.objects.get(id=id).fotos.delete(save=True)
+    Sala.objects.filter(id=id).delete()
+
+    return render(request,'evento/mensagem.html',{'tipo':'success','m':'A sala foi apagada com o sucesso','link':'consultar-salas'})
+
+
+
+def criar_servico(request):
+    if request.method == 'POST':
+        form = CriarServicoForm(request.POST)
+
+        if form.is_valid():
+            nome = request.POST.get('nome')
+            preco_base = request.POST.get('preco_base')
+            tipo_de_servico = request.POST.get('tipo_de_servico')
+            descricao = request.POST.get('descricao')
+
+            servico = TipoServico.objects.get(pk=tipo_de_servico)
+            new_Servico = Servicos(nome=nome,descricao=descricao, preco_base=preco_base, tipo_servicoid=servico)
+            new_Servico.save()
+
+            return render(
+                request,
+                'evento/mensagem.html',
+                {
+                    'tipo':'success',
+                    'm':'O servico foi criado com o sucesso',
+                    'link':'consultar-servicos'
+                }
+            )
+    else:
+        form = CriarServicoForm()
+    return render(request, 'evento/criar_servico.html', {'form':form})
+
+
+
+class consultar_servicos(SingleTableMixin, FilterView):
+    table_class = ServicoTable
+    template_name = 'evento/consultar_servicos.html'
+    filterset_class = ServicosFilter
+    table_pagination = {
+        'per_page': 10
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.role.role == 'Administrador':
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'A sala foi apagada com o sucesso','link':'evento-home'})
+        return super().dispatch(request, *args, **kwargs)
+
+    
+    def get_context_data(self, **kwargs):
+        context = super(SingleTableMixin, self).get_context_data(**kwargs)
+        table = self.get_table(**self.get_table_kwargs())
+        table.request = self.request
+        table.fixed = True
+        context[self.get_context_table_name(table)] = table
+        return context
+
+
+def apagar_sevico(request, id):
+    if not request.user.role.role == 'Administrador' and request.user.is_authenticated:
+        return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Não é permetido','link':'evento-home'})
+    Servicos.objects.get(id=id).delete()
+    return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'O serviço foi apagado com o sucesso','link':'consultar-servicos'})
+
+
+
+
+def alterar_servico(request,id):
+    if not request.user.is_authenticated and request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    
+    if request.method == 'POST':
+        servico_object = Servicos.objects.get(id=id)
+        form = AlterarServicoForm(request.POST, instance=servico_object, initial={'tipo_se_Servico':servico_object.tipo_servicoid.pk})
+                        
+        nome = request.POST.get('nome')
+
+        if Servicos.objects.exclude(nome = servico_object.nome).filter(nome = request.POST.get('nome')).exists():
+            msg = "O serviço com esse nome já existe"
+            return render(request,'evento/alterarservico.html',{'m':msg,'id':id,'form':form})
+
+    
+        if form.is_valid():
+            Servico1 = servico_object
+            
+            Servico1.nome = request.POST.get('nome')
+            Servico1.preco_base = request.POST.get('preco_base')
+            TipoServico1 = TipoServico.objects.get(pk=request.POST.get('tipo_de_servico'))
+
+            Servico1.tipo_servicoid = TipoServico1
+            Servico1.save()
+
+            return render(request,'evento/mensagem.html',{'tipo':'success','m':'O servico foi alterado com o sucesso','link':'consultar-servicos'})
+
+        else:
+            
+            return render(
+                request= request,
+                template_name='evento/alterarservico.html',
+                context={
+                    'form':form, 'm':msg, 'id':id
+                }
+            )
+    else:
+        servico_object = Servicos.objects.get(id=id)
+        form = AlterarServicoForm(instance=servico_object,initial={'tipo_de_servico':servico_object.tipo_servicoid.pk})
+        return render(
+                request,
+                'evento/alterarservico.html',
+                {'form': form, 'id':id}            
+            )
         
+
 
