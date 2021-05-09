@@ -57,6 +57,17 @@ class Equipamento(models.Model):
         managed = True
         db_table = 'equipamento'
 
+class TipoDeEvento(models.Model):
+    # Field name made lowercase.
+    id = models.AutoField(db_column='ID', primary_key=True)
+    # Field name made lowercase.
+    nome = models.CharField(
+        db_column='Nome', max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'tipo de evento'
+
 
 class Evento(models.Model):
     # Field name made lowercase.
@@ -84,6 +95,10 @@ class Evento(models.Model):
     # Field name made lowercase.
     proponenteutilizadorid = models.ForeignKey(
         Proponente, models.DO_NOTHING, db_column='ProponenteUtilizadorID', blank=True, null=True)
+    
+    tipo_de_eventoid = models.ForeignKey(
+        TipoDeEvento, models.DO_NOTHING, db_column='TipoDeEventoID', 
+    )
 
     class Meta:
         managed = True
@@ -110,7 +125,7 @@ class Formulario(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)
     # Field name made lowercase. Field renamed to remove unsuitable characters.
     tipo_de_eventoid = models.ForeignKey(
-        'TipoDeEvento', models.DO_NOTHING, db_column='Tipo de EventoID')
+        'TipoDeEvento', models.DO_NOTHING, db_column='Tipo de EventoID', null=True)
     # Field name made lowercase. Field renamed to remove unsuitable characters.
     tipo_de_formularioid = models.ForeignKey(
         'TipoDeFormulario', models.DO_NOTHING, db_column='Tipo de FormularioID')
@@ -359,19 +374,7 @@ class Servicos(models.Model):
         db_table = 'servicos'
 
 
-class TipoDeEvento(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    nome = models.CharField(
-        db_column='Nome', max_length=255, blank=True, null=True)
-    # Field name made lowercase.
-    eventoid = models.ForeignKey(
-        Evento, models.DO_NOTHING, db_column='EventoID')
 
-    class Meta:
-        managed = True
-        db_table = 'tipo de evento'
 
 
 class TipoDeFormulario(models.Model):

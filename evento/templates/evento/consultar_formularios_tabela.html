@@ -1,0 +1,35 @@
+{% extends 'evento/bulma_table_details.html' %}
+{% load poll_extras %}
+
+{% block details_content %}
+
+<table>
+    <tbody>
+        <tr>
+            <form class="form" method="POST" action="{% url 'consultar-perguntas-formulario' id=row.record.id %}">
+                {% csrf_token %}
+                    <h1 style="margin-left: 27%">Deseja visualizar as perguntas deste formulário?</h1>
+                    <div class="columns is-variable is-2-mobile is-0-tablet is-1-desktop is-8-widescreen is-1-fullhd">
+                        <div class="column is-3 is-offset-one-quarter">
+                            <div style="margin-top:7%;">
+                                <button type="submit" class="button is-danger is-outlined">
+                                    <span>Cancelar</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="column is-3 ">
+                            <div style="margin-top:7%;">
+                                <button type="submit" class="button is-info is-outlined">
+                                    <span>Continuar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+        </tr>
+
+    </tbody>
+</table>
+
+
+{% endblock details_content %}

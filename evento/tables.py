@@ -1,7 +1,6 @@
 import django_tables2 as django_tables
 from utilizadores.models import Administrador, Utilizador
-from evento.models import Sala
-from evento.models import Sala
+from evento.models import Sala, Formulario
 from django.utils.html import format_html
 from django.urls import reverse
 
@@ -61,3 +60,22 @@ class SalaTable(django_tables.Table):
             {segundo_botao}
         </div>
         """)
+
+class FormularioTable(django_tables.Table):
+    tipo_de_formularioid = django_tables.Column('Tipo de Formulário')
+    tipo_de_eventoid = django_tables.Column('Tipo de Evento')
+    
+    def render_tipo_de_formularioid(self, value):
+        return value.nome
+    
+    def render_tipo_de_eventoid(self, value):
+        return value.nome
+
+    def before_render(self,request):
+        self.columns.hide('id')
+
+    class Meta:
+        model = Formulario
+        template_name = 'evento/bulma_table_details.html'
+        fields = ('id', 'tipo_de_formularioid', 'tipo_de_eventoid')
+    
