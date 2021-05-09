@@ -8,8 +8,8 @@ from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from .tables import SalaTable, ServicoTable
 
-from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm
-from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos
+from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm
+from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento
 from .filters import SalasFilter, ServicosFilter
 
 
@@ -345,6 +345,35 @@ def alterar_servico(request,id):
                 'evento/alterarservico.html',
                 {'form': form, 'id':id}            
             )
+
+def criar_equipamento(request):
+    if request.method == 'POST':
+        form = CriarEquipamentoForm(request.POST)
+
+        if form.is_valid():
+            tipo_equipamentoid = request.POST.get('tipo_equipamentoid')
+            nome = request.POST.get('nome')
+            descricao = request.POST.get('descricao')
+
+            equipamento = TipoEquipamento.objects.get(pk=tipo_equipamentoid)
+            new_equpamento = Equipamento(nome=nome, descricao=descricao,tipo_equipamentoid=equipamento)
+
+            new_equpamento.save()
+
+            return render(
+                request,
+                'evento/mensagem.html',
+                {
+                    'tipo':'success',
+                    'm':'O equipamento foi criado com o sucesso',
+                    'link':'evento-home'
+                }
+            )
+    else:
+        form = CriarEquipamentoForm()
+    return render(request, 'evento/criar_equipamento.html',{'form':form})
+
+
         
 
 

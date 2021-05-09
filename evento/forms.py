@@ -1,5 +1,5 @@
 from django import forms
-from .models import TipoDeEvento, Campus, Sala, Edificio, TipoServico, Servicos
+from .models import TipoDeEvento, Campus, Sala, Edificio, TipoServico, Servicos, Equipamento, TipoEquipamento
 
 
 class returnedstring():
@@ -237,3 +237,26 @@ class AlterarServicoForm(forms.ModelForm):
     class Meta:
         model = Servicos
         fields = ['nome','descricao', 'preco_base', 'tipo_de_servico']
+
+
+class CriarEquipamentoForm(forms.ModelForm):
+    tipo_equipamentoid = forms.ModelChoiceField(
+        queryset = TipoEquipamento.objects.all(),
+        label = 'Tipo de quipamento',
+        empty_label='Escolhe um tipo',
+        widget = forms.Select(
+            attrs = {'class':'input'}
+        )
+    )
+
+    nome = forms.CharField(label='Nome', max_length=255, required=False,widget=forms.TextInput(
+        attrs={'class':'input'}
+    ))
+
+    descricao = forms.CharField(label='Descricao', max_length=255, required=False,widget=forms.TextInput(
+        attrs={'class':'input'}
+    ))
+    
+    class Meta:
+        model = Equipamento
+        fields = ['tipo_equipamentoid', 'nome','descricao']

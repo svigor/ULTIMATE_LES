@@ -43,10 +43,10 @@ class Edificio(models.Model):
 
 class Equipamento(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    quantidade = models.IntegerField(db_column='Quantidade')  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)
+    descricao = models.CharField(db_column='Descricao', max_length=255, blank=True, null=True)
     tipo_equipamentoid = models.ForeignKey('TipoEquipamento', models.DO_NOTHING,
                                            db_column='Tipo_EquipamentoID')  # Field name made lowercase.
-
     class Meta:
         managed = True
         db_table = 'equipamento'
@@ -328,6 +328,9 @@ class TipoEquipamento(models.Model):
     class Meta:
         managed = True
         db_table = 'tipo_equipamento'
+
+    def __str__(self):
+        return self.nome
 
 
 class TipoServico(models.Model):
