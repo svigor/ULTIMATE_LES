@@ -89,9 +89,9 @@ class consultar_evento(SingleTableView):
     extra_context = {'Campus': Campus.objects.all(), 'Tipo': TipoDeEvento.objects.all()}
 
 
-
 def SalaCreateView(request):
-
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         if Sala.objects.filter(nome = request.POST.get('nome')).exists():
@@ -99,15 +99,11 @@ def SalaCreateView(request):
         # create a form instance and populate it with data from the request:
         form = InserirSalaForm(request.POST, request.FILES)
         # check whether it's valid:
-      
-       
+
         if form.is_valid():
             edificio_id_r = request.POST.get('edificioid')
             Edificio_r = Edificio.objects.get(pk=edificio_id_r)
-            ##Edificio_r = Edificio.objects.filter(pk=edificio_id_r)
-
             capacidade_r = request.POST.get('capacidade')
-            #fotos_r = request.POST.get('fotos')
             fotosw = request.FILES.get('fotos')
             nome_r = request.POST.get('nome')
             mobilidade_reduzida_r = request.POST.get('mobilidade_reduzida')
@@ -152,8 +148,8 @@ class consultar_salas(SingleTableMixin, FilterView):
     }
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.role.role == 'Administrador':
-            redirect(homepage)
+        if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -166,7 +162,7 @@ class consultar_salas(SingleTableMixin, FilterView):
 
 
 def alterar_sala(request,id):
-    if not request.user.is_authenticated and request.user.role.role == 'Administrador':
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
     if request.method == 'POST':
@@ -231,8 +227,8 @@ def alterar_sala(request,id):
 
 
 def apagar_sala(request, id):
-    if not request.user.role.role == 'Administrador' and request.user.is_authenticated:
-            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     Sala.objects.get(id=id).fotos.delete(save=True)
     Sala.objects.filter(id=id).delete()
 
@@ -241,6 +237,9 @@ def apagar_sala(request, id):
 
 
 def criar_servico(request):
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+
     if request.method == 'POST':
         form = CriarServicoForm(request.POST)
 
@@ -278,8 +277,8 @@ class consultar_servicos(SingleTableMixin, FilterView):
     }
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.role.role == 'Administrador':
-            return render(request,'evento/mensagem.html',{'tipo':'error','m':'A sala foi apagada com o sucesso','link':'evento-home'})
+        if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
         return super().dispatch(request, *args, **kwargs)
 
     
@@ -293,8 +292,8 @@ class consultar_servicos(SingleTableMixin, FilterView):
 
 
 def apagar_sevico(request, id):
-    if not request.user.role.role == 'Administrador' and request.user.is_authenticated:
-        return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Não é permetido','link':'evento-home'})
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     Servicos.objects.get(id=id).delete()
     return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'O serviço foi apagado com o sucesso','link':'consultar-servicos'})
 
@@ -302,7 +301,7 @@ def apagar_sevico(request, id):
 
 
 def alterar_servico(request,id):
-    if not request.user.is_authenticated and request.user.role.role == 'Administrador':
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
     if request.method == 'POST':
@@ -347,6 +346,9 @@ def alterar_servico(request,id):
             )
 
 def criar_equipamento(request):
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    
     if request.method == 'POST':
         form = CriarEquipamentoForm(request.POST)
 
@@ -432,7 +434,7 @@ class consultar_equipamentos(SingleTableMixin, FilterView):
     }
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.role.role == 'Administrador' and not request.user.authenicated:
+        if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
             return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
         return super().dispatch(request, *args, **kwargs)
 
