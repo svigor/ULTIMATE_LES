@@ -260,3 +260,28 @@ class CriarEquipamentoForm(forms.ModelForm):
     class Meta:
         model = Equipamento
         fields = ['tipo_equipamentoid', 'nome','descricao']
+
+
+
+
+class AlterarEquipamentoForm(forms.ModelForm):
+    tipo_equipamentoid = forms.ModelChoiceField(
+        queryset = TipoEquipamento.objects.all(),
+        label = 'Tipo de quipamento',
+        empty_label=None,
+        widget = forms.Select(
+            attrs = {'class':'input'}
+        )
+    )
+
+    nome = forms.CharField(label='Nome', max_length=255, required=False,widget=forms.TextInput(
+        attrs={'class':'input'}
+    ))
+
+    descricao = forms.CharField(label='Descricao', max_length=255, required=False,widget=forms.TextInput(
+        attrs={'class':'input'}
+    ))
+    
+    class Meta:
+        model = Equipamento
+        fields = ['tipo_equipamentoid', 'nome','descricao']

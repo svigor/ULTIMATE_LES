@@ -8,7 +8,7 @@ from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from .tables import SalaTable, ServicoTable
 
-from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm
+from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm, AlterarEquipamentoForm
 from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento
 from .filters import SalasFilter, ServicosFilter
 
@@ -372,6 +372,54 @@ def criar_equipamento(request):
     else:
         form = CriarEquipamentoForm()
     return render(request, 'evento/criar_equipamento.html',{'form':form})
+
+
+
+
+def alterar_equipamento(request,id):
+    if not request.user.is_authenticated and not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    
+    if request.method == 'POST':
+        equipamento_object = Equipamento.objects.get(id=id)
+        form = AlterarEquipamentoForm(request.POST, instance=equipamento_object, initial={'tipo_equipamentoid':equipamento_object.tipo_equipamentoid.pk})
+                        
+        nome = request.POST.get('nome')
+
+        if Equipamento.objects.exclude(nome = equipamento_object.nome).filter(nome = request.POST.get('nome')).exists():
+            msg = "O serviço com esse nome já existe"
+            return render(request,'evento/alterarequipamento.html',{'m':msg,'id':id,'form':form})
+
+    
+        if form.is_valid():
+            Equipamento1 = equipamento_object
+            
+            Equipamento1.nome = request.POST.get('nome')
+            Equipamento1.preco_base = request.POST.get('descricao')
+            TipoEquipamento1 = TipoEquipamento.objects.get(pk=request.POST.get('tipo_equipamentoid'))
+
+            Equipamento1.tipo_equipamentoid = TipoEquipamento1
+            Equipamento1.save()
+
+            return render(request,'evento/mensagem.html',{'tipo':'success','m':'O equipamento foi alterado com o sucesso','link':'evento-home'})
+
+        else:
+            
+            return render(
+                request= request,
+                template_name='evento/alterarequipamento.html',
+                context={
+                    'form':form, 'm':msg, 'id':id
+                }
+            )
+    else:
+        equipamento_object = Equipamento.objects.get(id=id)
+        form = AlterarEquipamentoForm(instance=equipamento_object,initial={'tipo_equipamentoid':equipamento_object.tipo_equipamentoid.pk})
+        return render(
+                request,
+                'evento/alterar_equipamento.html',
+                {'form': form, 'id':id}            
+            )
 
 
         
