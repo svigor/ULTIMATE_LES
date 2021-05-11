@@ -1,7 +1,7 @@
 from datetime import date
 
 import django_tables2 as django_tables
-from .models import Evento, Sala, Campus, Edificio, Servicos
+from .models import Equipamento, Evento, Sala, Campus, Edificio, Servicos
 from django.utils.html import format_html
 from django.urls import reverse
 
@@ -111,11 +111,8 @@ class ServicoTable(django_tables.Table):
         self.columns.hide('id')
         self.columns.hide('descricao')
 
-
-
     def render_acoes(self, record):
         primeiro_botao = """<span class="icon"></span>"""
-       
         primeiro_botao = ""
         if self.request.user.role.role == 'Administrador':
             primeiro_botao = f"""
@@ -132,6 +129,57 @@ class ServicoTable(django_tables.Table):
         if segundo_botao == "":
             segundo_botao = f"""
                 <a onclick="alert.render('{alerta}','{reverse('apagar-servico', args=[record.id])}')"
+                    data-tooltip="Apagar">
+                    <span class="icon has-text-danger">
+                        <i class="mdi mdi-trash-can mdi-24px"></i>
+                    </span>
+                </a>
+            """
+        return format_html(f"""
+        <div>
+            {primeiro_botao}
+            {segundo_botao}
+        </div>
+        """)
+
+
+
+class EquipamentoTable(django_tables.Table):
+    tipo_equipmaentoid = django_tables.Column('Tipo', accessor='tipo_equipamentoid.nome')
+    nome = django_tables.Column('Nome')
+    descricao = django_tables.Column('Descricao')
+    acoes = django_tables.Column('Ações', empty_values=(
+    ), orderable=False, attrs={"th": {"width": "150"}})
+    
+
+    class Meta:
+        model = Equipamento
+        sequence = ('nome', 'tipo_equipmaentoid', 'acoes')
+
+    def before_render(self, request):
+        self.columns.hide('id')
+        self.columns.hide('descricao')
+        self.columns.hide('tipo_equipamentoid')
+        
+
+    def render_acoes(self, record):
+        primeiro_botao = """<span class="icon"></span>"""
+        primeiro_botao = ""
+        if self.request.user.role.role == 'Administrador':
+            primeiro_botao = f"""
+            <a href='{reverse('alterar-equipamento', args=[record.id])}'
+                data-tooltip="Editar">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+            """
+        
+        segundo_botao = ""
+        alerta = "Tem certeza que quer apagar a sala?"
+        if segundo_botao == "":
+            segundo_botao = f"""
+              <a onclick="alert.render('{alerta}','{reverse('alterar-equipamento', args=[record.id])}')"
                     data-tooltip="Apagar">
                     <span class="icon has-text-danger">
                         <i class="mdi mdi-trash-can mdi-24px"></i>

@@ -6,11 +6,11 @@ from django.template.defaultfilters import register
 from django.contrib.sessions.backends.base import SessionBase
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
-from .tables import SalaTable, ServicoTable
+from .tables import SalaTable, ServicoTable, EquipamentoTable
 
 from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm, AlterarEquipamentoForm
 from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento
-from .filters import SalasFilter, ServicosFilter
+from .filters import SalasFilter, ServicosFilter, EquipamentosFilter
 
 
 def homepage(request):
@@ -366,7 +366,7 @@ def criar_equipamento(request):
                 {
                     'tipo':'success',
                     'm':'O equipamento foi criado com o sucesso',
-                    'link':'evento-home'
+                    'link':'consultar-equipamentos'
                 }
             )
     else:
@@ -377,7 +377,7 @@ def criar_equipamento(request):
 
 
 def alterar_equipamento(request,id):
-    if not request.user.is_authenticated and not request.user.role.role == 'Administrador':
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
     if request.method == 'POST':
@@ -401,7 +401,7 @@ def alterar_equipamento(request,id):
             Equipamento1.tipo_equipamentoid = TipoEquipamento1
             Equipamento1.save()
 
-            return render(request,'evento/mensagem.html',{'tipo':'success','m':'O equipamento foi alterado com o sucesso','link':'evento-home'})
+            return render(request,'evento/mensagem.html',{'tipo':'success','m':'O equipamento foi alterado com o sucesso','link':'consultar-equipamentos'})
 
         else:
             
@@ -420,6 +420,30 @@ def alterar_equipamento(request,id):
                 'evento/alterar_equipamento.html',
                 {'form': form, 'id':id}            
             )
+
+
+
+class consultar_equipamentos(SingleTableMixin, FilterView):
+    table_class = EquipamentoTable
+    template_name = 'evento/consultar_equipamentos.html'
+    filterset_class = EquipamentosFilter
+    table_pagination = {
+        'per_page': 10
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.role.role == 'Administrador' and not request.user.authenicated:
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+        return super().dispatch(request, *args, **kwargs)
+
+    
+    def get_context_data(self, **kwargs):
+        context = super(SingleTableMixin, self).get_context_data(**kwargs)
+        table = self.get_table(**self.get_table_kwargs())
+        table.request = self.request
+        table.fixed = True
+        context[self.get_context_table_name(table)] = table
+        return context
 
 
         

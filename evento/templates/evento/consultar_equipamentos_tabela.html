@@ -1,0 +1,16 @@
+{% extends 'evento/bulma_table_details.html' %}
+{% load poll_extras %}
+
+{% block details_content %}
+
+<table>
+    <tbody>
+        <tr>
+            <td><strong>Descrição:</strong></td>
+            <td>{{row.record.descricao}}</td>
+        </tr>
+      
+    </tbody>
+</table>
+
+{% endblock details_content %}
