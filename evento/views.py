@@ -448,6 +448,14 @@ class consultar_equipamentos(SingleTableMixin, FilterView):
         return context
 
 
+
+def apagar_equipamento(request, id):
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    Equipamento.objects.filter(id=id).delete()
+    return render(request,'evento/mensagem.html',{'tipo':'success','m':'A equipamento foi apagado com o sucesso','link':'consultar-equipamentos'})
+
+
         
 
 

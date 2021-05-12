@@ -179,7 +179,7 @@ class EquipamentoTable(django_tables.Table):
         alerta = "Tem certeza que quer apagar a sala?"
         if segundo_botao == "":
             segundo_botao = f"""
-              <a onclick="alert.render('{alerta}','{reverse('alterar-equipamento', args=[record.id])}')"
+              <a onclick="alert.render('{alerta}','{reverse('apagar-equipamento', args=[record.id])}')"
                     data-tooltip="Apagar">
                     <span class="icon has-text-danger">
                         <i class="mdi mdi-trash-can mdi-24px"></i>
