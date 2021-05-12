@@ -10,10 +10,11 @@
             <td>{{row.record.mobilidade_reduzida|yesno:"Sim,Não"}}</td>
         </tr>
         {% if row.record.fotos.url is not None %}
-        <tr>
-            <img src="{{row.record.fotos.url}}" alt="static/img/home-banner-2020-02-min.jpg">    
-        </tr>
+            <tr>
+                <img src="{{row.record.fotos.url}}" alt="static/img/home-banner-2020-02-min.jpg">    
+            </tr>
         {% endif %} 
+            
     </tbody>
 </table>
 

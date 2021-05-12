@@ -1,5 +1,5 @@
 from django import forms
-from .models import TipoDeEvento, Campus, Sala, Edificio, TipoServico, Servicos, Equipamento, TipoEquipamento
+from .models import TipoDeEvento, Campus, Sala, Edificio, TipoSala, TipoServico, Servicos, Equipamento, TipoEquipamento
 
 
 class returnedstring():
@@ -41,9 +41,9 @@ class r_c_form_dis(forms.Form):
 
 class c_s_form(forms.Form):
     dict = []
-    campus = Campus.objects.all()
-    for choice in campus:
-        dict.append(choice)
+    # campus = Campus.objects.all()
+    # for choice in campus:
+    #    dict.append(choice)
     c_s = forms.ChoiceField(choices=dict, label='', widget=forms.Select({'class': 'input'}))
 
 
@@ -61,8 +61,9 @@ class InserirSalaForm(forms.ModelForm):
     ) )
 
     fotos = forms.ImageField(label='Fotos',required=False,
-    widget=forms.FileInput()
-    ) 
+    widget=forms.FileInput(
+        attrs={'class': ''}
+    )) 
 
     nome = forms.CharField(label='Nome',max_length=255, widget = forms.TextInput (
         attrs= {'class': 'input'}
@@ -77,6 +78,15 @@ class InserirSalaForm(forms.ModelForm):
     campus = forms.ModelChoiceField(
         queryset=Campus.objects.all(),
         label='Campus',
+        empty_label='Escolhe uma das opções',
+        widget= forms.Select(
+           attrs= {'class': 'input'}
+        )    
+    )
+
+    tipo_salaid = forms.ModelChoiceField(
+        queryset=TipoSala.objects.all(),
+        label='Tipo de Sala',
         empty_label='Escolhe uma das opções',
         widget= forms.Select(
            attrs= {'class': 'input'}

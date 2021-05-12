@@ -9,7 +9,7 @@ from django_filters.views import FilterView
 from .tables import SalaTable, ServicoTable, EquipamentoTable
 
 from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm, AlterarEquipamentoForm
-from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento
+from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento, TipoSala
 from .filters import SalasFilter, ServicosFilter, EquipamentosFilter
 
 
@@ -112,8 +112,10 @@ def SalaCreateView(request):
             if request.POST.get('mobilidade_reduzida') == 'on':
                 mobilidade_reduzida_r = 1
 
+            tipo_salaid = request.POST.get('tipo_salaid')
+            TipoSala1 = TipoSala.objects.get(pk = tipo_salaid)
             Sala_r = Sala(capacidade=capacidade_r, fotos=fotosw, nome=nome_r,
-                          mobilidade_reduzida=mobilidade_reduzida_r,edificioid=Edificio_r)
+                          mobilidade_reduzida=mobilidade_reduzida_r,tipo_salaid=TipoSala1,edificioid=Edificio_r)
             Sala_r.save()
             return render(
                 request,

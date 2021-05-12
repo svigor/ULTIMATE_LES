@@ -18,7 +18,7 @@
 
 
     <div style="margin-left:35%; margin-right:35%;">
-        <article class="message is-info">
+        <article class="message is-info" style="width: 110%;">
             <div class="message-header">
 
 
@@ -30,14 +30,15 @@
                         {% csrf_token %}
 
                         <fieldset class="form">
+                            <div>
+                                {{ form.capacidade.label}}
+                                {{ form.capacidade }}
+                            </div>
                             
-                            {{ form.capacidade.label}}
-                            {{ form.capacidade }}
-
-                            <div style="margin-top: 2%;">
-                               
+                            <div style="margin-top: 2%;">   
                                 {{ form.fotos.label}}
-                                {{ form.fotos }}</div>
+                                {{ form.fotos }}
+                            </div>
                             
 
                             <div style="margin-top: 2%; margin-bottom: 2%;">{{ form.nome.label}}
@@ -49,7 +50,11 @@
                             {{ form.mobilidade_reduzida.label}}
                             <div style="margin-left: 52%; margin-top: -5.2%;">{{ form.mobilidade_reduzida }}</div>
                             
-                            
+                            <div style="margin-top: 2.1%;">
+                                {{ form.tipo_salaid.label}}
+                                {{ form.tipo_salaid }}
+                            </div>
+
                             <div style="margin-top: 2.1%;">
                                 {{ form.campus.label}}
                                 {{ form.campus }}

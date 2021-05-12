@@ -42,17 +42,21 @@ class SalaTable(django_tables.Table):
     ), orderable=False, attrs={"th": {"width": "150"}})
     campus = django_tables.Column(
         'Campus', accessor='edificioid.campusid.nome')
+    tipo_sala = django_tables.Column(
+        'Tipo', accessor='tipo_salaid.nome'
+    )
 
     class Meta:
         #template_name = 'evento/bulma_table_details'
         model = Sala
         sequence = ('campus', 'mobilidade_reduzida',
-                    'edificioid', 'nome', 'capacidade',  'acoes')
+                    'edificioid', 'nome', 'tipo_sala','capacidade',  'acoes')
 
     def before_render(self, request):
         self.columns.hide('fotos')
         self.columns.hide('id')
         self.columns.hide('mobilidade_reduzida')
+        self.columns.hide('tipo_salaid')
 
     def render_mobilidade_reduzida(self, value):
         if value == True:

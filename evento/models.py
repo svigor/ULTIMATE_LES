@@ -257,6 +257,8 @@ class Sala(models.Model):
     # Field name made lowercase.
     edificioid = models.ForeignKey(
         Edificio, models.DO_NOTHING, db_column='EdificioID')
+    tipo_salaid = models.ForeignKey('TipoSala', models.DO_NOTHING,
+                                           db_column='Tipo_SalaID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -273,6 +275,17 @@ class Sala(models.Model):
         # Delete the file after the model
         storage.delete(path)
 
+
+class TipoSala(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.nome
+
+    class Meta:
+        managed = True
+        db_table = 'tipo de sala'
 
 class Servicos(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
