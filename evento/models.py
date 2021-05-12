@@ -217,7 +217,7 @@ class Pergunta(models.Model):
         db_column='Titulo', max_length=255, blank=True, null=True)
     # Field name made lowercase.
     formularioid = models.ForeignKey(
-        Formulario, models.DO_NOTHING, db_column='FormularioID')
+        Formulario, models.DO_NOTHING, db_column='FormularioID', null=True)
     # Field name made lowercase. Field renamed to remove unsuitable characters.
     tipo_de_perguntaid = models.ForeignKey(
         'TipoDePergunta', models.DO_NOTHING, db_column='Tipo de PerguntaID')

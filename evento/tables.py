@@ -64,6 +64,7 @@ class SalaTable(django_tables.Table):
 class FormularioTable(django_tables.Table):
     tipo_de_formularioid = django_tables.Column('Tipo de Formulário')
     tipo_de_eventoid = django_tables.Column('Tipo de Evento')
+    acoes = django_tables.Column('Ações', empty_values=(), orderable=False, attrs={"th": {"width": "150"}})
     
     def render_tipo_de_formularioid(self, value):
         return value.nome
@@ -74,8 +75,36 @@ class FormularioTable(django_tables.Table):
     def before_render(self,request):
         self.columns.hide('id')
 
+    def render_acoes(self, record):
+        primeiro_botao = f"""
+            <a href='{reverse('consultar-perguntas-formulario', args={record.id})}'
+                data-tooltip="Visualizar">
+                <span class="icon">
+                    <i class="mdi mdi-magnify mdi-24px"></i>
+                </span>
+            </a>
+            """
+        
+        alerta = "Tem certeza que quer apagar a sala?"
+        segundo_botao = f"""
+            <a onclick="alert.render('{alerta}','{reverse('apagar-form', args=[record.id])}')"
+                data-tooltip="Apagar">
+                <span class="icon has-text-danger">
+                    <i class="mdi mdi-trash-can mdi-24px"></i>
+                </span>
+            </a>
+        """
+        return format_html(f"""
+        <div>
+            {primeiro_botao}
+            {segundo_botao}
+        </div>
+        """)
+    
+    
+
     class Meta:
         model = Formulario
-        template_name = 'evento/bulma_table_details.html'
+        template_name = 'evento/bulma_table.html'
         fields = ('id', 'tipo_de_formularioid', 'tipo_de_eventoid')
     

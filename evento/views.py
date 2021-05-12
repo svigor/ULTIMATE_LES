@@ -224,13 +224,17 @@ class consultar_formularios(SingleTableMixin, ListView):
     table_pagination = {'per_page':10}
 
 def show_perguntas(request, id):
-    if request.method == 'POST' : 
-        print(id)
-        perguntas = {}
-        for pergunta in Pergunta.objects.all().filter(formularioid=id) :
-            perguntas.update({pergunta.tipo_de_perguntaid.nome : pergunta.titulo})
-        tipo = Formulario.objects.get(pk=id)
-        return render(request, 'evento/visualizar_formulario.html', {'perguntas':perguntas, 'tipo' : tipo})
-    else:
-        return redirect(home)
+    print(id)
+    perguntas = {}
+    for pergunta in Pergunta.objects.all().filter(formularioid=id) :
+        perguntas.update({pergunta.tipo_de_perguntaid.nome : pergunta.titulo})
+    tipo = Formulario.objects.get(pk=id)
+    return render(request, 'evento/visualizar_formulario.html', {'perguntas':perguntas, 'tipo' : tipo})
+
+def apagar_form(request, id):
+    
+    Pergunta.objects.filter(formularioid=id).update(formularioid=None)
+    Formulario.objects.filter(id=id).delete()
+
+    return render(request,'evento/mensagem.html',{'tipo':'success','m':'O formulário foi apagado com sucesso','link':'consultar-formularios'})
 
