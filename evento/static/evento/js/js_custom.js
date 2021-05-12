@@ -5,7 +5,7 @@ function eliminar() {
     var operationRef_global = null;
     this.render=function(txt,operationRef = null){
         operationRef_global = operationRef;
-        var msg = document.getElementById("msg");
+        var msg = document.getElementById("msg").style.display = 'block';
         document.getElementById('text-00').innerHTML = txt;
         document.getElementById('dialog-confirm').style.display = '';
         document.getElementById('dialog-cancel').style.display = '';
@@ -29,6 +29,49 @@ function eliminar() {
         document.getElementById('dialog-cancel').style.display = 'none';
         msg.classList.add("is-active");        
     }   
+}
+
+function clicked(){
+    document.getElementById('msg1').style.display = 'block';
+    document.getElementById('text-01').innerText = 'Deseja Editar o Evento?'
+}
+
+function unclicked(){
+     document.getElementById('msg1').style.display = 'none';
+}
+
+var editar1 = new editar()
+function editar() {
+    var operationRef_global = null;
+    this.render=function(txt,operationRef = null){
+        operationRef_global = operationRef;
+        var msg = document.getElementById("msg1");
+        document.getElementById('text-01').innerHTML = txt;
+        document.getElementById('dialog-confirm1').style.display = '';
+        document.getElementById('dialog-cancel1').style.display = '';
+        msg.classList.add("is-active");
+    }
+    this.confirmar=function(){
+        if(operationRef_global != null)
+            window.location.href = operationRef_global
+        else{
+            document.getElementById('msg1').classList.remove('is-active');
+            document.getElementById('dialog-confirm1').type = 'submit';
+        }
+    }
+    this.cancelar=function(){
+        var msg = document.getElementById("msg");
+        document.getElementById('text-01').innerHTML = '';
+        operationRef_global = null;
+        msg.classList.remove("is-active");
+    }
+    this.warning=function(txt){
+        var msg = document.getElementById('msg');
+        document.getElementById('text-01').innerHTML = txt;
+        document.getElementById('dialog-confirm1').style.display = '';
+        document.getElementById('dialog-cancel1').style.display = 'none';
+        msg.classList.add("is-active");
+    }
 }
 
 function resetForm(){

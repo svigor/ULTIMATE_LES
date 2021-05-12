@@ -1,78 +1,83 @@
 {% load static %}
 
 <nav id="main-navbar" class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a class="navbar-item logo" href="{% url 'evento-home' %}">
-      <img src="{% static 'evento/img/logo-navbar - Copy.png' %}" alt="Dia Aberto">
-    </a>
-
-    <a role="button" class="navbar-burger burger" onclick="onclick_burger(event)" data-target="navbarBasicExample">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-
-  <div class="navbar-menu">
-    <div class="navbar-start">
-
-
-
-
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
-          Configurações
+    <div class="navbar-brand">
+        <a class="navbar-item logo" href="{% url 'evento-home' %}">
+            <img src="{% static 'evento/img/logo-navbar - Copy.png' %}" alt="Dia Aberto">
         </a>
-        <div class="navbar-dropdown">
-          <a href="" class="navbar-item">Unidades Organicas</a>
-          <a href="" class="navbar-item">Edificios e Espaços</a>
-          <a href="" class="navbar-item">Departamentos</a>
-          <a href="" class="navbar-item">Cursos</a>
-          <a href="" class="navbar-item">Transportes</a>
-          <a href="" class="navbar-item">Almoços</a>
-          <a href="" class="navbar-item">Temas</a>
-        </div>
-      </div>
-      <a href="" class="navbar-item">
-        Dias Abertos
-      </a>
-        {% if request.session.role == 'Administrador' %}
-      <a href="" class="navbar-item">
-        Utilizadores
-      </a>
-        {% endif %}
-    {% if request.session.role == 'Administrador' %}
-      <a href="{% url 'consultar' %}" class="navbar-item">
-        Consultar Eventos
-      </a>
-    {% endif %}
-      <a href="" class="navbar-item">
-        Inscrições
-      </a>
+
+        <a role="button" class="navbar-burger burger" onclick="onclick_burger(event)" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
     </div>
 
-    <a href="" class="navbar-item">
+    <div class="navbar-menu">
+        <div class="navbar-start">
 
-    </a>
 
-  </div>
-  <div class="navbar-end">
-    <div class="navbar-item">
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    Configurações
+                </a>
+                <div class="navbar-dropdown">
+                    <a href="" class="navbar-item">Unidades Organicas</a>
+                    <a href="" class="navbar-item">Edificios e Espaços</a>
+                    <a href="" class="navbar-item">Departamentos</a>
+                    <a href="" class="navbar-item">Cursos</a>
+                    <a href="" class="navbar-item">Transportes</a>
+                    <a href="" class="navbar-item">Almoços</a>
+                    <a href="" class="navbar-item">Temas</a>
+                </div>
+            </div>
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    Eventos
+                </a>
+                <div class="navbar-dropdown">
+                    {% if request.session.role == 'Administrador' or request.session.role == 'Proponentes' %}
+                        <a href="{% url 'meus_eventos' %}" class="navbar-item">Meus Eventos</a>
+                    {% endif %}
+                    {% if request.session.role == 'Administrador' %}
+                        <a href="{% url 'consultar' %}" class="navbar-item">Aprovar Eventos</a>
+                    {% endif %}
+                    <a href="" class="navbar-item">Eventos a decorrer</a>
+                    <a href="" class="navbar-item">Inscrição</a>
+                </div>
+            </div>
+            {% if request.session.role == 'Administrador' %}
+                <a href="{% url 'consultarutilizadores' %}" class="navbar-item">
+                    Utilizadores
+                </a>
+            {% endif %}
+            <a href="" class="navbar-item">
+                Inscrições
+            </a>
+        </div>
 
-        {% if user.is_authenticated %}
-        <div class="dropdown is-bottom-left is-mobile-modal">
+        <a href="" class="navbar-item">
 
-          <div onclick="notificacoes()">
-            <div id="notificacoes_trigger" role="button" class="dropdown-trigger">
+        </a>
+
+    </div>
+    <div class="navbar-end">
+        <div class="navbar-item">
+
+            {% if user.is_authenticated %}
+                <div class="dropdown is-bottom-left is-mobile-modal">
+
+                <div onclick="notificacoes()">
+                    <div id="notificacoes_trigger" role="button" class="dropdown-trigger">
               <span role="button">
 
                 <div type="button" data-badge="0" class="button has-badge-rounded has-badge-warning is-text"
-                  style="margin-right: 0.9rem">
+                     style="margin-right: 0.9rem">
                   <span>
 
                     <span class="icon">
                       <span id="badge-inject" style="display:none;" title="Badge top right"
-                        class="badge is-warning"></span>
+                            class="badge is-warning"></span>
 
 
                       <i class=" mdi mdi-bell mdi-24px"></i>
@@ -86,52 +91,49 @@
                 </div>
 
               </span>
-            </div>
-          </div>
-          <div id="ver_notificacoes" class="modal">
-            <div class="modal-background"></div>
-            <div class="modal-card">
-              <header class="modal-card-head">
-                <p class="modal-card-title">Notificações</p>
+                    </div>
+                </div>
+                <div id="ver_notificacoes" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Notificações</p>
 
-                <button onclick="notificacoes()" class="delete" aria-label="close"></button>
+                            <button onclick="notificacoes()" class="delete" aria-label="close"></button>
 
-              </header>
-              <section class="modal-card-body">
-                <nav class="panel">
+                        </header>
+                        <section class="modal-card-body">
+                            <nav class="panel">
 
-                  <p class="panel-tabs">
-                    <a class="tablinks is-active" onclick="openNotificacoes(event, 'Todas')">Todas</a>
-                    <a class="tablinks" onclick="openNotificacoes(event, 'Novas')">Novas</a>
-                    <a class="tablinks" onclick="openNotificacoes(event, 'Anteriores')">Anteriores</a>
-                  </p>
-                  <div id="Todas" style="display:block" class="tabcontent">
-
-
+                                <p class="panel-tabs">
+                                    <a class="tablinks is-active" onclick="openNotificacoes(event, 'Todas')">Todas</a>
+                                    <a class="tablinks" onclick="openNotificacoes(event, 'Novas')">Novas</a>
+                                    <a class="tablinks" onclick="openNotificacoes(event, 'Anteriores')">Anteriores</a>
+                                </p>
+                                <div id="Todas" style="display:block" class="tabcontent">
 
 
-                  </div>
-                  <div id="Anteriores" style="display:none" class="tabcontent">
+                                </div>
+                                <div id="Anteriores" style="display:none" class="tabcontent">
 
 
-
-                  </div>
-
-
-                </nav>
-              </section>
-            </div>
-          </div>
-        {% endif %}
+                                </div>
 
 
-        {% if user.is_authenticated %}
-          <div id="mensagens-dropdown" class="dropdown is-right"
-            onclick="event.currentTarget.classList.toggle('is-active')">
-            <div class="dropdown-trigger">
+                            </nav>
+                        </section>
+                    </div>
+                </div>
+            {% endif %}
+
+
+            {% if user.is_authenticated %}
+                <div id="mensagens-dropdown" class="dropdown is-right"
+                     onclick="event.currentTarget.classList.toggle('is-active')">
+                    <div class="dropdown-trigger">
               <span role="button" aria-haspopup="true" aria-controls="dropdown-menu6">
                 <div type="button" data-badge="0" class="button has-badge-rounded has-badge-warning is-text"
-                  style="margin-right: 0.9rem">
+                     style="margin-right: 0.9rem">
                   <span>
                     <span class="icon">
 
@@ -140,33 +142,33 @@
                   </span>
                 </div>
               </span>
-            </div>
-            <div class="dropdown-menu" id="dropdown-menu6" role="menu" style="min-width: 23rem">
-              <div class="dropdown-content">
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu6" role="menu" style="min-width: 23rem">
+                        <div class="dropdown-content">
 
-                <hr class="dropdown-divider">
-                <div class="dropdown-item level">
-                  <div class="level-left">
+                            <hr class="dropdown-divider">
+                            <div class="dropdown-item level">
+                                <div class="level-left">
                     <span class="icon">
                       <i class="mdi mdi-message-text"></i>
                     </span>
-                    <a href="">Nova mensagem</a>
-                  </div>
-                  <div class="level-right">
-                    <small><a href="">Ver todas as mensagens</a></small>
-                  </div>
+                                    <a href="">Nova mensagem</a>
+                                </div>
+                                <div class="level-right">
+                                    <small><a href="">Ver todas as mensagens</a></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        {% endif %}
+            {% endif %}
 
-          <div onclick="definicoes()">
-            <div id="dropdown_definicoes" class="dropdown is-right">
-              <div role="button" class="dropdown-trigger">
+            <div onclick="definicoes()">
+                <div id="dropdown_definicoes" class="dropdown is-right">
+                    <div role="button" class="dropdown-trigger">
                 <span role="button">
                   <div type="button" data-badge="0" class="button has-badge-rounded has-badge-warning is-text"
-                    style="margin-right: 0.9rem">
+                       style="margin-right: 0.9rem">
                     <span>
                       <span class="icon">
                         <i class="mdi mdi-account-circle mdi-24px"></i>
@@ -174,41 +176,38 @@
                     </span>
                   </div>
                 </span>
-              </div>
-              <div class="background" aria-hidden="true"></div>
-              <div class="dropdown-menu" aria-hidden="true">
-                <div role="menu" class="dropdown-content">
-                {% if user.is_authenticated %}
+                    </div>
+                    <div class="background" aria-hidden="true"></div>
+                    <div class="dropdown-menu" aria-hidden="true">
+                        <div role="menu" class="dropdown-content">
+                            {% if user.is_authenticated %}
 
-                  <div role="menuitem" tabindex="0" class="dropdown-item">
-                    <a href="" role="listitem" tabindex="0"
-                      class="dropdown-item is-disabled">
+                                <div role="menuitem" tabindex="0" class="dropdown-item">
+                                    <a href="" role="listitem" tabindex="0"
+                                       class="dropdown-item is-disabled">
                       <span class="icon">
                         <i class="mdi mdi-account-edit mdi-24px"></i>
                       </span>
 
-                      <strong>Alterar dados de conta</strong>
+                                        <strong>Alterar dados de conta</strong>
 
 
-                    </a>
+                                    </a>
 
 
-
-                    <a href="" role="listitem" tabindex="0"
-                      class="dropdown-item is-disabled">
+                                    <a href="" role="listitem" tabindex="0"
+                                       class="dropdown-item is-disabled">
 
                       <span class="icon">
                         <i class="mdi mdi-key-variant mdi-24px"></i>
                       </span>
 
-                      <strong>Alterar palavra-passe</strong>
+                                        <strong>Alterar palavra-passe</strong>
 
-                    </a>
-                  </div>
-                  {% else %}
-                {% endif %}
-
-
+                                    </a>
+                                </div>
+                            {% else %}
+                            {% endif %}
 
 
 
@@ -216,54 +215,55 @@
 
 
 
-          {% if user.is_authenticated %}
-          <a href="{% url 'logout' %}">
-            <div type="button" class="button">
+
+
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'logout' %}">
+                                    <div type="button" class="button">
               <span class="icon is-small">
                 <i class="mdi mdi-login-variant"></i>
               </span>
-              <span>Sair</span>
-            </div>
-          </a>
-          {% else %}
+                                        <span>Sair</span>
+                                    </div>
+                                </a>
+                            {% else %}
 
 
-          <div class="navbar-end">
-            <div class="navbar-item">
-              <div class="buttons" style="margin-left: -30%">
-                <a href="{% url 'register' %}" >
-                  <bottom class="button is-primary">
-                    <strong>Registar</strong>
-                </a>
-                </a>
-              </div>
-            </div>
-          </div>
+                                <div class="navbar-end">
+                                    <div class="navbar-item">
+                                        <div class="buttons" style="margin-left: -30%">
+                                            <a href="{% url 'register' %}">
+                                                <bottom class="button is-primary">
+                                                    <strong>Registar</strong>
+                                            </a>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
 
 
-          <a href="{% url 'login' %}">
-            <div type="button" class="button" style="margin-left: 30%">
+                                <a href="{% url 'login' %}">
+                                    <div type="button" class="button" style="margin-left: 30%">
               <span class="icon is-small">
                 <i class="mdi mdi-login-variant"></i>
               </span>
-              <span>Entrar</span>
-            </div>
-          </a>
-          {% endif %}
+                                        <span>Entrar</span>
+                                    </div>
+                                </a>
+                            {% endif %}
 
-        </div>
-      </div>
+                        </div>
+                    </div>
 
-    </div>
+                </div>
 </nav>
 
 
-
 <script>
-  function detalhes_url_notificacoes(item) {
-    var tmp = String(item.id)
-    return "".replace("12345", tmp);
-  }
+    function detalhes_url_notificacoes(item) {
+        var tmp = String(item.id)
+        return "".replace("12345", tmp);
+    }
 </script>
 <script type="text/javascript" src="{% static 'evento/js/notificacoes.js' %}"></script>
 <script type="text/javascript" src="{% static 'evento/js/jquery-3.4.1.min.js' %}"></script>

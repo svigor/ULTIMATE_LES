@@ -44,6 +44,7 @@ class Equipamento(models.Model):
 
 class Evento(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255)
     capacidade = models.IntegerField(db_column='Capacidade')  # Field name made lowercase.
     aprovado = models.TextField(db_column='Aprovado')  # Field name made lowercase. This field type is a guess.
     dia = models.DateField(db_column='Dia')  # Field name made lowercase.
@@ -223,9 +224,9 @@ class Respostas(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     perguntaid = models.ForeignKey(Pergunta, models.DO_NOTHING, db_column='PerguntaID')  # Field name made lowercase.
     texto = models.CharField(db_column='Texto', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    opcoesid = models.ForeignKey(Opcoes, models.DO_NOTHING, db_column='OpcoesID')  # Field name made lowercase.
+    opcoesid = models.ForeignKey(Opcoes, models.DO_NOTHING, db_column='OpcoesID', null=True)  # Field name made lowercase.
     eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
-    inscricaoid = models.ForeignKey(Inscricao, models.DO_NOTHING, db_column='InscricaoID')  # Field name made lowercase.
+    inscricaoid = models.ForeignKey(Inscricao, models.DO_NOTHING, db_column='InscricaoID', null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True

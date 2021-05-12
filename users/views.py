@@ -1,5 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as l, authenticate, logout
+from django_filters.views import FilterView
+from .filters import usersfilter
+from django_tables2 import SingleTableMixin
+from .tables import Myuserstable
+
 from .models import MyUser
 from evento.views import homepage
 from .forms import registerForm, loginForm
@@ -41,8 +46,9 @@ def login(request):
             if user:
                 l(request, user)
                 request.session['role'] = user.role.role
-                request.session['nome_completo'] = user.NomeProprio
+                request.session['nome_completo'] = user.NomeProprio + " " + user.SecondName
                 request.session['n_telefone'] = user.n_telefone
+                request.session['id'] = user.id
                 return redirect(homepage)
     else:
         form = loginForm()
@@ -50,8 +56,14 @@ def login(request):
     return render(request, 'users/login.html', {'form': form})
 
 def logout1(request):
+    request.session.clear()
     logout(request)
     return redirect(homepage)
 
-def consultar_utilizadors(request):
-    return render(request, 'users/consultar_utilizadores_tabela.html')
+
+class consultar_utilizadors(SingleTableMixin, FilterView):
+    model = MyUser
+    table_class = Myuserstable
+    template_name = 'users/consultar_utilizadores_tabela.html'
+    filterset_class = usersfilter
+    table_pagination = {'per_page': 10}

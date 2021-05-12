@@ -1,10 +1,14 @@
+import numbers
+
 from datetime import date
 
 from django import template
 from users.models import MyUser
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
+
 register = template.Library()
+
 
 @register.filter(name='get_due_date_string')
 def get_due_date_string(value):
@@ -14,7 +18,7 @@ def get_due_date_string(value):
         return "Today!"
     elif delta.days < 1:
         return "%s %s ago!" % (abs(delta.days),
-            ("day" if abs(delta.days) == 1 else "days"))
+                               ("day" if abs(delta.days) == 1 else "days"))
     elif delta.days == 1:
         return "Tomorrow"
     elif delta.days > 1:
@@ -25,9 +29,9 @@ def get_due_date_string(value):
 def get_user_name(id):
     try:
         user = User.objects.get(id=id)
-        nome = user.first_name+" "+user.last_name
+        nome = user.first_name + " " + user.last_name
         return nome
-    except :
+    except:
         return "Esta notificação foi gerada automáticamente"
 
 
@@ -37,8 +41,9 @@ def get_email(id):
         user = User.objects.get(id=id)
         email = user.email
         return email
-    except :
+    except:
         return ""
+
 
 @register.filter(name='get_user_type')
 def get_user_type(id):
@@ -48,31 +53,64 @@ def get_user_type(id):
         if user.groups.filter(name="Participante").exists():
             result = "Participante"
         elif user.groups.filter(name="Proponente").exists():
-            result =  "Proponente"
+            result = "Proponente"
         elif user.groups.filter(name="Administrador").exists():
-            result =  "Administrador"
+            result = "Administrador"
         else:
             result = ""
         return result
-    except :
+    except:
         return 0
 
 
-
-
 @register.filter(name='get_gabinete_admin')
-def get_gabinete_admin(user,id):
+def get_gabinete_admin(user, id):
     utilizador = MyUser.role.objects.get(id=id)
     return utilizador.gabinete
 
 
-
 @register.filter(name='apagar_admin')
-def apagar_admin(user,id):
+def apagar_admin(user, id):
     utilizadores = MyUser.role.objects.filter(valido="True")
-    return len(utilizadores)>1
+    return len(utilizadores) > 1
 
 
 @register.filter(name='has_group')
 def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
+
+
+@register.filter(name='aprovado_str')
+def aprovado_str(value):
+    if value == '0':
+        return 'Não Aprovado'
+    elif value == '1':
+        return 'Aprovado'
+
+
+@register.filter(name='get_items')
+def get_items(value, args):
+    return value.get(args)
+
+
+@register.filter(name='converter')
+def converter(value):
+    if int(int(value) % 60) != 0:
+        return str(int(int(value) / 60)) + "h" + str(int(int(value) % 60)) + "m"
+    if int(int(value) % 60) == 0:
+        return str(int(int(value) / 60)) + "h" + "00m"
+    elif int(value) < 60:
+        return "00h" + str(int(int(value) % 60)) + "m"
+
+
+@register.filter(name='getname')
+def getname(value):
+    try:
+        user = MyUser.objects.get(id=int(str(value)))
+        print(user.role)
+        if user.role.role == 'Participante':
+            return 0
+        else:
+            return user.NomeProprio + " " + user.SecondName
+    except ValueError:
+        return 'Escolha um Proponente'

@@ -2,5 +2,32 @@
 {% load poll_extras %}
 {% load render_table from django_tables2 %}
 {% block content %}
+    {% block details_content %}
+        <form class="form" method="POST" action="{% url 'mudarevento' id=row.record.id %}">
+            {% csrf_token %}
+            {% if row.record.aprovado == '0' %}
+                <h1 style="margin-left: 27%">Deseja Validar o evento de {{ row.record.proponenteutilizadorid }}?</h1>
+            {% elif row.record.aprovado == '1' %}
+                <h1 style="margin-left: 27%">Deseja Validar novamente o evento
+                    de {{ row.record.proponenteutilizadorid }}?</h1>
+            {% endif %}
+            <div class="columns is-variable is-2-mobile is-0-tablet is-2-desktop is-8-widescreen is-1-fullhd">
+                <div class="column is-3 is-offset-one-quarter">
+                    <div style="margin-top:7%;">
+                        <button type="submit" class="button is-danger is-outlined">
+                            <span>Cancelar</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="column is-3 ">
+                    <div style="margin-top:7%;">
+                        <button type="submit" class="button is-info is-outlined">
+                            <span>Continuar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endblock %}
 {% endblock %}
 

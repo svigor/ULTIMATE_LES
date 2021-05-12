@@ -26,50 +26,37 @@
                         <div class="menu-label">
                             Filtros Eventos
                         </div>
-                        <form method="get" name="filterform">
+                        <form method="get">
                             <ul class="menu-list">
                                 <li>
                                     <div class="field">
-                                        <label class="label" for="id_tipo_de_eventoid">Tipo de Evento:</label>
+                                        <label class="label">Tipo de Evento:</label>
                                     </div>
-                                    <select class="input" style="margin-bottom: 5%" name="tipo_de_eventoid"
-                                            id="id_tipo_de_eventoid">
+                                    <select class="input" name="tipo_de_eventoid" id="id_tipo_de_eventoid"
+                                            style="margin-bottom: 5%">
                                         {% for value, label in filter.form.fields.tipo_de_eventoid.choices %}
-                                            <div class="option" style="padding-left: 1rem;">
+                                            <div class="field" style="padding-left: 1rem;">
                                                 {% if label == '---------' %}
+                                                    <option>Escolha um Tipo de Evento</option>
                                                 {% else %}
-                                                    <option name="{{ filter.form.tipo_de_eventoid.name }}"
+                                                    <option type="option"
+                                                            name="{{ filter.form.tipo_de_eventoid.name }}"
                                                             value="{{ value|stringformat:'s' }}"
-                                                            {% if value|stringformat:'s' in filter.form.tipo_de_eventoid.value %}selected{% endif %}>
-                                                        {{ label }}
-                                                    </option>
+                                                            {% if value|stringformat:'s' in filter.form.tipo_de_eventoid.value %}selected{% endif %}>{{ label }}</option>
                                                     </div>
                                                 {% endif %}
                                         {% endfor %}
                                     </select>
                                 </li>
                                 <li>
-                                    <label for="id_proponenteutilizadorid" class="label">Escolha um Proponente:</label>
-                                    <select name="proponenteutilizadorid" id="id_proponenteutilizadorid" class="input"
-                                            style="margin-bottom: 5%">
-                                        {% for value,label in filter.form.fields.proponenteutilizadorid.choices %}
-                                            {% if value|getname == 0 %}
-                                            {% else %}
-                                                <option value="{{ value }}" data-target=""
-                                                        {% if value|stringformat:'s' in filter.form.proponenteutilizadorid.value %}selected{% endif %}>{{ value|getname }}</option>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                </li>
-                                <li>
                                     <div class="field">
-                                        <label class="label" for="id_aprovado">Estado:</label>
+                                        <label for="id_aprovado" class="label">Estado:</label>
                                     </div>
                                     <select name="aprovado" id="id_aprovado" class="input" style="margin-bottom: 5%">
-                                        <option disabled selected id="reset_estado">Escolha um Estado</option>
+                                    <option>Escolha um Estado</option>
                                         {% for value, label in filter.form.fields.aprovado.choices %}
                                             <div class="field" style="padding-left: 1rem;">
-                                                <option name="{{ filter.form.aprovado.name }}"
+                                                <option type="option" name="{{ filter.form.aprovado.name }}"
                                                         value="{{ value|stringformat:'s' }}"
                                                         {% if value|stringformat:'s' in filter.form.aprovado.value %}selected{% endif %}>
                                                     {{ label }}
@@ -82,17 +69,18 @@
                                     <div class="field">
                                         <label class="label" for="id_campusid">Campus:</label>
                                     </div>
-                                    <select class="input" style="margin-bottom: 5%" name="campusid" id="id_campusid">
-                                        <option disabled selected id="reset_campus">Escolha um Campus</option>
+                                    <select class="input" name="campusid" id="id_campusid" style="margin-bottom: 5%">
                                         {% for value, label in filter.form.fields.campusid.choices %}
-                                            <div class="option" style="padding-left: 1rem;">
+                                            <div class="field" style="padding-left: 1rem;">
                                                 {% if label == '---------' %}
                                                 {% else %}
-                                                    <option name="{{ filter.form.campusid.name }}"
+                                                    <option type="option"
+                                                            name="{{ filter.form.campusid.name }}"
                                                             value="{{ value|stringformat:'s' }}"
                                                             {% if value|stringformat:'s' in filter.form.campusid.value %}selected{% endif %}>
                                                         {{ label }}
                                                     </option>
+
                                                     </div>
                                                 {% endif %}
                                         {% endfor %}
@@ -121,7 +109,7 @@
                     <nav aria-label="breadcrumbs" class="breadcrumb">
                         <ul style="margin-bottom: 1%">
                             <li><a href="{% url 'evento-home' %}">Início</a></li>
-                            <li class="is-active"><a href="">Eventos</a>
+                            <li class="is-active"><a href="">Meus Eventos</a>
                             </li>
                         </ul>
                         <ul>
@@ -141,6 +129,15 @@
     </div>
 {% endblock %}
 {% block scripts %}
+    <script>
+        function showed() {
+            if (document.getElementById('dropdown-menu').style.display === 'none') {
+                document.getElementById('dropdown-menu').style.display = 'block';
+            } else {
+                document.getElementById('dropdown-menu').style.display = 'none';
+            }
+        }
+    </script>
     <script>
         function alerts() {
             const get_ulr = window.location.href

@@ -6,7 +6,7 @@
 <head>
 
     <title>
-        Dia Aberto | {% if title %} {{ title }} {% else %} Dev {% endif %}
+        Gestão de Eventos | {% if title %} {{ title }} {% else %} Dev {% endif %}
 
     </title>
 
@@ -48,11 +48,12 @@
         }
 
         #page-content .card {
-            min-height: 70vh
+            min-height: 80vh;
+            min-width: 80vh;
         }
 
         .footer {
-            position: absolute;
+            position: relative;
             bottom: 0;
             width: 100%;
             background-color: #fafafa;
@@ -77,15 +78,17 @@
     <div class="hero is-primary is-bold" id="top-hero">
         <div id="top-hero-body" class="hero-body"></div>
     </div>
+{% block card %}
     <div id="page-content">
         <div class="card">
-            <div class="card-content">
+            <div class="card-content" style="width: auto">
                 {% block content %}
                     <!-- include the content here-->
                 {% endblock content %}
             </div>
         </div>
     </div>
+{% endblock %}
 
     <footer class="footer">
         <div style="margin: auto; width: max-content">
