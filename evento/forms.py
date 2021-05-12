@@ -142,6 +142,15 @@ class AlterarSalaForm(forms.ModelForm):
         )
     )
    
+    tipo_salaid = forms.ModelChoiceField(
+        queryset=TipoSala.objects.all(),
+        label='Tipo de Sala',
+        empty_label='Escolhe uma das opções',
+        widget= forms.Select(
+           attrs= {'class': 'input'}
+        )    
+    )
+
     campus = forms.ModelChoiceField(
         queryset=Campus.objects.all(),
         label='Campus',
@@ -163,7 +172,7 @@ class AlterarSalaForm(forms.ModelForm):
 
     class Meta:
         model = Sala
-        fields = ['capacidade', 'fotos', 'nome', 'mobilidade_reduzida','campus' ,'edificioid']
+        fields = ['capacidade', 'fotos', 'nome', 'mobilidade_reduzida','tipo_salaid','campus' ,'edificioid']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

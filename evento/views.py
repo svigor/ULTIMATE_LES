@@ -198,7 +198,9 @@ def alterar_sala(request,id):
             if request.FILES.get('fotos'):
                 Sala1.fotos = request.FILES.get('fotos')
 
-           
+            tipo_salaid = request.POST.get('tipo_salaid')
+            TipoSala1 = TipoSala.objects.get(pk = tipo_salaid)
+            Sala1.tipo_salaid = TipoSala1
             Sala1.nome = request.POST.get('nome')
             Sala1.mobilidade_reduzida = mobilidade_reduzida_r
             Edificio1 = Edificio.objects.get(pk=request.POST.get('edificioid'))
