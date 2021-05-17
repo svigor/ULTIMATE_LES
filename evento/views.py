@@ -1,3 +1,4 @@
+from django.forms.forms import Form
 from django.shortcuts import render, redirect
 from .forms import InserirSalaForm, InscricaoForm, AlterarSalaForm
     
@@ -8,7 +9,7 @@ from django.views.generic import(
     ListView,
     CreateView,
 )
-from .models import Sala, Edificio, Formulario, Pergunta
+from .models import Evento, Sala, Edificio, Formulario, Pergunta
 from utilizadores.models import Administrador
 from utilizadores.views import user_check, mensagem
 from evento.tables import SalaTable, FormularioTable
@@ -233,8 +234,10 @@ def show_perguntas(request, id):
 
 def apagar_form(request, id):
     
-    Pergunta.objects.filter(formularioid=id).update(formularioid=None)
-    Formulario.objects.filter(id=id).delete()
-
-    return render(request,'evento/mensagem.html',{'tipo':'success','m':'O formulário foi apagado com sucesso','link':'consultar-formularios'})
+    if not Evento.objects.filter(Evento(formularioinscricaoid=id) | Evento(formulariofeedbackid=id)) :
+        Pergunta.objects.filter(formularioid=id).update(formularioid=None)
+        Formulario.objects.filter(id=id).delete()
+        return render(request,'evento/mensagem.html',{'tipo':'success','m':'O formulário foi apagado com sucesso','link':'consultar-formularios'})
+    else :
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'O formulário não pôde ser apagado','link':'consultar-formularios'})
 

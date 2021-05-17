@@ -1,6 +1,6 @@
 import django_tables2 as django_tables
 from utilizadores.models import Administrador, Utilizador
-from evento.models import Sala, Formulario
+from evento.models import Evento, Sala, Formulario
 from django.utils.html import format_html
 from django.urls import reverse
 
@@ -85,6 +85,7 @@ class FormularioTable(django_tables.Table):
             </a>
             """
         
+        # if not Evento.objects.filter(Evento(formularioinscricaoid=id) | Evento(formulariofeedbackid=id)) :
         alerta = "Tem certeza que quer apagar a sala?"
         segundo_botao = f"""
             <a onclick="alert.render('{alerta}','{reverse('apagar-form', args=[record.id])}')"
@@ -94,6 +95,12 @@ class FormularioTable(django_tables.Table):
                 </span>
             </a>
         """
+        # else :
+        #     segundo_botao = f"""
+        #             <span class="icon has-text-danger">
+        #                 <i class="mdi mdi-trash-can mdi-24px"></i>
+        #             </span>
+        #     """
         return format_html(f"""
         <div>
             {primeiro_botao}
