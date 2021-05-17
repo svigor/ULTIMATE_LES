@@ -85,22 +85,22 @@ class FormularioTable(django_tables.Table):
             </a>
             """
         
-        # if not Evento.objects.filter(Evento(formularioinscricaoid=id) | Evento(formulariofeedbackid=id)) :
-        alerta = "Tem certeza que quer apagar a sala?"
-        segundo_botao = f"""
-            <a onclick="alert.render('{alerta}','{reverse('apagar-form', args=[record.id])}')"
-                data-tooltip="Apagar">
-                <span class="icon has-text-danger">
-                    <i class="mdi mdi-trash-can mdi-24px"></i>
-                </span>
-            </a>
-        """
-        # else :
-        #     segundo_botao = f"""
-        #             <span class="icon has-text-danger">
-        #                 <i class="mdi mdi-trash-can mdi-24px"></i>
-        #             </span>
-        #     """
+        if not Evento.objects.filter(formularioinscricaoid=Formulario.objects.get(id=record.id)) and not Evento.objects.filter(formulariofeedbackid=Formulario.objects.get(id=record.id)) :
+            alerta = "Tem certeza que quer apagar a sala?"
+            segundo_botao = f"""
+                <a onclick="alert.render('{alerta}','{reverse('apagar-form', args=[record.id])}')"
+                    data-tooltip="Apagar">
+                    <span class="icon has-text-danger">
+                        <i class="mdi mdi-trash-can mdi-24px"></i>
+                    </span>
+                </a>
+            """
+        else :
+            segundo_botao = f"""
+                    <span class="icon">
+                        <i class="mdi mdi-trash-can mdi-24px" style="color: gray"></i>
+                    </span>
+            """
         return format_html(f"""
         <div>
             {primeiro_botao}

@@ -234,7 +234,7 @@ def show_perguntas(request, id):
 
 def apagar_form(request, id):
     
-    if not Evento.objects.filter(Evento(formularioinscricaoid=id) | Evento(formulariofeedbackid=id)) :
+    if not Evento.objects.filter(formularioinscricaoid=Formulario.objects.get(id=id)) and not Evento.objects.filter(formulariofeedbackid=Formulario.objects.get(id=id)) :
         Pergunta.objects.filter(formularioid=id).update(formularioid=None)
         Formulario.objects.filter(id=id).delete()
         return render(request,'evento/mensagem.html',{'tipo':'success','m':'O formulário foi apagado com sucesso','link':'consultar-formularios'})
