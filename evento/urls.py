@@ -8,7 +8,8 @@ from .views import (
     load_edificios,
     consultar_formularios,
     show_perguntas,
-    apagar_form
+    apagar_form,
+    consultar_perguntas,
 )
 from evento import views
 
@@ -21,6 +22,7 @@ urlpatterns = [
     path('consultarformularios/', consultar_formularios.as_view(), name='consultar-formularios'),
     path('consultarperguntasformulario/<int:id>', show_perguntas, name='consultar-perguntas-formulario'), 
     path('apagarformulario/<int:id>', apagar_form, name='apagar-form'),
+    path('perguntas/', consultar_perguntas.as_view(), name='consultar-perguntas'),
 
     path('ajax/load-edificios/', views.load_edificios, name='ajax_load_edificios'),
 ]

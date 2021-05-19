@@ -12,7 +12,7 @@ from django.views.generic import(
 from .models import Evento, Sala, Edificio, Formulario, Pergunta
 from utilizadores.models import Administrador
 from utilizadores.views import user_check, mensagem
-from evento.tables import SalaTable, FormularioTable
+from evento.tables import PerguntaTable, SalaTable, FormularioTable
 from evento.filters import SalasFilter
 from django.contrib.auth import *
 from django.contrib import messages
@@ -241,3 +241,8 @@ def apagar_form(request, id):
     else :
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'O formulário não pôde ser apagado','link':'consultar-formularios'})
 
+class consultar_perguntas(SingleTableMixin, ListView):
+    model = Pergunta
+    table_class = PerguntaTable
+    template_name = 'evento/consultar_perguntas.html'
+    table_pagination = {'per_page':10}
