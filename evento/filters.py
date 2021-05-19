@@ -1,18 +1,9 @@
 import django_filters
-from evento.models import Sala
+from evento.models import Inscricao
 from django.db.models import Q
 
-get_mobilidade_reduzida_choices = [
-    ('True','Sim'),
-    ('False','Não')
-]
-
-
-
-
-class SalasFilter(django_filters.FilterSet):
-    mobilidade_reduzida = django_filters.MultipleChoiceFilter(choices=get_mobilidade_reduzida_choices)
+class InscricaoFilter(django_filters.FilterSet):
 
     class Meta:
-        model = Sala
-        fields = ['capacidade', 'nome', 'mobilidade_reduzida', 'edificioid']
+        model = Inscricao
+        fields =  ['eventoid', 'requer_certificado']

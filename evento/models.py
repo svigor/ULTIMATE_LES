@@ -6,38 +6,23 @@
 #   * Remove `managed = True` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-from django.urls import reverse
-from utilizadores.models import Participante, Proponente, Administrador
-from django.db.models.signals import pre_save
-import os
-
+from django.utils import timezone
+from users.models import MyUser
+from datetime import date
 
 class Campus(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    nome = models.IntegerField(db_column='Nome', blank=True, null=True)
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome = models.IntegerField(db_column='Nome', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
         db_table = 'campus'
 
-    def __str__(slef):
-        return slef.nome
-
 
 class Edificio(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    nome = models.CharField(
-        db_column='Nome', max_length=255, blank=True, null=True)
-    # Field name made lowercase.
-    campusid = models.ForeignKey(
-        Campus, models.DO_NOTHING, db_column='CampusID')
-
-    def __str__(self):
-        return self.nome
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    campusid = models.ForeignKey(Campus, models.DO_NOTHING, db_column='CampusID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -45,13 +30,9 @@ class Edificio(models.Model):
 
 
 class Equipamento(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    quantidade = models.IntegerField(db_column='Quantidade')
-    # Field name made lowercase.
-    tipo_equipamentoid = models.ForeignKey(
-        'TipoEquipamento', models.DO_NOTHING, db_column='Tipo_EquipamentoID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    quantidade = models.IntegerField(db_column='Quantidade')  # Field name made lowercase.
+    tipo_equipamentoid = models.ForeignKey('TipoEquipamento', models.DO_NOTHING, db_column='Tipo_EquipamentoID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -59,46 +40,32 @@ class Equipamento(models.Model):
 
 
 class Evento(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    capacidade = models.IntegerField(db_column='Capacidade')
-    # Field name made lowercase.
-    tipo = models.IntegerField(db_column='Tipo', blank=True, null=True)
-    # Field name made lowercase. This field type is a guess.
-    aprovado = models.TextField(db_column='Aprovado')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    capacidade = models.IntegerField(db_column='Capacidade')  # Field name made lowercase.
+    tipo = models.ForeignKey('TipoDeEvento', models.CASCADE, db_column='TipoDeEventoID')  # Field name made lowercase.
+    aprovado = models.TextField(db_column='Aprovado')  # Field name made lowercase.
     dia = models.DateField(db_column='Dia')  # Field name made lowercase.
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    hora_de_inicio = models.TimeField(
-        db_column='Hora de inicio', blank=True, null=True)
-    # Field name made lowercase.
-    duracao = models.IntegerField(db_column='Duracao')
-    # Field name made lowercase.
-    campusid = models.IntegerField(db_column='CampusID', blank=True, null=True)
-    # Field name made lowercase.
-    formularioinscricaoid = models.ForeignKey(
-        'Formulario', models.DO_NOTHING, db_column='FormularioInscricaoID', related_name='capacidade')
-    # Field name made lowercase.
-    formulariofeedbackid = models.ForeignKey(
-        'Formulario', models.DO_NOTHING, db_column='FormularioFeedbackID', related_name='tipo')
-    # Field name made lowercase.
-    proponenteutilizadorid = models.ForeignKey(
-        Proponente, models.DO_NOTHING, db_column='ProponenteUtilizadorID', blank=True, null=True)
+    hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    duracao = models.IntegerField(db_column='Duracao')  # Field name made lowercase.
+    campusid = models.IntegerField(db_column='CampusID', blank=True, null=True)  # Field name made lowercase.
+    formulariofeedbackid = models.ForeignKey('Formulario', models.DO_NOTHING, db_column='FormularioFeedbackID', related_name='feedbdackid')  # Field name made lowercase.
+    formularioinscricaoid = models.ForeignKey('Formulario', models.DO_NOTHING, db_column='FormularioInscricaoID')  # Field name made lowercase.
+    proponenteutilizadorid = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='ProponenteUtilizadorID', blank=True, null=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
         db_table = 'evento'
 
+    def __str__(self):
+        return self.nome
+    
+
 
 class Feedback(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    eventoid = models.ForeignKey(
-        Evento, models.DO_NOTHING, db_column='EventoID')
-    # Field name made lowercase.
-    participanteutilizadorid = models.ForeignKey(
-        Participante, models.DO_NOTHING, db_column='ParticipanteUtilizadorID', blank=True, null=True)
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
+    participanteutilizadorid = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='ParticipanteUtilizadorID', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -106,14 +73,9 @@ class Feedback(models.Model):
 
 
 class Formulario(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    tipo_de_eventoid = models.ForeignKey(
-        'TipoDeEvento', models.DO_NOTHING, db_column='Tipo de EventoID')
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    tipo_de_formularioid = models.ForeignKey(
-        'TipoDeFormulario', models.DO_NOTHING, db_column='Tipo de FormularioID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    tipo_de_eventoid = models.ForeignKey('TipoDeEvento', models.DO_NOTHING, db_column='Tipo de EventoID')  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    tipo_de_formularioid = models.ForeignKey('TipoDeFormulario', models.DO_NOTHING, db_column='Tipo de FormularioID')  # Field name made lowercase. Field renamed to remove unsuitable characters.
 
     class Meta:
         managed = True
@@ -121,19 +83,12 @@ class Formulario(models.Model):
 
 
 class Inscricao(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    eventoid = models.ForeignKey(
-        Evento, models.DO_NOTHING, db_column='EventoID')
-    # Field name made lowercase. Field renamed to remove unsuitable characters. This field type is a guess.
-    requer_certificado = models.TextField(
-        db_column='Requer Certificado', blank=True, null=True)
-    # Field name made lowercase. This field type is a guess.
-    presenca = models.TextField(db_column='Presenca', blank=True, null=True)
-    # Field name made lowercase.
-    participanteutilizadorid = models.ForeignKey(
-        Participante, models.DO_NOTHING, db_column='ParticipanteUtilizadorID', blank=True, null=True)
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    requer_certificado = models.BooleanField(db_column='Requer Certificado', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    presenca = models.BooleanField(db_column='Presenca', blank=True, null=True)  # Field name made lowercase.
+    eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
+    participanteutilizadorid = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='ParticipanteUtilizadorID', blank=True, null=True)  # Field name made lowercase.
+    datainscricao = models.DateField(db_column='Data de Inscricao', default=date.today, blank=True, null=False)
 
     class Meta:
         managed = True
@@ -141,38 +96,18 @@ class Inscricao(models.Model):
 
 
 class Logistica(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    eventoid = models.ForeignKey(
-        Evento, models.DO_NOTHING, db_column='EventoID')
-    # Field name made lowercase.
-    quantidade = models.IntegerField(
-        db_column='Quantidade', blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    dia_inicial = models.DateField(
-        db_column='Dia inicial', blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    dia_final = models.DateField(db_column='Dia final', blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    hora_de_inicio = models.TimeField(
-        db_column='Hora de inicio', blank=True, null=True)
-    # Field name made lowercase.
-    duracao = models.IntegerField(db_column='Duracao', blank=True, null=True)
-    # Field name made lowercase. This field type is a guess.
-    valido = models.TextField(db_column='Valido', blank=True, null=True)
-    # Field name made lowercase.
-    capacidade = models.IntegerField(
-        db_column='Capacidade', blank=True, null=True)
-    # Field name made lowercase.
-    tipo_servicoid = models.ForeignKey(
-        'TipoServico', models.DO_NOTHING, db_column='Tipo_ServicoID')
-    # Field name made lowercase.
-    tipo_equipamentoid = models.ForeignKey(
-        'TipoEquipamento', models.DO_NOTHING, db_column='Tipo_EquipamentoID')
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    tipos_de_recursosid = models.ForeignKey(
-        'TiposDeRecursos', models.DO_NOTHING, db_column='Tipos de recursosID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    quantidade = models.IntegerField(db_column='Quantidade', blank=True, null=True)  # Field name made lowercase.
+    dia_inicial = models.DateField(db_column='Dia inicial', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    dia_final = models.DateField(db_column='Dia final', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    duracao = models.IntegerField(db_column='Duracao', blank=True, null=True)  # Field name made lowercase.
+    valido = models.TextField(db_column='Valido', blank=True, null=True)  # Field name made lowercase.
+    capacidade = models.IntegerField(db_column='Capacidade', blank=True, null=True)  # Field name made lowercase.
+    eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
+    tipo_equipamentoid = models.ForeignKey('TipoEquipamento', models.DO_NOTHING, db_column='Tipo_EquipamentoID')  # Field name made lowercase.
+    tipo_servicoid = models.ForeignKey('TipoServico', models.DO_NOTHING, db_column='Tipo_ServicoID')  # Field name made lowercase.
+    tipos_de_recursosid = models.ForeignKey('TiposDeRecursos', models.DO_NOTHING, db_column='Tipos de recursosID')  # Field name made lowercase. Field renamed to remove unsuitable characters.
 
     class Meta:
         managed = True
@@ -180,14 +115,9 @@ class Logistica(models.Model):
 
 
 class Opcoes(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    texto = models.CharField(
-        db_column='Texto', max_length=255, blank=True, null=True)
-    # Field name made lowercase.
-    perguntaid = models.ForeignKey(
-        'Pergunta', models.DO_NOTHING, db_column='PerguntaID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    texto = models.CharField(db_column='Texto', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    perguntaid = models.ForeignKey('Pergunta', models.DO_NOTHING, db_column='PerguntaID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -195,17 +125,10 @@ class Opcoes(models.Model):
 
 
 class Pergunta(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    titulo = models.CharField(
-        db_column='Titulo', max_length=255, blank=True, null=True)
-    # Field name made lowercase.
-    formularioid = models.ForeignKey(
-        Formulario, models.DO_NOTHING, db_column='FormularioID')
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    tipo_de_perguntaid = models.ForeignKey(
-        'TipoDePergunta', models.DO_NOTHING, db_column='Tipo de PerguntaID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    titulo = models.CharField(db_column='Titulo', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    formularioid = models.ForeignKey(Formulario, models.DO_NOTHING, db_column='FormularioID')  # Field name made lowercase.
+    tipo_de_perguntaid = models.ForeignKey('TipoDePergunta', models.DO_NOTHING, db_column='Tipo de PerguntaID')  # Field name made lowercase. Field renamed to remove unsuitable characters.
 
     class Meta:
         managed = True
@@ -213,24 +136,13 @@ class Pergunta(models.Model):
 
 
 class PeriodoEquipamento(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    dia_inicial = models.DateField(
-        db_column='Dia inicial', blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    dia_final = models.DateField(db_column='Dia final', blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    hora_de_inicio = models.TimeField(
-        db_column='Hora de inicio', blank=True, null=True)
-    # Field name made lowercase.
-    duracao = models.IntegerField(db_column='Duracao', blank=True, null=True)
-    # Field name made lowercase.
-    equipamentoid = models.ForeignKey(
-        Equipamento, models.DO_NOTHING, db_column='EquipamentoID')
-    # Field name made lowercase.
-    eventoid = models.ForeignKey(
-        Evento, models.DO_NOTHING, db_column='EventoID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    dia_inicial = models.DateField(db_column='Dia inicial', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    dia_final = models.DateField(db_column='Dia final', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    duracao = models.IntegerField(db_column='Duracao', blank=True, null=True)  # Field name made lowercase.
+    equipamentoid = models.ForeignKey(Equipamento, models.DO_NOTHING, db_column='EquipamentoID')  # Field name made lowercase.
+    eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -238,23 +150,13 @@ class PeriodoEquipamento(models.Model):
 
 
 class PeriodoSala(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    dia_inicial = models.DateField(
-        db_column='Dia inicial', blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    dia_final = models.DateField(db_column='Dia final', blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    hora_de_inicio = models.TimeField(
-        db_column='Hora de inicio', blank=True, null=True)
-    # Field name made lowercase.
-    duraco = models.IntegerField(db_column='Duracao')
-    # Field name made lowercase.
-    salaid = models.ForeignKey('Sala', models.DO_NOTHING, db_column='SalaID')
-    # Field name made lowercase.
-    eventoid = models.ForeignKey(
-        Evento, models.DO_NOTHING, db_column='EventoID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    dia_inicial = models.DateField(db_column='Dia inicial', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    dia_final = models.DateField(db_column='Dia final', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    duracao = models.IntegerField(db_column='Duracao')  # Field name made lowercase.
+    eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
+    salaid = models.ForeignKey('Sala', models.DO_NOTHING, db_column='SalaID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -262,24 +164,13 @@ class PeriodoSala(models.Model):
 
 
 class PeriodoServico(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    dia_inicial = models.DateField(
-        db_column='Dia inicial', blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    dia_final = models.DateField(db_column='Dia final', blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    hora_de_inicio = models.TimeField(
-        db_column='Hora de inicio', blank=True, null=True)
-    # Field name made lowercase.
-    duracao = models.IntegerField(db_column='Duracao', blank=True, null=True)
-    # Field name made lowercase.
-    servicosid = models.ForeignKey(
-        'Servicos', models.DO_NOTHING, db_column='ServicosID')
-    # Field name made lowercase.
-    eventoid = models.ForeignKey(
-        Evento, models.DO_NOTHING, db_column='EventoID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    dia_inicial = models.DateField(db_column='Dia inicial', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    dia_final = models.DateField(db_column='Dia final', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    duracao = models.IntegerField(db_column='Duracao', blank=True, null=True)  # Field name made lowercase.
+    eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
+    servicosid = models.ForeignKey('Servicos', models.DO_NOTHING, db_column='ServicosID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -287,23 +178,12 @@ class PeriodoServico(models.Model):
 
 
 class Respostas(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    perguntaid = models.ForeignKey(
-        Pergunta, models.DO_NOTHING, db_column='PerguntaID')
-    # Field name made lowercase.
-    texto = models.CharField(
-        db_column='Texto', max_length=255, blank=True, null=True)
-    # Field name made lowercase.
-    opcoesid = models.ForeignKey(
-        Opcoes, models.DO_NOTHING, db_column='OpcoesID')
-    # Field name made lowercase.
-    eventoid = models.ForeignKey(
-        Evento, models.DO_NOTHING, db_column='EventoID')
-    # Field name made lowercase.
-    inscricaoid = models.ForeignKey(
-        Inscricao, models.DO_NOTHING, db_column='InscricaoID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    texto = models.CharField(db_column='Texto', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
+    inscricaoid = models.ForeignKey(Inscricao, models.DO_NOTHING, db_column='InscricaoID')  # Field name made lowercase.
+    opcoesid = models.ForeignKey(Opcoes, models.DO_NOTHING, db_column='OpcoesID')  # Field name made lowercase.
+    perguntaid = models.ForeignKey(Pergunta, models.DO_NOTHING, db_column='PerguntaID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -311,48 +191,23 @@ class Respostas(models.Model):
 
 
 class Sala(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    capacidade = models.IntegerField(db_column='Capacidade')
-    # Field name made lowercase.
-    fotos = models.ImageField(
-        db_column='Fotos', upload_to='salas', null=True, blank=True)
-    # Field name made lowercase.
-    nome = models.CharField(db_column='Nome', max_length=255, blank=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters. This field type is a guess.
-    mobilidade_reduzida = models.BooleanField(db_column='Mobilidade reduzida')
-    # Field name made lowercase.
-    edificioid = models.ForeignKey(
-        Edificio, models.DO_NOTHING, db_column='EdificioID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    capacidade = models.IntegerField(db_column='Capacidade')  # Field name made lowercase.
+    fotos = models.CharField(db_column='Fotos', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    mobilidade_reduzida = models.IntegerField(db_column='Mobilidade reduzida')  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    edificioid = models.ForeignKey(Edificio, models.DO_NOTHING, db_column='EdificioID')  # Field name made lowercase.
 
     class Meta:
         managed = True
         db_table = 'sala'
 
-    def get_absolute_url(self):
-        return reverse('home')
-
-    def delete(self, *args, **kwargs):
-        # You have to prepare what you need before delete the model
-        storage, path = self.image.storage, self.image.path
-        # Delete the model before the file
-        super(Sala, self).delete(*args, **kwargs)
-        # Delete the file after the model
-        storage.delete(path)
-
 
 class Servicos(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    tipo = models.CharField(
-        db_column='Tipo', max_length=255, blank=True, null=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    preco_base = models.FloatField(db_column='Preco base')
-    # Field name made lowercase.
-    tipo_servicoid = models.ForeignKey(
-        'TipoServico', models.DO_NOTHING, db_column='Tipo_ServicoID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    tipo = models.CharField(db_column='Tipo', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    preco_base = models.FloatField(db_column='Preco base')  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    tipo_servicoid = models.ForeignKey('TipoServico', models.DO_NOTHING, db_column='Tipo_ServicoID')  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -360,14 +215,8 @@ class Servicos(models.Model):
 
 
 class TipoDeEvento(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    nome = models.CharField(
-        db_column='Nome', max_length=255, blank=True, null=True)
-    # Field name made lowercase.
-    eventoid = models.ForeignKey(
-        Evento, models.DO_NOTHING, db_column='EventoID')
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -375,11 +224,8 @@ class TipoDeEvento(models.Model):
 
 
 class TipoDeFormulario(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    nome = models.CharField(
-        db_column='Nome', max_length=255, blank=True, null=True)
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -387,11 +233,8 @@ class TipoDeFormulario(models.Model):
 
 
 class TipoDePergunta(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase.
-    nome = models.CharField(
-        db_column='Nome', max_length=255, blank=True, null=True)
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -399,8 +242,7 @@ class TipoDePergunta(models.Model):
 
 
 class TipoEquipamento(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     nome = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
@@ -409,8 +251,7 @@ class TipoEquipamento(models.Model):
 
 
 class TipoServico(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     nome = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
@@ -419,11 +260,8 @@ class TipoServico(models.Model):
 
 
 class TiposDeRecursos(models.Model):
-    # Field name made lowercase.
-    id = models.AutoField(db_column='ID', primary_key=True)
-    # Field name made lowercase. Field renamed to remove unsuitable characters.
-    tipo_de_recurso = models.IntegerField(
-        db_column='Tipo de recurso', blank=True, null=True)
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    tipo_de_recurso = models.IntegerField(db_column='Tipo de recurso', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
 
     class Meta:
         managed = True

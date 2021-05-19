@@ -1,20 +1,13 @@
 from django.urls import path
-from .views import (
-    SalaCreateView,
-    home,
-    consultar_salas,
-    apagar_sala,
-    alterar_sala,
-    load_edificios
-)
+from evento.views import (homepage, vieweventos, criarinscricao, viewinscricao, apagarinscricao, alterarinscricao, viewinscricaoProponente)
 from evento import views
 
 urlpatterns = [
-    path('',home,name ='home'),
-    path('sala/new/',SalaCreateView , name='criar_sala'),
-    path('consultarsalas', consultar_salas.as_view(), name='consultar-salas'),
-    path('apagarsala/<int:id>', apagar_sala, name = 'apagar-sala'),
-    path('alterar/<int:id>', alterar_sala, name = 'alterar-sala'),
-
-    path('ajax/load-edificios/', views.load_edificios, name='ajax_load_edificios'),
+	path('', homepage, name='homepage'),
+	path('eventos/', vieweventos, name='vieweventos'),
+	path('eventos/inscricao/<int:pk_test>', criarinscricao, name='criarinscricao'),
+	path('inscricao/', viewinscricao.as_view(), name='viewinscricao'),
+	path('eventos/inscricao-no-meu-evento', viewinscricaoProponente.as_view(), name='viewinscricaomeuevento'),
+	path('inscricao/<int:id>', apagarinscricao, name='apagarinscricao'),
+	path('inscricao2/<int:id>', alterarinscricao, name='alterarinscricao'),
 ]

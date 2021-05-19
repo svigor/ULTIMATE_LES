@@ -1,5 +1,5 @@
 from django import template
-from utilizadores.models import Utilizador, Participante, Proponente, Administrador
+from users.models import MyUser
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 register = template.Library()

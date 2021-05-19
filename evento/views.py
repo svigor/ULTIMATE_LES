@@ -1,220 +1,111 @@
-from django.shortcuts import render, redirect
-from .forms import InserirSalaForm, InscricaoForm, AlterarSalaForm
-    
+from django.shortcuts import render, redirect, get_object_or_404
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
-from django.http import HttpResponseRedirect
-from django.views.generic import(
-    ListView,
-    CreateView,
-)
-from .models import Sala, Edificio
-from utilizadores.models import Administrador
-from utilizadores.views import user_check, mensagem
-from evento.tables import SalaTable
-from evento.filters import SalasFilter
+from django.views.generic import ListView
+from users.models import MyUser
+from evento.forms import InserirInscricao, AlterarInscricao
+from evento.models import (Evento, Inscricao)
 from django.contrib.auth import *
-from django.contrib import messages
-# Create your views here.
+from evento.tables import InscricaoTable, InscricaoTableProponente
+from evento.filters import InscricaoFilter
+from django.template.defaultfilters import register
+from django.contrib.sessions.backends.base import SessionBase
+
+import datetime
 
 
-def home(request):
+
+
+def homepage(request):
     return render(request, 'evento/inicio.html')
 
-class consultar_salas(SingleTableMixin, FilterView):
-    ''' Consultar todos os utilizadores com as funcionalidades dos filtros '''
-    table_class = SalaTable
-    template_name = 'evento/consultar_salas.html'
-    filterset_class = SalasFilter
+
+def vieweventos(request):
+    context = {
+        'eventos' : Evento.objects.all()
+    }
+    return render(request, 'evento/vieweventos.html', context)    
+
+def criarinscricao(request, pk_test):
+    if not Evento.objects.filter(pk=pk_test).exists():
+        return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Evento não existe', 'link':'homepage'})
+    if request.user.is_authenticated:
+
+    # if this is a POST request we need to process the form data
+        if request.method == 'POST':
+            # create a form instance and populate it with data from the request:
+            form = InserirInscricao(request.POST)
+            # check whether it's valid:
+            if form.is_valid():
+                evento_id_r = Evento.objects.get(pk=pk_test)
+                participanteutilizadorid_r = request.user
+                datainscricao_r = datetime.date.today()
+                requer_certificado_r = 0
+                if request.POST.get('requer_certificado') == 'on':
+                    requer_certificado_r = 1
+                # Inscricao_r = Inscricao(eventoid=evento_id_r, requer_certificado=requer_certificado_r,
+                #                         participanteutilizadorid=participanteutilizadorid_r, datainscricao=datainscricao_r)
+                # Inscricao_r.save()
+                # return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'Inscrição feita com sucesso', 'link':'homepage'})
+            else:
+                return redirect(criarinscricao)
+
+        # if a GET (or any other method) we'll create a blank form
+        else:
+            form = InserirInscricao()
+            return render(request, 'evento/inscricao.html', {'form': form, 'pk_test':pk_test, 'participante':request.user.username, 'evento':Evento.objects.get(pk=pk_test)})
+    else:
+        return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Realizar o login primeiro', 'link':'homepage'})
+
+class viewinscricao(SingleTableMixin, FilterView):
+    ''' Consultar as inscricoes do participante que se encontra no sistema '''
+    table_class = InscricaoTable
+    template_name = 'evento/viewinscricao.html'
+    filterset_class = InscricaoFilter
     table_pagination = {
         'per_page': 10
     }
 
-    def dispatch(self, request, *args, **kwargs):
-        user_check_var = user_check(
-            request=request, user_profile=[Administrador])
-        if not user_check_var.get('exists'):
-            return user_check_var.get('render')
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(SingleTableMixin, self).get_context_data(**kwargs)
-        table = self.get_table(**self.get_table_kwargs())
-        table.request = self.request
-        table.fixed = True
-        context[self.get_context_table_name(table)] = table
-        return context
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            print(self.request.user.id)
+            return Inscricao.objects.filter(participanteutilizadorid=self.request.user.id)
 
 
-def SalaCreateView(request):
+class viewinscricaoProponente(SingleTableMixin, FilterView):
+    ''' Consultar as inscricoes por parte do Proponente apenas para o seus eventos '''
+    table_class = InscricaoTableProponente
+    template_name = 'evento/viewinscricao2.html'
+    filterset_class = InscricaoFilter
+    table_pagination = {
+        'per_page': 10
+    }
 
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        if Sala.objects.filter(nome = request.POST.get('nome')).exists():
-            return render(request,'evento/mensagem.html',{'tipo':'error','m':'A sala com esse nome já existe','link':'consultar-salas'})
-        # create a form instance and populate it with data from the request:
-        form = InserirSalaForm(request.POST, request.FILES)
-        # check whether it's valid:
-      
-       
-        if form.is_valid():
-            edificio_id_r = request.POST.get('edificioid')
-            Edificio_r = Edificio.objects.get(pk=edificio_id_r)
-            ##Edificio_r = Edificio.objects.filter(pk=edificio_id_r)
+    def get_queryset(self):
+        if self.request.user.is_authenticated and self.request.user.role.role == 'Proponente':
+            return Inscricao.objects.filter(eventoid__in=Evento.objects.filter(proponenteutilizadorid=self.request.user.id))
 
-            capacidade_r = request.POST.get('capacidade')
-            #fotos_r = request.POST.get('fotos')
-            fotosw = request.FILES.get('fotos')
-            nome_r = request.POST.get('nome')
-            mobilidade_reduzida_r = request.POST.get('mobilidade_reduzida')
-            mobilidade_reduzida_r = 0
-            
-            if request.POST.get('mobilidade_reduzida') == 'on':
-                mobilidade_reduzida_r = 1
 
-            Sala_r = Sala(capacidade=capacidade_r, fotos=fotosw, nome=nome_r,
-                          mobilidade_reduzida=mobilidade_reduzida_r,edificioid=Edificio_r)
-            Sala_r.save()
-            return render(
-                request,
-                'evento/mensagem.html',
-                {
-                    'tipo':'success',
-                    'm':'A sala foi criada com o sucesso',
-                    'link':'consultar-salas'
-                }
-            )
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = InserirSalaForm()
-
-    return render(request, 'evento/criar_sala.html', {'form': form})
-
-def load_edificios(request):
-    campus_id = request.GET.get('campus')
-    edificios = Edificio.objects.filter(campusid=campus_id).order_by('nome')
-    print("CAMPUSID", campus_id)
-    print("EDIFICIOS ",edificios)
-    return render(request, 'evento/edificios_dropdown_list.html', {'edificios': edificios})
-
-def InscricaoView(request):
-
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = InscricaoForm(request.POST, request.FILES)
-        # check whether it's valid:
-        
-       
-        if form.is_valid():
-            edificio_id_r = request.POST.get('edificioid')
-            Edificio_r = Edificio.objects.get(pk=edificio_id_r)
-            ##Edificio_r = Edificio.objects.filter(pk=edificio_id_r)
-            
-            
-
-            capacidade_r = request.POST.get('capacidade')
-            #fotos_r = request.POST.get('fotos')
-            fotosw = request.FILES.get('fotos')
-            nome_r = request.POST.get('nome')
-            mobilidade_reduzida_r = request.POST.get('mobilidade_reduzida')
-            mobilidade_reduzida_r = 0
-            
-            if request.POST.get('mobilidade_reduzida') == 'on':
-                mobilidade_reduzida_r = 1
-
-            Sala_r = Sala(capacidade=capacidade_r, fotos=fotosw, nome=nome_r,
-                          mobilidade_reduzida=mobilidade_reduzida_r,edificioid=Edificio_r)
-            Sala_r.save()
-            return HttpResponseRedirect('http://127.0.0.1:8000/sala/new/')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = InserirSalaForm()
-
-    return render(request, 'evento/criar_sala.html', {'form': form})
-
-def apagar_sala(request, id):
+def apagarinscricao(request, id):
     if request.user.is_authenticated:
-        user = get_user(request)
-        if user.groups.filter(name = "Administrador").exists():
-            u = "Administrador"
-        else:
-            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
-    Sala.objects.get(id=id).fotos.delete(save=True)
-    Sala.objects.filter(id=id).delete()
-
-    return render(request,'evento/mensagem.html',{'tipo':'success','m':'A sala foi apagada com o sucesso','link':'consultar-salas'})
-
-def alterar_sala(request,id):
-    if request.user.is_authenticated:
-        user = get_user(request)
-        if user.groups.filter(name="Administrador").exists():
-            u = "Administrador"
-        else:
-            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'home'})
-
-    
-    if request.method == 'POST':
-        sala_object = Sala.objects.get(id=id)
-        # submited_data = request.POST.copy()
-        # form = AlterarSalaForm(submited_data, request.FILES.copy(), instance=sala_object)
-        form = AlterarSalaForm(request.POST, request.FILES, instance=sala_object,initial={'campus':sala_object.edificioid.campusid.pk})
-        
-
-        nome = request.POST.get('nome')
-        erros = []
-
-
-        if Sala.objects.exclude(nome = sala_object.nome).filter(nome = request.POST.get('nome')).exists():
-            msg = "A sala com esse nome já existe"
-            return render(request,'evento/alterarsala.html',{'msg':msg,'id':id,'form':form})
-
-    
-        if form.is_valid() and len(erros)==0:
-            mobilidade_reduzida_r = 0
-            if request.POST.get('mobilidade_reduzida') == 'on':
-                mobilidade_reduzida_r = 1
-            
-            
-            if(sala_object.fotos):
-                Sala.objects.get(id=id).fotos.delete(save=True)
-            
-            Sala1 = sala_object
-            Sala1.capacidade = request.POST.get('capacidade')
-            if not request.FILES.get('fotos') is not False:
-                Sala1.fotos = request.FILES.get('fotos')
-            if request.FILES.get('fotos') is None:
-                Sala.objects.get(id=id).fotos.delete(save=True)
-           
-            Sala1.nome = request.POST.get('nome')
-            Sala1.mobilidade_reduzida = mobilidade_reduzida_r
-            Edificio1 = Edificio.objects.get(pk=request.POST.get('edificioid'))
-            Sala1.edificioid = Edificio1
-            Sala1.save()
-            return render(request,'evento/mensagem.html',{'tipo':'success','m':'A sala foi alterada com o sucesso','link':'consultar-salas'})
-
-
-        else:
-            
-            return render(
-                request= request,
-                template_name='evento/alterarsala.html',
-                context={
-                    'form':form, 'msg':msg, 'erros':erros, 'id':id
-                }
-            )
+        Inscricao.objects.filter(id=id).delete()
+        return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'Inscrição Cancelada com Sucesso', 'link':'viewinscricao'})
     else:
-        sala_object = Sala.objects.get(id=id)
-        form = AlterarSalaForm(instance=sala_object,initial={'campus':sala_object.edificioid.campusid.pk})
-        #form = AlterarSalaForm(initial={'capacidade':sala_object.capacidade,'nome':sala_object.nome})
-        return render(
-                request,
-                'evento/alterarsala.html',
-                {'form': form, 'id':id}
-                
-            )
+        return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Realizar o login primeiro'})
 
-        
-
+def alterarinscricao(request, id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            forms = AlterarInscricao(request.POST)
+            if forms.is_valid():
+                presenca_r = 0
+                if request.POST.get('presenca') == 'on':
+                    presenca_r = 1
+                Inscricao.objects.filter(id=id).update(presenca=presenca_r)
+                return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'Inscrição alterada com sucesso', 'link':'viewinscricao'})
+            else:
+                return redirect(alterarinscricao)
+        else:
+            forms = AlterarInscricao()
+            return render(request, 'evento/alterarinscricao.html', {'forms': forms, 'id':id})
+# Create your views here.
