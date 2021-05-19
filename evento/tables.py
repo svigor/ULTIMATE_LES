@@ -64,6 +64,8 @@ class SalaTable(django_tables.Table):
         else:
             return "Não"
 
+    
+
     def render_acoes(self, record):
         primeiro_botao = """<span class="icon"></span>"""
        
