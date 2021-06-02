@@ -10,7 +10,7 @@
     <div class="column is-3">
         <div class="menu">
             <div class="menu-label">
-                Filtros Servicos
+                Filtros Serviços
             </div>
             <form method="get">
                 <ul class="menu-list">
@@ -29,40 +29,35 @@
                     </li>
                     
 
-                    <li>
-                        <div class="field">
-                            <label>Nome:</label>
-                        </div>
-                        <ul>
-                            {% for value, label in filter.form.fields.nome.choices %}
-                            <div class="field" style="padding-left: 1rem;">
-                                <label class="checkbox">
-                                    <input type="checkbox" name="{{filter.form.nome.name}}"
-                                        value="{{value|stringformat:'s'}}"
-                                        {% if value|stringformat:'s' in filter.form.m_r.value %}checked{% endif %}>
-                                    {{label}}
-                                </label>
-                            </div>
-                            {% endfor %}
-                        </ul>
-                    </li>
+
+                    
 
                     <li>
+                        
+
+
                         <div class="field">
-                            <label>Mobilidade reduzida:</label>
+                            <label>Tipo de serviço:</label>
                         </div>
                         <ul>
-                            {% for value, label in filter.form.fields.preco_base.choices %}
+                            
+                            {% for value, label in filter.form.fields.tipo_servicoid.choices  %}
+                            {%if label == '---------'%}
+                            {% else %}
+                            
                             <div class="field" style="padding-left: 1rem;">
                                 <label class="checkbox">
-                                    <input type="checkbox" name="{{filter.form.preco_base.name}}"
+                                    <input type="checkbox" name="{{filter.form.tipo_servicoid.name}}"
                                         value="{{value|stringformat:'s'}}"
-                                        {% if value|stringformat:'s' in filter.form.m_r.value %}checked{% endif %}>
+                                        {% if value|stringformat:'s' in filter.form.tipo_servicoid.value %}checked{% endif %}>
                                     {{label}}
                                 </label>
                             </div>
+                            {%endif%}
+
                             {% endfor %}
                         </ul>
+
                     </li>
 
                 </ul>
