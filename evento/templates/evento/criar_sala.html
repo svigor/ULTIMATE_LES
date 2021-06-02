@@ -37,7 +37,9 @@
                             
                             <div style="margin-top: 2%;">   
                                 {{ form.fotos.label}}
-                                {{ form.fotos }}
+                                <div>
+                                    {{ form.fotos }}
+                                </div>
                             </div>
                             
 
@@ -52,17 +54,28 @@
                             
                             <div style="margin-top: 2.1%;">
                                 {{ form.tipo_salaid.label}}
-                                {{ form.tipo_salaid }}
+                                <div class="select" style="width: 100%;">
+                                    {{ form.tipo_salaid }}
+                                </div>
                             </div>
 
                             <div style="margin-top: 2.1%;">
-                                {{ form.campus.label}}
-                                {{ form.campus }}
+                                <div>
+                                    {{ form.campus.label}}
+                                </div>
+                                
+                                <div class="select" style="width: 100%;">
+                                    {{ form.campus }}
+                                </div>
                             </div>
 
                             <div style="margin-top: 2.1%;">
-                                {{ form.edificioid.label}}
-                                {{ form.edificioid }}
+                                <div>
+                                    {{ form.edificioid.label}}
+                                </div>
+                                <div class="select" style="width: 100%;">
+                                    {{ form.edificioid }}
+                                </div>
                             </div>
                             
                             
