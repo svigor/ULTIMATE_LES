@@ -31,36 +31,21 @@
 
                     <li>
                         <div class="field">
-                            <label>Nome:</label>
+                            <label>Tipo de equipamento:</label>
                         </div>
                         <ul>
-                            {% for value, label in filter.form.fields.nome.choices %}
+                            {% for value, label in filter.form.fields.tipo_equipamentoid.choices %}
+                            {% if label == '---------' %}
+                            {%else%}
                             <div class="field" style="padding-left: 1rem;">
                                 <label class="checkbox">
-                                    <input type="checkbox" name="{{filter.form.nome.name}}"
+                                    <input type="checkbox" name="{{filter.form.tipo_equipamentoid.name}}"
                                         value="{{value|stringformat:'s'}}"
-                                        {% if value|stringformat:'s' in filter.form.m_r.value %}checked{% endif %}>
+                                        {% if value|stringformat:'s' in filter.form.tipo_equipamentoid.value %}checked{% endif %}>
                                     {{label}}
                                 </label>
                             </div>
-                            {% endfor %}
-                        </ul>
-                    </li>
-
-                    <li>
-                        <div class="field">
-                            <label>Mobilidade reduzida:</label>
-                        </div>
-                        <ul>
-                            {% for value, label in filter.form.fields.preco_base.choices %}
-                            <div class="field" style="padding-left: 1rem;">
-                                <label class="checkbox">
-                                    <input type="checkbox" name="{{filter.form.preco_base.name}}"
-                                        value="{{value|stringformat:'s'}}"
-                                        {% if value|stringformat:'s' in filter.form.m_r.value %}checked{% endif %}>
-                                    {{label}}
-                                </label>
-                            </div>
+                            {%endif%}
                             {% endfor %}
                         </ul>
                     </li>
