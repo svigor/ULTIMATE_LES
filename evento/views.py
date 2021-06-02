@@ -1,5 +1,6 @@
 from django.forms.forms import Form
 from django.shortcuts import render, redirect
+from django.urls.base import reverse
 from .forms import InserirSalaForm, InscricaoForm, AlterarSalaForm
     
 from django_tables2 import SingleTableMixin
@@ -9,7 +10,7 @@ from django.views.generic import(
     ListView,
     CreateView,
 )
-from .models import Evento, Sala, Edificio, Formulario, Pergunta
+from .models import Evento, Opcoes, Sala, Edificio, Formulario, Pergunta
 from utilizadores.models import Administrador
 from utilizadores.views import user_check, mensagem
 from evento.tables import PerguntaTable, SalaTable, FormularioTable
@@ -226,6 +227,8 @@ class consultar_formularios(SingleTableMixin, ListView):
 
 def show_perguntas(request, id):
     print(id)
+    if not Formulario.objects.filter(id=id):
+        redirect('consultar-formularios')
     perguntas = {}
     for pergunta in Pergunta.objects.all().filter(formularioid=id) :
         perguntas.update({pergunta.tipo_de_perguntaid.nome : pergunta.titulo})
@@ -246,3 +249,39 @@ class consultar_perguntas(SingleTableMixin, ListView):
     table_class = PerguntaTable
     template_name = 'evento/consultar_perguntas.html'
     table_pagination = {'per_page':10}
+
+def show_opcoes(request, id):
+    if not Pergunta.objects.filter(id=id):
+        return redirect('consultar-perguntas')
+    tipo_pergunta = Pergunta.objects.get(id=id).tipo_de_perguntaid.nome
+    print(tipo_pergunta)
+    if tipo_pergunta != "Caixa de seleção" and tipo_pergunta != "Escolha múltipla" :
+        return redirect('consultar-perguntas')
+    opcoes = {}
+    i = 0
+    for opcao in Opcoes.objects.all().filter(perguntaid=id) :
+        opcoes.update({ i : opcao.texto })
+        i += 1
+    tipo = Pergunta.objects.get(pk=id)
+    return render(request, 'evento/visualizar_pergunta.html', {'opcoes':opcoes, 'tipo' : tipo})
+
+def apagar_pergunta(request, id):
+    if not Pergunta.objects.filter(id=id) :
+        return redirect('consultar-perguntas')
+    
+    p = Pergunta.objects.get(id=id)
+    if not p.formularioid == None:
+        formulario = p.formularioid
+        if not Evento.objects.filter(formularioinscricaoid=formulario) and not Evento.objects.filter(formulariofeedbackid=formulario) :
+            Opcoes.objects.filter(perguntaid=id).delete()
+            Pergunta.objects.filter(id=id).delete()
+            # Pergunta.objects.filter(formularioid=id).update(formularioid=None)
+            # Formulario.objects.filter(id=id).delete()
+            return render(request,'evento/mensagem.html',{'tipo':'success','m':'A pergunta foi apagada com sucesso','link':'consultar-perguntas'})
+        else :
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'A pergunta não pôde ser apagada','link':'consultar-perguntas'})
+    else :
+        Opcoes.objects.filter(perguntaid=id).delete()
+        Pergunta.objects.filter(id=id).delete()
+        return render(request,'evento/mensagem.html',{'tipo':'success','m':'A pergunta foi apagada com sucesso','link':'consultar-perguntas'})
+        
