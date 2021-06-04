@@ -6,8 +6,9 @@ from users.models import MyUser
 from evento.forms import InserirInscricao, AlterarInscricao
 from evento.models import (Evento, Inscricao)
 from django.contrib.auth import *
-from evento.tables import InscricaoTable, InscricaoTableProponente
+from evento.tables import InscricaoTable, InscricaoTableProponente, InscricaoTableProponenteValidados
 from evento.filters import InscricaoFilter
+from django.db.models import Q
 from django.template.defaultfilters import register
 from django.contrib.sessions.backends.base import SessionBase
 
@@ -40,13 +41,14 @@ def criarinscricao(request, pk_test):
                 evento_id_r = Evento.objects.get(pk=pk_test)
                 participanteutilizadorid_r = request.user
                 datainscricao_r = datetime.date.today()
+                estado_r = 1
                 requer_certificado_r = 0
                 if request.POST.get('requer_certificado') == 'on':
                     requer_certificado_r = 1
-                # Inscricao_r = Inscricao(eventoid=evento_id_r, requer_certificado=requer_certificado_r,
-                #                         participanteutilizadorid=participanteutilizadorid_r, datainscricao=datainscricao_r)
-                # Inscricao_r.save()
-                # return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'Inscrição feita com sucesso', 'link':'homepage'})
+                Inscricao_r = Inscricao(eventoid=evento_id_r, requer_certificado=requer_certificado_r,
+                                        participanteutilizadorid=participanteutilizadorid_r, datainscricao=datainscricao_r, estado=estado_r)
+                Inscricao_r.save()
+                return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'Inscrição feita com sucesso', 'link':'homepage'})
             else:
                 return redirect(criarinscricao)
 
@@ -81,9 +83,22 @@ class viewinscricaoProponente(SingleTableMixin, FilterView):
         'per_page': 10
     }
 
+    def get_queryset(self, id):
+        if self.request.user.is_authenticated and self.request.user.role.role == 'Proponente':
+            return Inscricao.objects.filter(~Q(estado=2), eventoid__in=Evento.objects.filter(proponenteutilizadorid=self.request.user.id))
+
+class viewinscricaoProponenteValidados(SingleTableMixin, FilterView):
+    ''' Consultar as inscricoes por parte do Proponente apenas para o seus eventos '''
+    table_class = InscricaoTableProponenteValidados
+    template_name = 'evento/viewinscricao2.html'
+    filterset_class = InscricaoFilter
+    table_pagination = {
+        'per_page': 10
+    }
+
     def get_queryset(self):
         if self.request.user.is_authenticated and self.request.user.role.role == 'Proponente':
-            return Inscricao.objects.filter(eventoid__in=Evento.objects.filter(proponenteutilizadorid=self.request.user.id))
+            return Inscricao.objects.filter(eventoid__in=Evento.objects.filter(proponenteutilizadorid=self.request.user.id), estado=2)
 
 
 def apagarinscricao(request, id):

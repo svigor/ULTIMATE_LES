@@ -89,6 +89,7 @@ class Inscricao(models.Model):
     eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
     participanteutilizadorid = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='ParticipanteUtilizadorID', blank=True, null=True)  # Field name made lowercase.
     datainscricao = models.DateField(db_column='Data de Inscricao', default=date.today, blank=True, null=False)
+    estado = models.IntegerField(db_column='Estado', blank=True, null=True)
 
     class Meta:
         managed = True

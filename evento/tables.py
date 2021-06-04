@@ -11,6 +11,7 @@ class InscricaoTable(django_tables.Table):
     requer_certificado = django_tables.Column('Pretende Receber um Certificado?')
     presenca = django_tables.Column('Esteve Presente no Evento?')
     datainscricao = django_tables.Column('Realizou a inscrição no dia:')
+    estado = django_tables.Column('Estado')
     acoes = django_tables.Column('Ações', empty_values=(),
                                 orderable=False, attrs={"th": {"width": "150"}})
 
@@ -34,6 +35,17 @@ class InscricaoTable(django_tables.Table):
             return "Sim"
         else:
             return "Não"
+    
+    def render_estado(self, value):
+        if value == 1:
+            return format_html(
+                '<div><button class="button is-warning small"style="pointer-events:none;">Pendente</button></div>')
+        elif value == 2:
+            return format_html(
+                '<div><button class="button is-success small"style="pointer-events:none;">Aprovado</button></div>')
+        elif value == 3:
+            return format_html(
+                '<div><button class="button is-danger small"style="pointer-events:none;">Não Aprovado</button></div>')
     
 
     def render_acoes(self, record):
@@ -61,6 +73,7 @@ class InscricaoTableProponente(django_tables.Table):
     presenca = django_tables.Column('Esteve Presente no Evento?')
     datainscricao = django_tables.Column('Realizou a inscrição no dia')
     participanteutilizadorid = django_tables.Column('Participante')
+    estado = django_tables.Column('Estado')
     acoes = django_tables.Column('Ações', empty_values=(),
                                 orderable=False, attrs={"th": {"width": "150"}})
 
@@ -82,6 +95,91 @@ class InscricaoTableProponente(django_tables.Table):
             return "Sim"
         else:
             return "Não"
+
+    def render_estado(self, value):
+        if value == 1:
+            return format_html(
+                '<div><button class="button is-warning small"style="pointer-events:none;">Pendente</button></div>')
+        elif value == 2:
+            return format_html(
+                '<div><button class="button is-success small"style="pointer-events:none;">Aprovado</button></div>')
+        elif value == 3:
+            return format_html(
+                '<div><button class="button is-danger small"style="pointer-events:none;">Não Aprovado</button></div>')
+    
+
+    def render_acoes(self, record):
+        primeiro_botao = """<span class="icon"></span>"""
+       
+        primeiro_botao = ""
+        if self.request.user.role.role == 'Proponente':
+            primeiro_botao = f"""
+            <a href='{reverse('alterarinscricao', args=[record.id])}'
+                data-tooltip="Editar">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+            """
+        
+        segundo_botao = ""
+        alerta = "Tem certeza que quer apagar a sala?"
+        if self.request.user != record.id and segundo_botao == "":
+            segundo_botao = f"""
+                <a onclick="alert.render('{alerta}','{reverse('apagarinscricao', args=[record.id])}')"
+                    data-tooltip="Apagar">
+                    <span class="icon has-text-danger">
+                        <i class="mdi mdi-trash-can mdi-24px"></i>
+                    </span>
+                </a>
+            """
+        return format_html(f"""
+        <div>
+            {primeiro_botao}
+            {segundo_botao}
+        </div>
+        """)
+
+class InscricaoTableProponenteValidados(django_tables.Table):
+    #Os nomes que aparecem na tabela
+    eventoid = django_tables.Column('Evento')
+    requer_certificado = django_tables.Column('Pretende Receber um Certificado?')
+    presenca = django_tables.Column('Esteve Presente no Evento?')
+    datainscricao = django_tables.Column('Realizou a inscrição no dia')
+    participanteutilizadorid = django_tables.Column('Participante')
+    estado = django_tables.Column('Estado')
+    acoes = django_tables.Column('Ações', empty_values=(),
+                                orderable=False, attrs={"th": {"width": "150"}})
+
+    class Meta:
+        model = Inscricao
+        sequence = ('eventoid', 'requer_certificado', 'presenca', 'datainscricao')
+
+    def before_render(self, request):
+        self.columns.hide('id')
+       
+    def render_requer_certificado(self,value):
+        if value == True:
+            return "Sim"
+        else:
+            return "Não"
+
+    def render_presenca(self,value):
+        if value == True:
+            return "Sim"
+        else:
+            return "Não"
+
+    def render_estado(self, value):
+        if value == 1:
+            return format_html(
+                '<div><button class="button is-warning small"style="pointer-events:none;">Pendente</button></div>')
+        elif value == 2:
+            return format_html(
+                '<div><button class="button is-success small"style="pointer-events:none;">Aprovado</button></div>')
+        elif value == 3:
+            return format_html(
+                '<div><button class="button is-danger small"style="pointer-events:none;">Não Aprovado</button></div>')
     
 
     def render_acoes(self, record):
