@@ -70,8 +70,9 @@ class viewinscricao(SingleTableMixin, FilterView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            print(self.request.user.id)
             return Inscricao.objects.filter(participanteutilizadorid=self.request.user.id)
+        else:
+            return render(self.request, 'evento/mensagem.html', {'tipo':'error', 'm':'Realizar o login primeiro', 'link':'login'})
 
 
 class viewinscricaoProponente(SingleTableMixin, FilterView):
@@ -83,7 +84,7 @@ class viewinscricaoProponente(SingleTableMixin, FilterView):
         'per_page': 10
     }
 
-    def get_queryset(self, id):
+    def get_queryset(self):
         if self.request.user.is_authenticated and self.request.user.role.role == 'Proponente':
             return Inscricao.objects.filter(~Q(estado=2), eventoid__in=Evento.objects.filter(proponenteutilizadorid=self.request.user.id))
 
@@ -98,7 +99,7 @@ class viewinscricaoProponenteValidados(SingleTableMixin, FilterView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated and self.request.user.role.role == 'Proponente':
-            return Inscricao.objects.filter(eventoid__in=Evento.objects.filter(proponenteutilizadorid=self.request.user.id), estado=2)
+            return Inscricao.objects.filter(eventoid__in=Evento.objects.filter(proponenteutilizadorid=self.request.user.id), estado=2).update(presenca=0)
 
 
 def apagarinscricao(request, id):
@@ -123,4 +124,13 @@ def alterarinscricao(request, id):
         else:
             forms = AlterarInscricao()
             return render(request, 'evento/alterarinscricao.html', {'forms': forms, 'id':id})
+
+
+def checkin(request, id):
+    if(request.user.is_authenticated):
+        return Inscricao.objects.filter(id=id).update(presenca=1)
+
+def checkout(request, id):
+    if(request.user.is_authenticated):
+        return Inscricao.objects.filter(id=id).update(presenca=0)
 # Create your views here.
