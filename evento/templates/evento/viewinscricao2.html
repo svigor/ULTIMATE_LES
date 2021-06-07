@@ -82,14 +82,12 @@
         <nav aria-label="breadcrumbs" class="breadcrumb">
             <ul>
                 <li><a href="{% url 'homepage' %}">Início</a></li>
-                <li class="is-active"><a href="{%  url 'viewinscricaomeuevento' %}">Inscrições</a>
+                <li class="is-active"><a href="#">Inscrições</a>
                 </li>
             </ul>
         </nav>
 
-        
-
-        {% render_table table 'evento/viewinscricao2_tabela.html' %}
+        <div style="margin-right: 2%">{% render_table table 'evento/viewinscricao2_tabela.html' %}</div>
 
     </div>
 </div>

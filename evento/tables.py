@@ -1,9 +1,60 @@
 import django_tables2 as django_tables
 from users.models import MyUser
-from evento.models import Inscricao
+from evento.models import Inscricao, Evento
 from django.utils.html import format_html
 from django.urls import reverse
 from django.contrib.auth import *
+from .filters import InscricaoFilter
+
+class EventoTable(django_tables.Table):
+    nome = django_tables.Column('Nome')
+    proponenteutilizadorid = django_tables.Column('Nome do Proponente')
+    tipo_de_eventoid = django_tables.Column('Tipo de Evento')
+    campusid = django_tables.Column('Campus')
+    dia = django_tables.Column('dia')
+    capacidade = django_tables.Column('Capacidade')
+    duracao = django_tables.Column('Duração')
+    acoes = django_tables.Column('Ações', empty_values=(), orderable=False, attrs={"th": {"width": "150"}})
+
+    class Meta:
+        template_name = 'evento/bulma_table.html'
+        fields = (
+            "nome", "tipo_de_eventoid", "dia", "duracao", "campusid", "proponenteutilizadorid",
+            "capacidade")
+
+    def render_acoes(self, record):
+        primeiro_botao = """<span class="icon"></span>"""
+       
+        primeiro_botao = ""
+        if self.request.user.role.role == 'Proponente':
+            primeiro_botao = f"""
+            <a href=#
+                data-tooltip="Editar">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+            """
+        
+        segundo_botao = ""
+        alerta = "Tem certeza que quer apagar a sala?"
+        if self.request.user != record.id and segundo_botao == "":
+            segundo_botao = f"""
+                <a onclick="alert.render('{alerta}','{reverse('apagarinscricao', args=[record.id])}')"
+                    data-tooltip="Apagar">
+                    <span class="icon has-text-danger">
+                        <i class="mdi mdi-trash-can mdi-24px"></i>
+                    </span>
+                </a>
+            """
+        return format_html(f"""
+        <div>
+            {primeiro_botao}
+            {segundo_botao}
+        </div>
+        """)
+
+
 
 class InscricaoTable(django_tables.Table):
     #Os nomes que aparecem na tabela
@@ -32,9 +83,11 @@ class InscricaoTable(django_tables.Table):
 
     def render_presenca(self,value):
         if value == True:
-            return "Sim"
+            return format_html(
+                '<div><button class="button is-success small"style="pointer-events:none;">Presente</button></div>')
         else:
-            return "Não"
+            return format_html(
+                '<div><button class="button is-danger small"style="pointer-events:none;">Ausente</button></div>')
     
     def render_estado(self, value):
         if value == 1:
@@ -68,9 +121,10 @@ class InscricaoTable(django_tables.Table):
 
 class InscricaoTableProponente(django_tables.Table):
     #Os nomes que aparecem na tabela
+    id = django_tables.Column(visible=False)
+    presenca = django_tables.Column(visible=False)
     eventoid = django_tables.Column('Evento')
     requer_certificado = django_tables.Column('Pretende Receber um Certificado?')
-    presenca = django_tables.Column('Esteve Presente no Evento?')
     datainscricao = django_tables.Column('Realizou a inscrição no dia')
     participanteutilizadorid = django_tables.Column('Participante')
     estado = django_tables.Column('Estado')
@@ -78,19 +132,10 @@ class InscricaoTableProponente(django_tables.Table):
                                 orderable=False, attrs={"th": {"width": "150"}})
 
     class Meta:
-        model = Inscricao
+        template_name = 'evento/bulma_table.html'
         sequence = ('eventoid', 'requer_certificado', 'presenca', 'datainscricao')
-
-    def before_render(self, request):
-        self.columns.hide('id')
        
     def render_requer_certificado(self,value):
-        if value == True:
-            return "Sim"
-        else:
-            return "Não"
-
-    def render_presenca(self,value):
         if value == True:
             return "Sim"
         else:
@@ -114,7 +159,7 @@ class InscricaoTableProponente(django_tables.Table):
         primeiro_botao = ""
         if self.request.user.role.role == 'Proponente':
             primeiro_botao = f"""
-            <a href='{reverse('alterarinscricao', args=[record.id])}'
+            <a href='#'
                 data-tooltip="Editar">
                 <span class="icon">
                     <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
@@ -142,21 +187,20 @@ class InscricaoTableProponente(django_tables.Table):
 
 class InscricaoTableProponenteValidados(django_tables.Table):
     #Os nomes que aparecem na tabela
+    id = django_tables.Column(visible=False)
     eventoid = django_tables.Column('Evento')
     requer_certificado = django_tables.Column('Pretende Receber um Certificado?')
     presenca = django_tables.Column('Esteve Presente no Evento?')
     datainscricao = django_tables.Column('Realizou a inscrição no dia')
     participanteutilizadorid = django_tables.Column('Participante')
     estado = django_tables.Column('Estado')
+    filterset_class = InscricaoFilter
     acoes = django_tables.Column('Ações', empty_values=(),
                                 orderable=False, attrs={"th": {"width": "150"}})
 
     class Meta:
-        model = Inscricao
+        template_name = 'evento/bulma_table.html'
         sequence = ('eventoid', 'requer_certificado', 'presenca', 'datainscricao')
-
-    def before_render(self, request):
-        self.columns.hide('id')
        
     def render_requer_certificado(self,value):
         if value == True:
@@ -164,11 +208,13 @@ class InscricaoTableProponenteValidados(django_tables.Table):
         else:
             return "Não"
 
-    def render_presenca(self,value):
+    def render_presenca(self,value, record):
         if value == True:
-            return "Sim"
+            return format_html(f"""
+                <div><a class="button is-success small" href='{reverse('checkout', args=[record.id])}'>Presente</a></div>""")
         else:
-            return "Não"
+            return format_html(f"""
+                <div><a class="button is-danger small" href='{reverse('checkin', args=[record.id])}'>Ausente</a></div>""")
 
     def render_estado(self, value):
         if value == 1:
@@ -188,7 +234,7 @@ class InscricaoTableProponenteValidados(django_tables.Table):
         primeiro_botao = ""
         if self.request.user.role.role == 'Proponente':
             primeiro_botao = f"""
-            <a href='{reverse('alterarinscricao', args=[record.id])}'
+            <a href='#'
                 data-tooltip="Editar">
                 <span class="icon">
                     <i class="mdi mdi-circle-edit-outline mdi-24px"></i>

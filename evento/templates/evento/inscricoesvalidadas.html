@@ -82,14 +82,15 @@
         <nav aria-label="breadcrumbs" class="breadcrumb">
             <ul>
                 <li><a href="{% url 'homepage' %}">Início</a></li>
-                <li class="is-active"><a href="{% url 'inscricaovalidadas' %}">Minhas Inscrições</a>
+                <li class="is-active"><a href="">Minhas Inscrições</a>
                 </li>
             </ul>
         </nav>
 
         
 
-        {% render_table table %}
+    <div style="margin-right: 2%">{% render_table table 'evento/bulma_table.html' %}</div>
+
     </div>
 </div>
 {% endblock content %}
