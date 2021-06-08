@@ -196,7 +196,13 @@ def alterar_sala(request,id):
             
             
             if request.FILES.get('fotos'):
+                Sala.objects.get(id=id).fotos.delete(save=True)
                 Sala1.fotos = request.FILES.get('fotos')
+            
+            if request.POST.get('fotos-clear'):
+                Sala.objects.get(id=id).fotos.delete(save=True)
+            
+
 
             tipo_salaid = request.POST.get('tipo_salaid')
             TipoSala1 = TipoSala.objects.get(pk = tipo_salaid)
