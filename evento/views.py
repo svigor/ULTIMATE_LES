@@ -247,6 +247,9 @@ def criar_servico(request):
     if request.method == 'POST':
         form = CriarServicoForm(request.POST)
 
+        if Servicos.objects.filter(nome = request.POST.get('nome')).exists():
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'A serviço com esse nome já existe','link':'consultar-servicos'})
+
         if form.is_valid():
             nome = request.POST.get('nome')
             preco_base = request.POST.get('preco_base')
@@ -311,12 +314,14 @@ def alterar_servico(request,id):
     if request.method == 'POST':
         servico_object = Servicos.objects.get(id=id)
         form = AlterarServicoForm(request.POST, instance=servico_object, initial={'tipo_se_Servico':servico_object.tipo_servicoid.pk})
-                        
         nome = request.POST.get('nome')
-
         if Servicos.objects.exclude(nome = servico_object.nome).filter(nome = request.POST.get('nome')).exists():
-            msg = "O serviço com esse nome já existe"
-            return render(request,'evento/alterarservico.html',{'m':msg,'id':id,'form':form})
+            msg = "A serviço com esse nome já existe"
+            return render(request,'evento/alteraservico.html',{'msg':msg,'id':id,'form':form})
+
+        
+
+       
 
     
         if form.is_valid():
@@ -356,6 +361,9 @@ def criar_equipamento(request):
     if request.method == 'POST':
         form = CriarEquipamentoForm(request.POST)
 
+        if Equipamento.objects.filter(nome = request.POST.get('nome')).exists():
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'O equipamento com esse nome já existe','link':'consultar-equipamentos'})
+
         if form.is_valid():
             tipo_equipamentoid = request.POST.get('tipo_equipamentoid')
             nome = request.POST.get('nome')
@@ -393,9 +401,8 @@ def alterar_equipamento(request,id):
         nome = request.POST.get('nome')
 
         if Equipamento.objects.exclude(nome = equipamento_object.nome).filter(nome = request.POST.get('nome')).exists():
-            msg = "O serviço com esse nome já existe"
-            return render(request,'evento/alterarequipamento.html',{'m':msg,'id':id,'form':form})
-
+            msg = "O equipamento com esse nome já existe"
+            return render(request,'evento/alterasequipamento.html',{'msg':msg,'id':id,'form':form})
     
         if form.is_valid():
             Equipamento1 = equipamento_object
