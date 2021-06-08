@@ -42,26 +42,19 @@
 
 
                         {{form}}
-<!--
-                        <fieldset class="form">
 
-                            <div style="margin-top: 2%;">
-                               
-                                {{ form.evento_id.label}}
-                                {{ form.evento_id }}</div>
-                            
-                            {{ form.requer_certificado.label}}
-                            <div style="margin-left: 35%; margin-top: -3.5%;">{{ form.requer_certificado }}</div>
-                            
-                            
-                            
-                            <div style="margin-top: 2.1%;">{{ form.participanteutilizador_id.label}}
-                                {{ form.participanteutilizador_id }}</div>
-                            
-                            
+                        {% for key, valuez in forms.items %}
+                        <fieldset class="form" style="margin-bottom: 2%;">
+                        <label>{{ key }}</label>
+                        {% if valuez == 'Resposta Curta' %}
+                            <input class="input" name="{{ key }}" type="text">
+                        {% elif valuez == 'Resposta Aberta' %}
+                            <textarea class="textarea" style="resize: none" rows="5" cols="60"  name="{{ key }}"></textarea>
+                        {% endif %}
+                        <input hidden value="{{ tipo }}" name="inscricao">
                         </fieldset>
+                        {% endfor %}
 
--->
                         <div style="margin-top:7%;text-align: center;position:center;">
                             <button type="submit" class="button is-info is-outlined">
                                 <span>Continuar</span>
@@ -76,5 +69,4 @@
     </div>
 </div>
 {% endblock content %}
-
 </div>

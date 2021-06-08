@@ -183,7 +183,7 @@ class Respostas(models.Model):
     texto = models.CharField(db_column='Texto', max_length=255, blank=True, null=True)  # Field name made lowercase.
     eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
     inscricaoid = models.ForeignKey(Inscricao, models.DO_NOTHING, db_column='InscricaoID')  # Field name made lowercase.
-    opcoesid = models.ForeignKey(Opcoes, models.DO_NOTHING, db_column='OpcoesID')  # Field name made lowercase.
+    opcoesid = models.ForeignKey(Opcoes, models.DO_NOTHING, db_column='OpcoesID', null=True)  # Field name made lowercase.
     perguntaid = models.ForeignKey(Pergunta, models.DO_NOTHING, db_column='PerguntaID')  # Field name made lowercase.
 
     class Meta:

@@ -102,6 +102,19 @@ class InscricaoTable(django_tables.Table):
     
 
     def render_acoes(self, record):
+        primeiro_botao = """<span class="icon"></span>"""
+       
+        primeiro_botao = ""
+        if self.request.user.role.role == 'Proponente':
+            primeiro_botao = f"""
+            <a href='{reverse('alterarinscricao', args={record.id})}'
+                data-tooltip="Editar">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+            """
+
         segundo_botao = ""
         alerta = "Tem certeza que quer apagar a sua inscrição?"
         if segundo_botao == "":
@@ -115,6 +128,7 @@ class InscricaoTable(django_tables.Table):
             """
         return format_html(f"""
         <div>
+            {primeiro_botao}
             {segundo_botao}
         </div>
         """)
@@ -159,10 +173,10 @@ class InscricaoTableProponente(django_tables.Table):
         primeiro_botao = ""
         if self.request.user.role.role == 'Proponente':
             primeiro_botao = f"""
-            <a href='#'
-                data-tooltip="Editar">
+            <a href='{reverse('validarInscricao', args={record.id})}'
+                data-tooltip="Validar">
                 <span class="icon">
-                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                    <i class="mdi mdi-magnify mdi-24px"></i>
                 </span>
             </a>
             """
