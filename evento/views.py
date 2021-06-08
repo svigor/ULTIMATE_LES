@@ -49,7 +49,7 @@ def criarinscricao(request, pk_test):
             if request.POST.get('requer_certificado') == 'on':
                 requer_certificado_r = 1
             Inscricao_r = inscricao(eventoid=evento_id_r, requer_certificado=requer_certificado_r,
-                                    participanteutilizadorid=participanteutilizadorid_r, datainscricao=datainscricao_r, estado=1)         
+                                    participanteutilizadorid=participanteutilizadorid_r, datainscricao=datainscricao_r, estado=1, presenca=0)         
             Inscricao_r.save()
             
 
@@ -200,6 +200,8 @@ def viewinscricaoValidadas(request, id):
 
 def apagarinscricao(request, id):
     if request.user.is_authenticated:
+        for resposta in Respostas.objects.all().filter(inscricaoid=id):
+            resposta.delete()
         inscricao.objects.filter(id=id).delete()
         return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'Inscrição Cancelada com Sucesso', 'link':'viewinscricao'})
     else:
