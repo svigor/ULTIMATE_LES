@@ -103,8 +103,8 @@ class InscricaoTable(django_tables.Table):
 
     def render_acoes(self, record):
         segundo_botao = ""
-        alerta = "Tem certeza que quer apagar a sala?"
-        if self.request.user != record.id and segundo_botao == "":
+        alerta = "Tem certeza que quer apagar a sua inscrição?"
+        if segundo_botao == "":
             segundo_botao = f"""
                 <a onclick="alert.render('{alerta}','{reverse('apagarinscricao', args=[record.id])}')"
                     data-tooltip="Apagar">
@@ -169,7 +169,7 @@ class InscricaoTableProponente(django_tables.Table):
         
         segundo_botao = ""
         alerta = "Tem certeza que quer apagar a sala?"
-        if self.request.user != record.id and segundo_botao == "":
+        if segundo_botao == "":
             segundo_botao = f"""
                 <a onclick="alert.render('{alerta}','{reverse('apagarinscricao', args=[record.id])}')"
                     data-tooltip="Apagar">
@@ -243,8 +243,8 @@ class InscricaoTableProponenteValidados(django_tables.Table):
             """
         
         segundo_botao = ""
-        alerta = "Tem certeza que quer apagar a sala?"
-        if self.request.user != record.id and segundo_botao == "":
+        alerta = "Tem certeza que quer apagar a inscricao?"
+        if segundo_botao == "":
             segundo_botao = f"""
                 <a onclick="alert.render('{alerta}','{reverse('apagarinscricao', args=[record.id])}')"
                     data-tooltip="Apagar">

@@ -78,40 +78,32 @@ class viewinscricao(SingleTableMixin, FilterView):
         'per_page': 10
     }
 
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect(request,'evento/mensagem.html', {'tipo':'error', 'm':'Realizar o login primeiro', 'link':'login'})
-        return super().dispatch(request, *args, **kwargs)
-
     def get_queryset(self):
         return inscricao.objects.filter(participanteutilizadorid=self.request.user.id)
 
-
 def viewInscricaoporValidar(request, id):
     if request.user.is_authenticated:
-        table = InscricaoTableProponente(inscricao.objects.filter(eventoid=id))
-        table.request = request
-        table.paginate(page=request.GET.get("page", 1), per_page=10)
-        return render(request, 'evento/viewinscricao2.html', {'table' : table}) 
+        if Evento.objects.get(id=id).proponenteutilizadorid.id == request.user.id:
+            table = InscricaoTableProponente(inscricao.objects.filter(eventoid=id))
+            table.request = request
+            table.paginate(page=request.GET.get("page", 1), per_page=10)
+            return render(request, 'evento/viewinscricao2.html', {'table' : table}) 
+        else:
+            return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Este evento não foi proposto por si', 'link':'homepage'})
     else:
         return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Realizar Login primeiro', 'link':'login'})
-
 
 def viewinscricaoValidadas(request, id):
     if request.user.is_authenticated:
-        table = InscricaoTableProponenteValidados(inscricao.objects.filter(estado=2, eventoid=id))
-        table.request = request
-        table.paginate(page=request.GET.get("page", 1), per_page=10)
-        return render(request, 'evento/inscricoesvalidadas.html', {'table' : table})
+        if Evento.objects.get(id=id).proponenteutilizadorid.id == request.user.id:
+            table = InscricaoTableProponenteValidados(inscricao.objects.filter(estado=2, eventoid=id))
+            table.request = request
+            table.paginate(page=request.GET.get("page", 1), per_page=10)
+            return render(request, 'evento/inscricoesvalidadas.html', {'table' : table})
+        else:
+            return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Este evento não foi proposto por si', 'link':'homepage'})
     else:
         return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Realizar Login primeiro', 'link':'login'})
-
-
-
-
-
-
-
 
 def apagarinscricao(request, id):
     if request.user.is_authenticated:
