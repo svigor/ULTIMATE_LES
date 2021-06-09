@@ -1,0 +1,189 @@
+{% extends 'evento/app.html' %}
+
+
+
+
+{% block content %}
+
+<div>
+    <div style="margin-bottom:3%;margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Alterar Formulario</h2>
+    </div>
+
+
+    {% if msg %}
+    <div  style="margin-left:30%;margin-right:30%; margin-top:3%">
+      <div style="margin-top:7%;text-align: center;position:center;">
+      <article class="message is-danger">
+          <div class="message-body">
+          <p style="text-align: center;">
+          <strong>{{ msg }}</strong>
+          </p>
+          </div>
+      </article>  
+      </div>
+    </div>
+  {% endif %}
+
+    <div style="margin-top: 2%;"></div>
+
+
+    <div style="margin-left:35%; margin-right:35%">
+        <article class="message is-info">
+            <div class="message-header">
+             
+
+            </div>
+            <div class="message-body">
+
+
+                <div class="control is-clearfix">
+                    <form action="{% url 'alterar-formulario' id=id %}" method="POST" enctype="multipart/form-data" class="form" id="AlterarFormularioForm" data-edificios-url="{% url 'ajax_load_edificios' %}">
+                        {% csrf_token %}
+                        <fieldset class="form" id="form">
+                            {{ form.tipo_form.label}}
+                            {{ form.tipo_form }}
+
+                            {% comment %} <div style="margin-top: 2%;">
+                               
+                                {{ form.fotos.label}}
+                                {{ form.fotos }}</div> {% endcomment %}
+                            
+
+                            <div style="margin-top: 2%; margin-bottom: 2%;" id="evento">
+                                {{ form.tipo_evento.label}}
+                                {{ form.tipo_evento }}
+                            </div>
+
+                            {% for key in perguntas %}
+                                <div class="field">
+                                    <label class="label">{{ key.titulo }} <a href="{% url 'remover-pergunta' id=key.pk %}" class="button is-danger" style="float:right;">Remover pergunta</a> </label>
+                                    {{ key.tipo_de_perguntaid.nome }}
+                                    {% comment %} <span onclick="popUp()" class="button is-danger">lol</span> {% endcomment %}
+                                </div>
+                            {% endfor %}
+
+                            
+
+                            <div style="margin-top: 2%; margin-bottom: 2%;display:none;" id="pergunta">
+                                {{ form.pergunta.label}} 
+                                {{ form.pergunta }}
+                            </div>
+                            
+                            
+                        </fieldset>
+
+                        <div id="botao_pergunta_div" style="text-align: center; position:center; margin-top:2%;">
+                                <span class="button is-grey is-outlined" id="botao_pergunta" onclick="myFunction()">Adicionar pergunta</span>
+                        </div>
+
+                        <div style="margin-top:7%;text-align: center;position:center;">
+                            <button type="submit" class="button is-grey is-outlined" style="margin-right:5%;" onclick="history.back();">
+                                <span>Voltar</span>
+                            </button>
+                            <button type="submit" class="button is-info is-outlined" >
+                                Salvar
+                            </button>
+                        </div>
+
+                    </form>
+
+
+                     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>{% comment %}
+                    <script>
+                        
+                        $("#id_campus").change(function () {
+                        var url = $("#AlterarFormularioForm").attr("data-edificios-url");  // get the url of the `load_cities` view
+                        var campusId = $(this).val();  // get the selected country ID from the HTML input
+                        $.ajax({                       // initialize an AJAX request
+                            url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                            data: {
+                            'campus': campusId       // add the country id to the GET parameters
+                            },
+                            success: function (data) {   // `data` is the return of the `load_cities` view function
+                            $("#id_edificioid").html(data);  // replace the contents of the city input with the data that came from the server
+                            }
+                        });
+
+                        });
+                    </script> {% endcomment %}
+
+                      {% comment %} <script>
+                         count = 0;
+                        $("#botao_pergunta").on("click", (index, value) => {
+
+                            
+                            let clone=$("#pergunta").clone().show()
+                            form.append(clone[0])
+                        
+                        })  
+
+                        
+                    </script>  {% endcomment %}
+
+                    <script>
+                    $("#id_tipo_form").change(function() {
+        
+                        if ($("#id_tipo_form option:selected").text() == "Evento") {
+                            $('#evento').show();
+                            $('#id_tipo_evento').attr('required', '');
+                            $('#id_tipo_evento').attr('data-error', 'This field is required.');
+                        } else {
+                            $('#evento').hide();
+                            $('#id_tipo_evento').removeAttr('required');
+                            $('#id_tipo_evento').removeAttr('data-error');
+                        }
+                        });
+                        $("#id_tipo_form").trigger("change");
+
+                    function myFunction() {
+                    var x = document.getElementById("pergunta");
+                    var button = document.getElementById("botao_pergunta");
+                    if (x.style.display === "none") {
+                        x.style.display = "block";
+                        button.innerText = "Anular pergunta";
+                        $('#id_tipo_evento').attr('required', '');
+                        $('#id_tipo_evento').attr('data-error', 'This field is required.');
+                    } else {
+                        x.style.display = "none";
+                        button.innerText = "Adicionar pergunta";
+                        $('#id_tipo_evento').removeAttr('required');
+                        $('#id_tipo_evento').removeAttr('data-error');
+                    }
+                    }
+
+                    </script>
+                    <script>
+                    function popUp() {
+                    var txt;
+                    if (confirm("Tem a certeza que quer remover a pergunta do formulário?")) {
+                        txt = "You pressed OK!";
+                    } else {
+                    }
+                    }
+                    </script>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+{% if form.email.errors %}
+<div style="margin-left:30%;margin-right:30%; margin-top:5%">
+    <div style="margin-top:7%;text-align: center;position:center;">
+        <article class="message is-danger">
+            <div class="message-body">
+                <p style="text-align: center;">
+                    <strong>{{ form.email.errors }}</strong>
+                </p>
+            </div>
+        </article>
+    </div>
+</div>
+
+{% endif %}
+{% endblock content %}
+
+
+
+</div>
+

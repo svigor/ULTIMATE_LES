@@ -64,6 +64,7 @@ class SalaTable(django_tables.Table):
 class FormularioTable(django_tables.Table):
     tipo_de_formularioid = django_tables.Column('Tipo de Formulário')
     tipo_de_eventoid = django_tables.Column('Tipo de Evento')
+    disponibilidade = django_tables.Column('Disponibilidade')
     acoes = django_tables.Column('Ações', empty_values=(), orderable=False, attrs={"th": {"width": "150"}})
     
     def render_tipo_de_formularioid(self, value):
@@ -72,11 +73,31 @@ class FormularioTable(django_tables.Table):
     def render_tipo_de_eventoid(self, value):
         return value.nome
 
-    def before_render(self,request):
-        self.columns.hide('id')
+    def render_disponibilidade(self, value):
+        if value == 0 :
+            return format_html(
+                '<div><button class="button is-danger small"style="pointer-events:none;">Privado</button></div>')
+        elif value == 1 :
+            return format_html(
+                '<div><button class="button is-success small"style="pointer-events:none;">Disponível</button></div>')
+
+    # def before_render(self,request):
+    #     self.columns.hide('id')
 
     def render_acoes(self, record):
-        primeiro_botao = f"""
+        if Formulario.objects.get(pk=record.id).disponibilidade == 0 :
+            primeiro_botao = f"""
+                <a href='{reverse('disponibilizar-formulario', args={record.id})}'
+                    data-tooltip="Disponibilizar">
+                    <span class="icon">
+                        <i class="mdi mdi-inbox-arrow-up mdi-24px" style="color:green;"></i>
+                    </span>
+                </a>
+                """
+        else :
+            primeiro_botao = ''
+
+        segundo_botao = f"""
             <a href='{reverse('consultar-perguntas-formulario', args={record.id})}'
                 data-tooltip="Visualizar">
                 <span class="icon">
@@ -84,10 +105,25 @@ class FormularioTable(django_tables.Table):
                 </span>
             </a>
             """
-        
+        if not Evento.objects.filter(formularioinscricaoid=Formulario.objects.get(id=record.id)) and not Evento.objects.filter(formulariofeedbackid=Formulario.objects.get(id=record.id)) :
+            terceiro_botao = f"""
+                <a href='{reverse('alterar-formulario', args={record.id})}'
+                    data-tooltip="Editar">
+                    <span class="icon">
+                        <i class="mdi mdi-pencil mdi-24px"></i>
+                    </span>
+                </a>
+                """
+        else:
+            terceiro_botao = f"""
+                    <span class="icon">
+                        <i class="mdi mdi-pencil mdi-24px" style='color:gray;'></i>
+                    </span>
+                """
+
         if not Evento.objects.filter(formularioinscricaoid=Formulario.objects.get(id=record.id)) and not Evento.objects.filter(formulariofeedbackid=Formulario.objects.get(id=record.id)) :
             alerta = "Tem certeza que quer apagar a sala?"
-            segundo_botao = f"""
+            quarto_botao = f"""
                 <a onclick="alert.render('{alerta}','{reverse('apagar-form', args=[record.id])}')"
                     data-tooltip="Apagar">
                     <span class="icon has-text-danger">
@@ -96,7 +132,7 @@ class FormularioTable(django_tables.Table):
                 </a>
             """
         else :
-            segundo_botao = f"""
+            quarto_botao = f"""
                     <span class="icon">
                         <i class="mdi mdi-trash-can mdi-24px" style="color: gray"></i>
                     </span>
@@ -105,6 +141,8 @@ class FormularioTable(django_tables.Table):
         <div>
             {primeiro_botao}
             {segundo_botao}
+            {terceiro_botao}
+            {quarto_botao}
         </div>
         """)
     
@@ -154,16 +192,23 @@ class PerguntaTable(django_tables.Table):
                 <i class="mdi mdi-magnify mdi-24px" style="color: gray"></i>
             </span>
             """
-
-        segundo_botao = f"""
-            <a href='#'
-                data-tooltip="Editar">
-                <span class="icon">
-                    <i class="mdi mdi-pencil mdi-24px"></i>
-                </span>
-            </a>
-            """
         formulario = Pergunta.objects.get(id=record.id).formularioid
+        if not Evento.objects.filter(formularioinscricaoid=formulario) and not Evento.objects.filter(formulariofeedbackid=formulario) :
+            segundo_botao = f"""
+                <a href='{reverse('alterar-pergunta', args={record.id})}'
+                    data-tooltip="Editar">
+                    <span class="icon">
+                        <i class="mdi mdi-pencil mdi-24px"></i>
+                    </span>
+                </a>
+                """
+        else :
+            segundo_botao = f"""
+                    <span class="icon">
+                        <i class="mdi mdi-pencil mdi-24px" style='color:gray;'></i>
+                    </span>
+                """
+        
         if not Evento.objects.filter(formularioinscricaoid=formulario) and not Evento.objects.filter(formulariofeedbackid=formulario) :
             alerta = "Tem certeza que quer apagar a sala?"
             terceiro_botao = f"""

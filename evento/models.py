@@ -68,6 +68,9 @@ class TipoDeEvento(models.Model):
         managed = True
         db_table = 'tipo de evento'
 
+    def __str__(self) -> str:
+        return self.nome
+
 
 class Evento(models.Model):
     # Field name made lowercase.
@@ -129,6 +132,8 @@ class Formulario(models.Model):
     # Field name made lowercase. Field renamed to remove unsuitable characters.
     tipo_de_formularioid = models.ForeignKey(
         'TipoDeFormulario', models.DO_NOTHING, db_column='Tipo de FormularioID')
+    # Field name made lowercase.
+    disponibilidade = models.IntegerField(db_column='disponibilidade', blank=True, null=True)
 
     class Meta:
         managed = True
@@ -225,6 +230,9 @@ class Pergunta(models.Model):
     class Meta:
         managed = True
         db_table = 'pergunta'
+    
+    def __str__(self) -> str:
+        return self.titulo
 
 
 class PeriodoEquipamento(models.Model):
@@ -388,6 +396,9 @@ class TipoDeFormulario(models.Model):
         managed = True
         db_table = 'tipo de formulario'
 
+    def __str__(self) -> str:
+        return self.nome
+
 
 class TipoDePergunta(models.Model):
     # Field name made lowercase.
@@ -399,6 +410,9 @@ class TipoDePergunta(models.Model):
     class Meta:
         managed = True
         db_table = 'tipo de pergunta'
+
+    def __str__(self) -> str:
+        return self.nome
 
 
 class TipoEquipamento(models.Model):

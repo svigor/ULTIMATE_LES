@@ -91,7 +91,7 @@
                 </li>
             </ul>
         </nav>
-        <a href="{% url 'criar_sala' %}">
+        <a href="{% url 'criar-formulario' %}">
             <button type="button" class="button is-success is-outlined" style="margin-bottom: 1rem;"><span
                     class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Criar Formulário</span>
             </button>
@@ -99,7 +99,7 @@
 
         
 
-        {% render_table table  'evento/consultar_perguntas_tabela.html'%}
+        {% render_table table %}
     </div>
 </div>
 {% endblock content %}
