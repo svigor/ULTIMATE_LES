@@ -96,7 +96,7 @@
                         $("#id_campus").change(function () {
                         var url = $("#InserirSalaForm").attr("data-edificios-url");  // get the url of the `load_cities` view
                         var campusId = $(this).val();  // get the selected country ID from the HTML input
-                        $.ajax({                       // initialize an AJAX request
+                            $.ajax({                       // initialize an AJAX request
                             url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
                             data: {
                             'campus': campusId       // add the country id to the GET parameters

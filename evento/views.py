@@ -323,7 +323,7 @@ def alterar_servico(request,id):
         nome = request.POST.get('nome')
         if Servicos.objects.exclude(nome = servico_object.nome).filter(nome = request.POST.get('nome')).exists():
             msg = "A serviço com esse nome já existe"
-            return render(request,'evento/alteraservico.html',{'msg':msg,'id':id,'form':form})
+            return render(request,'evento/alterarservico.html',{'msg':msg,'id':id,'form':form})
 
         
 
@@ -408,7 +408,7 @@ def alterar_equipamento(request,id):
 
         if Equipamento.objects.exclude(nome = equipamento_object.nome).filter(nome = request.POST.get('nome')).exists():
             msg = "O equipamento com esse nome já existe"
-            return render(request,'evento/alterasequipamento.html',{'msg':msg,'id':id,'form':form})
+            return render(request,'evento/alterar_equipamento.html',{'msg':msg,'id':id,'form':form})
     
         if form.is_valid():
             Equipamento1 = equipamento_object
