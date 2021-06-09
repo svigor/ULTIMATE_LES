@@ -89,7 +89,7 @@
                     </form>
 
 
-                     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>{% comment %}
+                     {% comment %}
                     <script>
                         
                         $("#id_campus").change(function () {
@@ -121,52 +121,55 @@
                         
                     </script>  {% endcomment %}
 
-                    <script>
-                    $("#id_tipo_form").change(function() {
-        
-                        if ($("#id_tipo_form option:selected").text() == "Evento") {
-                            $('#evento').show();
-                            $('#id_tipo_evento').attr('required', '');
-                            $('#id_tipo_evento').attr('data-error', 'This field is required.');
-                        } else {
-                            $('#evento').hide();
-                            $('#id_tipo_evento').removeAttr('required');
-                            $('#id_tipo_evento').removeAttr('data-error');
-                        }
-                        });
-                        $("#id_tipo_form").trigger("change");
-
-                    function myFunction() {
-                    var x = document.getElementById("pergunta");
-                    var button = document.getElementById("botao_pergunta");
-                    if (x.style.display === "none") {
-                        x.style.display = "block";
-                        button.innerText = "Anular pergunta";
-                        $('#id_tipo_evento').attr('required', '');
-                        $('#id_tipo_evento').attr('data-error', 'This field is required.');
-                    } else {
-                        x.style.display = "none";
-                        button.innerText = "Adicionar pergunta";
-                        $('#id_tipo_evento').removeAttr('required');
-                        $('#id_tipo_evento').removeAttr('data-error');
-                    }
-                    }
-
-                    </script>
-                    <script>
-                    function popUp() {
-                    var txt;
-                    if (confirm("Tem a certeza que quer remover a pergunta do formulário?")) {
-                        txt = "You pressed OK!";
-                    } else {
-                    }
-                    }
-                    </script>
+                    
                 </div>
             </div>
         </article>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+                    
+$("#id_tipo_form").change(function() {
+
+    if ($("#id_tipo_form option:selected").text() == "Evento") {
+        $('#evento').show();
+        $('#id_tipo_evento').attr('required', '');
+        $('#id_tipo_evento').attr('data-error', 'This field is required.');
+    } else {
+        $('#evento').hide();
+        $('#id_tipo_evento').removeAttr('required');
+        $('#id_tipo_evento').removeAttr('data-error');
+    }
+    });
+    $("#id_tipo_form").trigger("change");
+
+function myFunction() {
+var x = document.getElementById("pergunta");
+var button = document.getElementById("botao_pergunta");
+if (x.style.display === "none") {
+    x.style.display = "block";
+    button.innerText = "Anular pergunta";
+    $('#id_pergunta').attr('required', '');
+    $('#id_pergunta').attr('data-error', 'This field is required.');
+} else {
+    x.style.display = "none";
+    button.innerText = "Adicionar pergunta";
+    $('#id_pergunta').removeAttr('required');
+    $('#id_pergunta').removeAttr('data-error');
+}
+}
+
+</script>
+<script>
+function popUp() {
+var txt;
+if (confirm("Tem a certeza que quer remover a pergunta do formulário?")) {
+    txt = "You pressed OK!";
+} else {
+}
+}
+</script>
 {% if form.email.errors %}
 <div style="margin-left:30%;margin-right:30%; margin-top:5%">
     <div style="margin-top:7%;text-align: center;position:center;">
