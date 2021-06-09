@@ -5,8 +5,8 @@ from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from django.views.generic import ListView
 from users.models import MyUser
-from evento.forms import InserirInscricao
-from evento.models import (Evento, Formulario, Inscricao as inscricao, Pergunta, TipoDePergunta, Respostas)
+from evento.forms import InserirInscricao, c_s_form
+from evento.models import (Evento, Formulario, Inscricao as inscricao, Opcoes, Pergunta, TipoDePergunta, Respostas)
 from django.contrib.auth import *
 from evento.tables import EventoTable, InscricaoTable, InscricaoTableProponente, InscricaoTableProponenteValidados
 from evento.filters import InscricaoFilter
@@ -70,6 +70,7 @@ def criarinscricao(request, pk_test):
             form = InserirInscricao()
             formulario = Evento.objects.get(id=pk_test).formularioinscricaoid.id
             perguntas = Pergunta.objects.all().filter(formularioid=formulario)
+
             pergunta_relat = {}
             for pergunta in perguntas:
                 pergunta_relat.update({pergunta.titulo: TipoDePergunta.objects.get(pk=pergunta.tipo_de_perguntaid_id)})
@@ -77,6 +78,9 @@ def criarinscricao(request, pk_test):
             for elem in pergunta_relat:
                 if pergunta_relat[elem].nome == "Resposta Curta" or pergunta_relat[elem].nome == 'Resposta Aberta':
                     forms.update({elem.title(): pergunta_relat[elem].nome})
+                elif pergunta_relat[elem].nome == 'Caixa de selecao':
+                    forms.update({elem.title(): Opcoes.objects.filter(perguntaid=pergunta.id)})
+                    
             return render(request, 'evento/inscricao.html', {'form': form, 'forms' : forms ,'pk_test':pk_test, 'participante':request.user.username, 'evento':Evento.objects.get(pk=pk_test)})
     else:
         return render(request, 'evento/mensagem.html', {'tipo':'error', 'm':'Realizar o login primeiro', 'link':'homepage'})
@@ -210,10 +214,12 @@ def apagarinscricao(request, id):
 def checkin(request, id):
     if(request.user.is_authenticated):
         inscricao.objects.filter(id=id).update(presenca=1)
-        return redirect('inscricaovalidadas')
+        id = inscricao.objects.get(id=id).eventoid.id
+        return redirect(reverse('inscricaovalidadas', kwargs={'id':id}))
 
 def checkout(request, id):
     if(request.user.is_authenticated):
         inscricao.objects.filter(id=id).update(presenca=0)
-        return redirect('inscricaovalidadas')
+        id = inscricao.objects.get(id=id).eventoid.id
+        return redirect(reverse('inscricaovalidadas', kwargs={'id':id}))
 # Create your views here.

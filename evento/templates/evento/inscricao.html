@@ -50,6 +50,12 @@
                             <input class="input" name="{{ key }}" type="text">
                         {% elif valuez == 'Resposta Aberta' %}
                             <textarea class="textarea" style="resize: none" rows="5" cols="60"  name="{{ key }}"></textarea>
+                        {% elif valuez == 'Caixa de selecao' %}
+                            <select class="input" name="{{ key }}" id="{{ key }}">
+                                {% for option in valuez.dict %}
+                                    <option value="{{ option }}">{{ option }}</option>
+                                {% endfor %}
+                            </select>
                         {% endif %}
                         <input hidden value="{{ tipo }}" name="inscricao">
                         </fieldset>

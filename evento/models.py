@@ -125,6 +125,9 @@ class Opcoes(models.Model):
         managed = True
         db_table = 'opcoes'
 
+    def __str__(self):
+        return self.texto
+
 
 class Pergunta(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.

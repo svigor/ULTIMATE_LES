@@ -1,6 +1,6 @@
 from django import forms
 from users.models import MyUser 
-from evento.models import (Inscricao, Evento, Pergunta)
+from evento.models import (Inscricao, Evento, Opcoes, Pergunta)
 
 
 
@@ -42,3 +42,10 @@ class r_c_form_dis(forms.Form):
                           widget=forms.TextInput(
                               attrs={'class': 'input', 'style': 'background: #eef6fc; color: black'}),
                           disabled=True)
+
+class c_s_form(forms.Form):
+    dict = []
+    choices = Opcoes.objects.all()
+    for choice in choices:
+       dict.append(choice)
+    c_s = forms.ChoiceField(choices=dict, label='', widget=forms.Select({'class': 'input'}))

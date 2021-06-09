@@ -207,7 +207,7 @@ class InscricaoTableProponenteValidados(django_tables.Table):
     presenca = django_tables.Column('Esteve Presente no Evento?')
     datainscricao = django_tables.Column('Realizou a inscrição no dia')
     participanteutilizadorid = django_tables.Column('Participante')
-    estado = django_tables.Column('Estado')
+    estado = django_tables.Column(visible=False)
     filterset_class = InscricaoFilter
     acoes = django_tables.Column('Ações', empty_values=(),
                                 orderable=False, attrs={"th": {"width": "150"}})
