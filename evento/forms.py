@@ -1,4 +1,5 @@
 from django import forms
+from django.template.defaultfilters import default, yesno
 from .models import TipoDeEvento, Campus, Sala, Edificio, TipoSala, TipoServico, Servicos, Equipamento, TipoEquipamento
 
 
@@ -41,9 +42,9 @@ class r_c_form_dis(forms.Form):
 
 class c_s_form(forms.Form):
     dict = []
-    # campus = Campus.objects.all()
-    # for choice in campus:
-    #    dict.append(choice)
+    campus = Campus.objects.all()
+    for choice in campus:
+        dict.append(choice)
     c_s = forms.ChoiceField(choices=dict, label='', widget=forms.Select({'class': 'input'}))
 
 
@@ -304,3 +305,62 @@ class AlterarEquipamentoForm(forms.ModelForm):
     class Meta:
         model = Equipamento
         fields = ['tipo_equipamentoid', 'nome','descricao']
+
+
+
+
+
+
+yesnoChoices = (
+    ("0","Seleciona uma opção"),
+    ("Sim","Sim"),
+    ("Não","Não")
+)
+
+class LogisticaOpcoesForm_1(forms.Form):
+    yesnoSala = forms.ChoiceField(
+        choices=yesnoChoices,
+
+        label="Precisa de salas?",
+        widget = forms.Select(
+            attrs = {'class':'input'}
+        )
+    )
+    
+    yesnoEquipamento = forms.ChoiceField(
+        choices=yesnoChoices,
+        label="Precisa de equipamentos?",
+        widget = forms.Select(
+            attrs = {'class':'input'}
+        )
+    )
+
+    yesnoServico = forms.ChoiceField(
+        choices=yesnoChoices,
+        label="Precisa de servicos?",
+        widget = forms.Select(
+            attrs = {'class':'input'}
+        )
+    )
+
+
+class LogisticaOpcoesForm_2(forms.Form):
+    numeroSalas = forms.IntegerField(label='Quantas salas', initial=0,widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+    numeroEquipamentosPc = forms.IntegerField(label='Quantos computadores?', widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+    numeroEquipamentosProjetor = forms.IntegerField(label='Quantos projetores?', widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+    numeroServicosCatering = forms.IntegerField(label='Quantos serviços de Catering?', widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+    numeroServicosTransporte = forms.IntegerField(label='Quantos serviços de transporte?', widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))

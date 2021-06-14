@@ -13,7 +13,7 @@ class Campus(models.Model):
     # Field name made lowercase.
     id = models.AutoField(db_column='ID', primary_key=True)
     # Field name made lowercase.
-    nome = models.IntegerField(db_column='Nome', blank=True, null=True)
+    nome = models.CharField(db_column='Nome', max_length=255,blank=True, null=True)
 
     class Meta:
         managed = True
@@ -117,28 +117,35 @@ class Inscricao(models.Model):
 class Logistica(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
     eventoid = models.ForeignKey(Evento, models.DO_NOTHING, db_column='EventoID')  # Field name made lowercase.
-    quantidade = models.IntegerField(db_column='Quantidade', blank=True, null=True)  # Field name made lowercase.
-    dia_inicial = models.DateField(db_column='Dia inicial', blank=True,
-                                   null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
-    dia_final = models.DateField(db_column='Dia final', blank=True,
-                                 null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
-    hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True,
-                                      null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
-    duracao = models.IntegerField(db_column='Duracao', blank=True, null=True)  # Field name made lowercase.
-    valido = models.TextField(db_column='Valido', blank=True,
+    valido = models.IntegerField(db_column='Valido', blank=True,
                               null=True)  # Field name made lowercase. This field type is a guess.
-    capacidade = models.IntegerField(db_column='Capacidade', blank=True, null=True)  # Field name made lowercase.
-    tipo_servicoid = models.ForeignKey('TipoServico', models.DO_NOTHING, db_column='Tipo_ServicoID', blank=True,
-                                       null=True)  # Field name made lowercase.
-    tipo_equipamentoid = models.ForeignKey('TipoEquipamento', models.DO_NOTHING, db_column='Tipo_EquipamentoID',
-                                           blank=True, null=True)  # Field name made lowercase.
-    tipos_de_recursosid = models.ForeignKey('TiposDeRecursos', models.DO_NOTHING,
-                                            db_column='Tipos de recursosID')  # Field name made lowercase. Field renamed to remove unsuitable characters.
 
     class Meta:
         managed = True
         db_table = 'logistica'
 
+class TiposDeRecursos(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)
+    tipo_de_recurso = models.IntegerField(db_column='Tipo de recurso', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+
+    class Meta:
+        managed = True
+        db_table = 'tipos_de_recursos'
+
+
+class Periodo_logistica(models.Model):
+    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    dia_inicial = models.DateField(db_column='Dia inicial', blank=True, null=True)
+    dia_final = models.DateField(db_column='Dia final', blank=True, null=True)
+    hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True, null=True)
+    hora_de_fim = models.TimeField(db_column='Hora de fim', blank=True, null=True)
+    tipos_de_recursosid = models.ForeignKey(TiposDeRecursos, models.DO_NOTHING, db_column='Tipos de recursosID')
+    logistica_id = models.ForeignKey(Logistica,models.DO_NOTHING,db_column='LogisticaID' )
+
+    class Meta:
+        managed = True
+        db_table = 'periodo_logistica'
 
 class Notificacoes(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
@@ -357,11 +364,3 @@ class TipoServico(models.Model):
     def __str__(self):
         return self.nome
 
-class TiposDeRecursos(models.Model):
-    id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
-    tipo_de_recurso = models.IntegerField(db_column='Tipo de recurso', blank=True,
-                                          null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
-
-    class Meta:
-        managed = True
-        db_table = 'tipos de recursos'
