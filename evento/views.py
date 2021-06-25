@@ -8,7 +8,7 @@ from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from .tables import SalaTable, ServicoTable, EquipamentoTable
 
-from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm, AlterarEquipamentoForm, LogisticaOpcoesForm_1,LogisticaOpcoesForm_2
+from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm, AlterarEquipamentoForm, LogisticaOpcoesForm_1,LogisticaOpcoesForm_2, LogisticaOpcoesForm_3
 from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento, TipoSala
 from .filters import SalasFilter, ServicosFilter, EquipamentosFilter
 
@@ -509,20 +509,45 @@ def criar_logistica2(request):
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
     if request.method == 'POST':
-        form = LogisticaOpcoesForm_1(request.POST)
-
+        form = LogisticaOpcoesForm_2(request.POST)
+        
         if form.is_valid():
-            yesnoSala = request.POST.get('yesnoSala')
-            yesnoEquipamento = request.POST.get('yesnoEquipamento')    
-            yesnoServico = request.POST.get('yesnoServico')
-
+            numeroSalas = request.POST.get('numeroSalas')
+            numeroEquipamentos = request.POST.get('numeroEquipamentos')    
+            numeroServicos = request.POST.get('numeroServicos')
+            
+            form2 = LogisticaOpcoesForm_3(request.POST)
             return render(request,
-                          'evento/criar_logistica2.html',
-                          {'form':form,
-                           'yesnoSala':yesnoSala,
-                           'yesnoEquipamento':yesnoEquipamento,
-                           'yesnoServico':yesnoServico
+                          'evento/criar_logistica3.html',
+                          {'form2':form2,
+                           'numeroSalas':range(int(numeroSalas)),
+                           'numeroEquipamentos':numeroEquipamentos,
+                           'numeroServicos':numeroServicos
                           })
     else:
-        form = LogisticaOpcoesForm_1()
+        form = LogisticaOpcoesForm_2()
+    return render(request, 'evento/criar_logistica2.html',{'form':form})
+
+
+def criar_logistica3(request):
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    
+    if request.method == 'POST':
+        form = LogisticaOpcoesForm_3(request.POST)
+
+        if form.is_valid():
+            numeroSalas = request.POST.get('numeroSalas')
+            numeroEquipamentos = request.POST.get('numeroEquipamentos')    
+            numeroServicos = request.POST.get('numeroServicos')
+           
+            return render(request,
+                          'evento/criar_logistica3.html',
+                          {'form':form,
+                           'numeroSalas':numeroSalas,
+                           'numeroEquipamentos':numeroEquipamentos,
+                           'numeroServicos':numeroServicos
+                          })
+    else:
+        form = LogisticaOpcoesForm_3()
     return render(request, 'evento/criar_logistica2.html',{'form':form})

@@ -136,6 +136,7 @@ class TiposDeRecursos(models.Model):
 
 class Periodo_logistica(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    capacidade = models.IntegerField(db_column='Capacidade',blank=True, null=True)  # Field name made lowercase.
     dia_inicial = models.DateField(db_column='Dia inicial', blank=True, null=True)
     dia_final = models.DateField(db_column='Dia final', blank=True, null=True)
     hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True, null=True)

@@ -24,21 +24,38 @@
             <div class="message-body">
 
                 <div class="control is-clearfix">
-                    <form action="{% url 'criar-logistica1' %}" method="POST" enctype="multipart/form-data" class="form" id="InserirServicoForm"  %}">
+                    <form action="{% url 'criar-logistica3' %}" method="POST" enctype="multipart/form-data" class="form" id="InserirServicoForm"  %}">
                         {% csrf_token %}
 
                         <fieldset class="form">
-                            <h1>FORM 1</h1>
-                     {{form}}
-
+                         <h1>FORM3</h1>
                             
+                         {%for i in numeroSalas%}
+                         
+                         <h1><strong>Sala {{i}}</strong></h1>
+                         {{form2.dia_inicial.label}}
+                         {{form2.dia_inicial}}
+                         
+                         {{form2.dia_final.label}}
+                         {{form2.dia_final}}
+
+                         
+                         
+                         {{form2.capacidade.label}}
+                         {{form2.capacidade}}
+                         {%endfor%}
+
+
+                        
+
+                         
                             
                         </fieldset>
 
 
                         <div style="margin-top:7%;text-align: center;position:center;">
                             <button type="submit" class="button is-info is-outlined">
-                                <span>Continuar</span>
+                                <span>Concluir</span>
                             </button>
                         </div>
 

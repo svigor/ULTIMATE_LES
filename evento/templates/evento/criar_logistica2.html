@@ -28,25 +28,20 @@
                         {% csrf_token %}
 
                         <fieldset class="form">
+                            <h1>Form2</h1>
                             {%if yesnoSala == 'Sim'%}
                                 {{form2.numeroSalas.label}}
                                 {{form2.numeroSalas}}
                             {%endif%}
                             
                             {%if yesnoEquipamento == 'Sim'%}
-                                {{form2.numeroEquipamentosPc.label}}
-                                {{form2.numeroEquipamentosPc}}
-
-                                {{form2.numeroEquipamentosProjetor.label}}
-                                {{form2.numeroEquipamentosProjetor }}
+                                {{form2.numeroEquipamentos.label}}
+                                {{form2.numeroEquipamentos}}
                             {%endif%}
 
                             {%if yesnoServico == 'Sim'%}
-                                {{form2.numeroServicosCatering.label}}
-                                {{form2.numeroServicosCatering}}
-
-                                {{form2.numeroServicosTransporte.label}}
-                                {{form2.numeroServicosTransporte }}
+                                {{form2.numeroServicos.label}}
+                                {{form2.numeroServicos}}
                             {%endif%}
                             
                         </fieldset>

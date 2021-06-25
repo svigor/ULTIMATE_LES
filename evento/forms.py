@@ -1,6 +1,8 @@
 from django import forms
+from django.db.models import fields
 from django.template.defaultfilters import default, yesno
-from .models import TipoDeEvento, Campus, Sala, Edificio, TipoSala, TipoServico, Servicos, Equipamento, TipoEquipamento
+from .models import TipoDeEvento, Campus, Sala, Edificio, TipoSala, TipoServico, Servicos, Equipamento, TipoEquipamento, Periodo_logistica
+from evento import models
 
 
 class returnedstring():
@@ -345,22 +347,42 @@ class LogisticaOpcoesForm_1(forms.Form):
 
 
 class LogisticaOpcoesForm_2(forms.Form):
-    numeroSalas = forms.IntegerField(label='Quantas salas', initial=0,widget= forms.NumberInput(
+    numeroSalas = forms.IntegerField(label='Quantas salas', initial=1,widget= forms.NumberInput(
         attrs={'class':'input'}
     ))
 
-    numeroEquipamentosPc = forms.IntegerField(label='Quantos computadores?', widget= forms.NumberInput(
+    numeroEquipamentos = forms.IntegerField(label='Quantos equipamentos?', initial=1,widget= forms.NumberInput(
         attrs={'class':'input'}
     ))
 
-    numeroEquipamentosProjetor = forms.IntegerField(label='Quantos projetores?', widget= forms.NumberInput(
+    numeroServicos = forms.IntegerField(label='Quantos serviços?', initial=1, widget= forms.NumberInput(
         attrs={'class':'input'}
     ))
 
-    numeroServicosCatering = forms.IntegerField(label='Quantos serviços de Catering?', widget= forms.NumberInput(
+class LogisticaOpcoesForm_3(forms.Form):
+    dia_inicial = forms.DateField(label='Dia inicial', widget=forms.DateInput(
+        attrs={'class':'input'}
+    ))
+    
+    dia_final = forms.DateField(label='Dia final', widget=forms.DateInput(
         attrs={'class':'input'}
     ))
 
-    numeroServicosTransporte = forms.IntegerField(label='Quantos serviços de transporte?', widget= forms.NumberInput(
+    hora_de_inicio = forms.TimeField(label='Hora inicial', widget=forms.TimeInput(
         attrs={'class':'input'}
     ))
+
+    hora_de_fim = forms.TimeField(label='Hora inicial', widget=forms.TimeInput(
+        attrs={'class':'input'}
+    ))
+
+    capacidade = forms.IntegerField(label='Capacidade',max_value=2000, widget = forms.NumberInput (
+        attrs= {'class': 'input'}
+    ) )
+    
+    class Meta:
+        model = Periodo_logistica
+        fields = ['capacidade']
+
+
+
