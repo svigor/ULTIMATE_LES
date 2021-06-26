@@ -359,6 +359,26 @@ class LogisticaOpcoesForm_2(forms.Form):
         attrs={'class':'input'}
     ))
 
+
+class LogisticaQuantitySalas(forms.Form):
+    numeroSalas = forms.IntegerField(label='Quantas salas', initial=1,widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+
+class LogisticaQuantityEquipamentos(forms.Form):
+    numeroEquipamentos = forms.IntegerField(label='Quantos equipamentos?', initial=1,widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+class LogisticaQuantityServicos(forms.Form):
+    numeroServicos = forms.IntegerField(label='Quantos serviços?', initial=1, widget= forms.NumberInput(
+        attrs={'class':'input'}
+    ))
+
+
+
+
 class LogisticaOpcoesForm_3(forms.Form):
     dia_inicial = forms.DateField(label='Dia inicial', widget=forms.DateInput(
         attrs={'class':'input'}

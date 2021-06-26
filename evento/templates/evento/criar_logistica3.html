@@ -29,27 +29,26 @@
 
                         <fieldset class="form">
                          <h1>FORM3</h1>
+                            <strong>Preenche as salas</strong>
+                            {%for f in form1%}
                             
-                         {%for i in numeroSalas%}
-                         
-                         <h1><strong>Sala {{i}}</strong></h1>
-                         {{form2.dia_inicial.label}}
-                         {{form2.dia_inicial}}
-                         
-                         {{form2.dia_final.label}}
-                         {{form2.dia_final}}
+                            {{f.as_p}}
+                            <strong>next</strong>
+                            {%endfor%}
 
-                         
-                         
-                         {{form2.capacidade.label}}
-                         {{form2.capacidade}}
-                         {%endfor%}
-
-
-                        
-
-                         
+                            <strong>Preenche os equipamentos</strong>
+                            {%for f in form2%}
                             
+                            {{f.as_p}}
+                            <strong>next</strong>
+                            {%endfor%}
+
+                            <strong>Preenche os servicos</strong>
+                            {%for f in form3%}
+                            
+                            {{f.as_p}}
+                            <strong>next</strong>
+                            {%endfor%}
                         </fieldset>
 
 
