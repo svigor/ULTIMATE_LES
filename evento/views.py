@@ -1,4 +1,5 @@
 from django.forms import fields
+from django.forms.formsets import formset_factory
 from django.forms.models import modelformset_factory
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
@@ -11,7 +12,7 @@ from django_filters.views import FilterView
 from .tables import SalaTable, ServicoTable, EquipamentoTable
 
 from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm, AlterarEquipamentoForm, LogisticaOpcoesForm_1,LogisticaOpcoesForm_2, LogisticaOpcoesForm_3
-from .models import TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento, TipoSala, Periodo_logistica
+from .models import Logistica, TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento, TipoSala, Periodo_logistica, TiposDeRecursos
 from .filters import SalasFilter, ServicosFilter, EquipamentosFilter
 
 
@@ -476,28 +477,7 @@ def apagar_equipamento(request, id):
 
 
         
-def criar_logistica(request):
-    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
-        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
-    
-    if request.method == 'POST':
-        form = LogisticaOpcoesForm_1(request.POST)
 
-        if form.is_valid():
-            yesnoSala = request.POST.get('yesnoSala')
-            yesnoEquipamento = request.POST.get('yesnoEquipamento')    
-            yesnoServico = request.POST.get('yesnoServico')
-            form2 = LogisticaOpcoesForm_2()
-            return render(request,
-                          'evento/criar_logistica2.html',
-                          {'form2':form2,
-                           'yesnoSala':yesnoSala,
-                           'yesnoEquipamento':yesnoEquipamento,
-                           'yesnoServico':yesnoServico
-                          })
-    else:
-        form = LogisticaOpcoesForm_1()
-    return render(request, 'evento/criar_logistica1.html',{'form':form})
 
 
 
@@ -538,29 +518,23 @@ def criar_logistica2(request):
             numeroSalas = request.POST.get('numeroSalas')
             numeroEquipamentos = request.POST.get('numeroEquipamentos')    
             numeroServicos = request.POST.get('numeroServicos')
+
+            if(numeroSalas is None):
+                numeroSalas=0
             
-            SalaFormSet = modelformset_factory(Periodo_logistica,
-                                                   fields=('dia_inicial', 'dia_final'),
-                                                   extra=int(numeroSalas)
-                                                   )
 
-            EquipamentoFormSet = modelformset_factory(Periodo_logistica,
-                                                   fields=('dia_inicial', 'dia_final'),
-                                                   extra=int(numeroEquipamentos)
-                                                   )
+            if(numeroEquipamentos is None):
+                numeroEquipamentos=0
 
-            ServicoFormSet = modelformset_factory(Periodo_logistica,
-                                                   fields=('dia_inicial', 'dia_final'),
-                                                   extra=int(numeroServicos)
-                                                   )
-            form1 = SalaFormSet()
-            form2 = EquipamentoFormSet()
-            form3 = ServicoFormSet()
+            if(numeroServicos is None):
+                numeroServicos=0
+            
+           
+            SalaFormSet = formset_factory(LogisticaOpcoesForm_3,extra=int(numeroSalas))
+            
             return render(request,
                           'evento/criar_logistica3.html',
-                          {'form1':form1,
-                            'form2':form2,
-                            'form3':form3,
+                          {'form':SalaFormSet,
                            'numeroSalas':int(numeroSalas),
                            'numeroEquipamentos':int(numeroEquipamentos),
                            'numeroServicos':int(numeroServicos)
@@ -574,23 +548,28 @@ def criar_logistica3(request):
     if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
+    SalaFormSet = formset_factory(LogisticaOpcoesForm_3)
     if request.method == 'POST':
-        form = LogisticaOpcoesForm_3(request.POST)
-
-        if form.is_valid():
-            numeroSalas = request.POST.get('numeroSalas')
-            numeroEquipamentos = request.POST.get('numeroEquipamentos')    
-            numeroServicos = request.POST.get('numeroServicos')
-            
         
+        form= SalaFormSet(request.POST)
+        if form.is_valid():
+            print("VALId")
+            for f in form:
+                cd=f.cleaned_data
+                dia_inicial= cd.get('dia_inicial')
+                dia_final=request.POST.get('dia_final')
+                hora_de_inicio=request.POST.get('hora_de_inicio')
+                hora_de_fim=request.POST.get('hora_de_fim')
+            
+                recurso = TiposDeRecursos.objects.get(id=1)
+                logistica_object= Logistica.objects.get(id=1)
+                print(dia_inicial)
+                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=request.POST.get('capacidade'))
                 
-            return render(request,
-                'evento/criar_logistica3.html',
-                {'form':form,
-                'numeroSalas':numeroSalas,
-                'numeroEquipamentos':0,
-                'numeroServicos':0
-                })
+                newPeriodo.save()
+        print("NOT VALID")
+        
     else:
-        form = LogisticaOpcoesForm_3()
-    return render(request, 'evento/criar_logistica3.html',{'form':form})
+        SalaFormSet = formset_factory(LogisticaOpcoesForm_3)
+       
+    return render(request, 'evento/criar_logistica3.html',{'form':SalaFormSet})

@@ -26,29 +26,12 @@
                 <div class="control is-clearfix">
                     <form action="{% url 'criar-logistica3' %}" method="POST" enctype="multipart/form-data" class="form" id="InserirServicoForm"  %}">
                         {% csrf_token %}
-
+                        {{ form.management_form }}
                         <fieldset class="form">
-                         <h1>FORM3</h1>
-                            <strong>Preenche as salas</strong>
-                            {%for f in form1%}
-                            
+                           {% for f in form %}
+                           <strong>Sala {{ forloop.counter }}</strong> 
                             {{f.as_p}}
-                            <strong>next</strong>
-                            {%endfor%}
-
-                            <strong>Preenche os equipamentos</strong>
-                            {%for f in form2%}
-                            
-                            {{f.as_p}}
-                            <strong>next</strong>
-                            {%endfor%}
-
-                            <strong>Preenche os servicos</strong>
-                            {%for f in form3%}
-                            
-                            {{f.as_p}}
-                            <strong>next</strong>
-                            {%endfor%}
+                           {% endfor %}
                         </fieldset>
 
 

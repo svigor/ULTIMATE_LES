@@ -347,15 +347,15 @@ class LogisticaOpcoesForm_1(forms.Form):
 
 
 class LogisticaOpcoesForm_2(forms.Form):
-    numeroSalas = forms.IntegerField(label='Quantas salas', initial=1,widget= forms.NumberInput(
+    numeroSalas = forms.IntegerField(label='Quantas salas', required=False, initial=1,widget= forms.NumberInput(
         attrs={'class':'input'}
     ))
 
-    numeroEquipamentos = forms.IntegerField(label='Quantos equipamentos?', initial=1,widget= forms.NumberInput(
+    numeroEquipamentos = forms.IntegerField(label='Quantos equipamentos?',required=False, initial=1,widget= forms.NumberInput(
         attrs={'class':'input'}
     ))
 
-    numeroServicos = forms.IntegerField(label='Quantos serviços?', initial=1, widget= forms.NumberInput(
+    numeroServicos = forms.IntegerField(label='Quantos serviços?',required=False, initial=1, widget= forms.NumberInput(
         attrs={'class':'input'}
     ))
 
@@ -392,7 +392,7 @@ class LogisticaOpcoesForm_3(forms.Form):
         attrs={'class':'input'}
     ))
 
-    hora_de_fim = forms.TimeField(label='Hora inicial', widget=forms.TimeInput(
+    hora_de_fim = forms.TimeField(label='Hora final', widget=forms.TimeInput(
         attrs={'class':'input'}
     ))
 
@@ -402,7 +402,7 @@ class LogisticaOpcoesForm_3(forms.Form):
     
     class Meta:
         model = Periodo_logistica
-        fields = ['capacidade']
+        fields = ['dia_inicial','dia_final','hora_de_inicio','hora_de_fim','capacidade']
 
 
 
