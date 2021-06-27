@@ -380,23 +380,23 @@ class LogisticaQuantityServicos(forms.Form):
 
 
 class LogisticaOpcoesForm_3(forms.Form):
-    dia_inicial = forms.DateField(label='Dia inicial', widget=forms.DateInput(
+    dia_inicial = forms.DateField(label='Dia inicial', required=False,widget=forms.DateInput(
         attrs={'class':'input'}
     ))
     
-    dia_final = forms.DateField(label='Dia final', widget=forms.DateInput(
+    dia_final = forms.DateField(label='Dia final', required=False,widget=forms.DateInput(
         attrs={'class':'input'}
     ))
 
-    hora_de_inicio = forms.TimeField(label='Hora inicial', widget=forms.TimeInput(
+    hora_de_inicio = forms.TimeField(label='Hora inicial', required=False,widget=forms.TimeInput(
         attrs={'class':'input'}
     ))
 
-    hora_de_fim = forms.TimeField(label='Hora final', widget=forms.TimeInput(
+    hora_de_fim = forms.TimeField(label='Hora final', required=False,widget=forms.TimeInput(
         attrs={'class':'input'}
     ))
 
-    capacidade = forms.IntegerField(label='Capacidade',max_value=2000, widget = forms.NumberInput (
+    capacidade = forms.IntegerField(label='Capacidade',max_value=2000, required=False,widget = forms.NumberInput (
         attrs= {'class': 'input'}
     ) )
     

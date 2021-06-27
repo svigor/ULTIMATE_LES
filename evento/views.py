@@ -551,20 +551,23 @@ def criar_logistica3(request):
     SalaFormSet = formset_factory(LogisticaOpcoesForm_3)
     if request.method == 'POST':
         
-        form= SalaFormSet(request.POST)
+        form= SalaFormSet(request.POST,request.FILES)
+        print(form.errors)
         if form.is_valid():
             print("VALId")
             for f in form:
                 cd=f.cleaned_data
+                print(cd)
                 dia_inicial= cd.get('dia_inicial')
-                dia_final=request.POST.get('dia_final')
-                hora_de_inicio=request.POST.get('hora_de_inicio')
-                hora_de_fim=request.POST.get('hora_de_fim')
-            
+                dia_final=cd.get('dia_final')
+                hora_de_inicio=cd.get('hora_de_inicio')
+                hora_de_fim=cd.get('hora_de_fim')
+                capacidade = cd.get('capacidade')
+
                 recurso = TiposDeRecursos.objects.get(id=1)
                 logistica_object= Logistica.objects.get(id=1)
                 print(dia_inicial)
-                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=request.POST.get('capacidade'))
+                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade)
                 
                 newPeriodo.save()
         print("NOT VALID")
