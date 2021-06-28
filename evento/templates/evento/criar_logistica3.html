@@ -28,7 +28,8 @@
                         {% csrf_token %}
                         {{ form.management_form }}
                         <fieldset class="form">
-                           {% for f in form %}
+                            <input type="hidden" name="id" value={{id}}>
+                            {% for f in form %}
                            <strong>Sala {{ forloop.counter }}</strong> 
                             {{f.dia_inicial.label}}
                             {{f.dia_inicial}}

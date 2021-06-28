@@ -495,12 +495,19 @@ def criar_logistica1(request):
             yesnoEquipamento = request.POST.get('yesnoEquipamento')    
             yesnoServico = request.POST.get('yesnoServico')
             form2 = LogisticaOpcoesForm_2()
+
+            ## é o id do evento
+            ## Apaga se no futuro fica como argumento na função
+        
+            id = 2
+
             return render(request,
                           'evento/criar_logistica2.html',
                           {'form2':form2,
                            'yesnoSala':yesnoSala,
                            'yesnoEquipamento':yesnoEquipamento,
-                           'yesnoServico':yesnoServico
+                           'yesnoServico':yesnoServico,
+                           'id':id
                           })
     else:
         form = LogisticaOpcoesForm_1()
@@ -515,6 +522,7 @@ def criar_logistica2(request):
         form = LogisticaOpcoesForm_2(request.POST)
         
         if form.is_valid():
+            id = request.POST.get('id')
             numeroSalas = request.POST.get('numeroSalas')
             numeroEquipamentos = request.POST.get('numeroEquipamentos')    
             numeroServicos = request.POST.get('numeroServicos')
@@ -535,7 +543,8 @@ def criar_logistica2(request):
             ServicoFormSet = formset_factory(LogisticaOpcoesForm_3,extra=int(numeroServicos))
             return render(request,
                           'evento/criar_logistica3.html',
-                          {'form':SalaFormSet,
+                          {'id':request.POST.get('id'),
+                           'form':SalaFormSet,
                            'form2':EquipamentoFormSet,
                            'form3':ServicoFormSet,
                            'numeroSalas':int(numeroSalas),
@@ -560,39 +569,38 @@ def criar_logistica3(request):
         form2= EquipamentoFormSet(request.POST,request.FILES)
         form3= ServicoFormSet(request.POST,request.FILES)
         if form.is_valid() and form2.is_valid() and form3.is_valid:
-            print("VALId")
-            
+            id = request.POST.get('id')
+            evento_object = Evento.objects.get(id=id)
+            logistica_object= Logistica.objects.get(eventoid=evento_object.id)
+            logistica_object.valido = 1
+            logistica_object.save()
             for f in form:
                 cd=f.cleaned_data
-                print(cd)
                 dia_inicial= cd.get('dia_inicial')
                 dia_final=cd.get('dia_final')
                 hora_de_inicio=cd.get('hora_de_inicio')
                 hora_de_fim=cd.get('hora_de_fim')
                 capacidade = cd.get('capacidade')
                 recurso = TiposDeRecursos.objects.get(id=1)
-                logistica_object= Logistica.objects.get(id=1)
+                
                 newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade)
                 newPeriodo.save()
         
             for f in form2:
                 cd=f.cleaned_data
-                print(cd)
                 dia_inicial= cd.get('dia_inicial')
                 dia_final=cd.get('dia_final')
                 hora_de_inicio=cd.get('hora_de_inicio')
                 hora_de_fim=cd.get('hora_de_fim')
                 tipo_equipamentoid=cd.get('tipo_equipamentoid')
                 recurso = TiposDeRecursos.objects.get(id=2)
-                logistica_object= Logistica.objects.get(id=1)
                 
                 newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=0,tipo_equipamentoid=tipo_equipamentoid)
                 newPeriodo.save()
 
             for f in form3:
-                print(f)
+                print(form3)
                 cd=f.cleaned_data
-                print(cd)
                 dia_inicial= cd.get('dia_inicial')
                 dia_final=cd.get('dia_final')
                 hora_de_inicio=cd.get('hora_de_inicio')
@@ -600,10 +608,10 @@ def criar_logistica3(request):
                 capacidade = cd.get('capacidade')
                 tipo_de_servico=cd.get('tipo_de_servico')
                 recurso = TiposDeRecursos.objects.get(id=3)
-                logistica_object= Logistica.objects.get(id=1)
                 
                 newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade,tipo_servicoid=tipo_de_servico)
                 newPeriodo.save()
+            return redirect(homepage)
             
     else:
         SalaFormSet = formset_factory(LogisticaOpcoesForm_3)
