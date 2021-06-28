@@ -531,10 +531,13 @@ def criar_logistica2(request):
             
            
             SalaFormSet = formset_factory(LogisticaOpcoesForm_3,extra=int(numeroSalas))
-            
+            EquipamentoFormSet = formset_factory(LogisticaOpcoesForm_3,extra=int(numeroEquipamentos))
+            ServicoFormSet = formset_factory(LogisticaOpcoesForm_3,extra=int(numeroServicos))
             return render(request,
                           'evento/criar_logistica3.html',
                           {'form':SalaFormSet,
+                           'form2':EquipamentoFormSet,
+                           'form3':ServicoFormSet,
                            'numeroSalas':int(numeroSalas),
                            'numeroEquipamentos':int(numeroEquipamentos),
                            'numeroServicos':int(numeroServicos)
@@ -549,12 +552,16 @@ def criar_logistica3(request):
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
     SalaFormSet = formset_factory(LogisticaOpcoesForm_3)
+    EquipamentoFormSet = formset_factory(LogisticaOpcoesForm_3)
+    ServicoFormSet = formset_factory(LogisticaOpcoesForm_3)
     if request.method == 'POST':
         
         form= SalaFormSet(request.POST,request.FILES)
-        print(form.errors)
-        if form.is_valid():
+        form2= EquipamentoFormSet(request.POST,request.FILES)
+        form3= ServicoFormSet(request.POST,request.FILES)
+        if form.is_valid() and form2.is_valid() and form3.is_valid:
             print("VALId")
+            
             for f in form:
                 cd=f.cleaned_data
                 print(cd)
@@ -563,15 +570,41 @@ def criar_logistica3(request):
                 hora_de_inicio=cd.get('hora_de_inicio')
                 hora_de_fim=cd.get('hora_de_fim')
                 capacidade = cd.get('capacidade')
-
                 recurso = TiposDeRecursos.objects.get(id=1)
                 logistica_object= Logistica.objects.get(id=1)
-                print(dia_inicial)
                 newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade)
-                
                 newPeriodo.save()
-        print("NOT VALID")
         
+            for f in form2:
+                cd=f.cleaned_data
+                print(cd)
+                dia_inicial= cd.get('dia_inicial')
+                dia_final=cd.get('dia_final')
+                hora_de_inicio=cd.get('hora_de_inicio')
+                hora_de_fim=cd.get('hora_de_fim')
+                tipo_equipamentoid=cd.get('tipo_equipamentoid')
+                recurso = TiposDeRecursos.objects.get(id=2)
+                logistica_object= Logistica.objects.get(id=1)
+                
+                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=0,tipo_equipamentoid=tipo_equipamentoid)
+                newPeriodo.save()
+
+            for f in form3:
+                print(f)
+                cd=f.cleaned_data
+                print(cd)
+                dia_inicial= cd.get('dia_inicial')
+                dia_final=cd.get('dia_final')
+                hora_de_inicio=cd.get('hora_de_inicio')
+                hora_de_fim=cd.get('hora_de_fim')
+                capacidade = cd.get('capacidade')
+                tipo_de_servico=cd.get('tipo_de_servico')
+                recurso = TiposDeRecursos.objects.get(id=3)
+                logistica_object= Logistica.objects.get(id=1)
+                
+                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade,tipo_servicoid=tipo_de_servico)
+                newPeriodo.save()
+            
     else:
         SalaFormSet = formset_factory(LogisticaOpcoesForm_3)
        

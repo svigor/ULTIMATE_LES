@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'gestao_eventos.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'les2',
+        'NAME': 'les3',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on

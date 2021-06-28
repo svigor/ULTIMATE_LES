@@ -141,8 +141,12 @@ class Periodo_logistica(models.Model):
     dia_final = models.DateField(db_column='Dia final', blank=True, null=True)
     hora_de_inicio = models.TimeField(db_column='Hora de inicio', blank=True, null=True)
     hora_de_fim = models.TimeField(db_column='Hora de fim', blank=True, null=True)
-    tipos_de_recursosid = models.ForeignKey(TiposDeRecursos, models.DO_NOTHING, db_column='Tipos de recursosID')
-    logistica_id = models.ForeignKey(Logistica,models.DO_NOTHING,db_column='LogisticaID' )
+    tipos_de_recursosid = models.ForeignKey(TiposDeRecursos, models.DO_NOTHING, db_column='Tipos de recursosID',blank=True, null=True)
+    tipo_equipamentoid = models.ForeignKey('TipoEquipamento', models.DO_NOTHING,
+                                           db_column='Tipo_EquipamentoID',blank=True, null=True)
+    tipo_servicoid = models.ForeignKey('TipoServico', models.DO_NOTHING,
+                                           db_column='Tipo_ServicoID',blank=True, null=True)
+    logistica_id = models.ForeignKey(Logistica,models.DO_NOTHING,db_column='LogisticaID',blank=True, null=True )
 
     class Meta:
         managed = True
@@ -300,7 +304,7 @@ class Servicos(models.Model):
     nome = models.CharField(db_column='Nome', max_length=255, blank=True, null=True)  # Field name made lowercase.
     descricao = models.CharField(db_column='Descricao', max_length=255, blank=True, null=True)
     preco_base = models.FloatField(
-        db_column='Preco base')  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    db_column='Preco base')  # Field name made lowercase. Field renamed to remove unsuitable characters.
     tipo_servicoid = models.ForeignKey('TipoServico', models.DO_NOTHING,
                                        db_column='Tipo_ServicoID')  # Field name made lowercase.
 

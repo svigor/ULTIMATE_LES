@@ -44,9 +44,9 @@ class r_c_form_dis(forms.Form):
 
 class c_s_form(forms.Form):
     dict = []
-    campus = Campus.objects.all()
-    for choice in campus:
-        dict.append(choice)
+    #campus = Campus.objects.all()
+    #for choice in campus:
+        #dict.append(choice)
     c_s = forms.ChoiceField(choices=dict, label='', widget=forms.Select({'class': 'input'}))
 
 
@@ -399,10 +399,29 @@ class LogisticaOpcoesForm_3(forms.Form):
     capacidade = forms.IntegerField(label='Capacidade',max_value=2000, required=False,widget = forms.NumberInput (
         attrs= {'class': 'input'}
     ) )
+
+    tipo_equipamentoid = forms.ModelChoiceField(
+        queryset = TipoEquipamento.objects.all(),
+        label = 'Tipo de quipamento',
+        empty_label='Escolhe um tipo',
+        widget = forms.Select(
+            attrs = {'class':'input'}
+        )
+    )
+
+    tipo_de_servico = forms.ModelChoiceField(
+        queryset=TipoServico.objects.all(),
+        label='Tipo de serviço',
+        empty_label='Escolhe um serviço',
+        widget = forms.Select(
+            attrs= {'class': 'input'}
+        )
+    )
+
     
     class Meta:
         model = Periodo_logistica
-        fields = ['dia_inicial','dia_final','hora_de_inicio','hora_de_fim','capacidade']
+        fields = ['dia_inicial','dia_final','hora_de_inicio','hora_de_fim','capacidade','tipo_equipamentoid','tipo_de_servico']
 
 
 
