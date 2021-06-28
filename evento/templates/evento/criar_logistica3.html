@@ -29,27 +29,34 @@
                         {{ form.management_form }}
                         <fieldset class="form">
                             <input type="hidden" name="id" value={{id}}>
+                            <input type="hidden" name="numeroSalas" value={{numeroSalas}}>
+                            <input type="hidden" name="numeroEquipamentos" value={{numeroEquipamentos}}>
+                            <input type="hidden" name="numeroServicos" value={{numeroServicos}}>
+                            <h1>NUMERO SALAS: {{numeroSalas}}</h1>
+                            <h1>NUMERO EQUIPAMENTOS: {{numeroEquipamentos}}</h1>
+                            <h1>NUMERO SERVICOS: {{numeroServicos}}</h1>
                             {% for f in form %}
-                           <strong>Sala {{ forloop.counter }}</strong> 
-                            {{f.dia_inicial.label}}
-                            {{f.dia_inicial}}
+                            <strong>Sala {{ forloop.counter }}</strong> 
+                                {{f.dia_inicial.label}}
+                                {{f.dia_inicial}}
 
-                            {{f.dia_final.label}}
-                            {{f.dia_final}}
+                                {{f.dia_final.label}}
+                                {{f.dia_final}}
 
-                            {{f.hora_de_inicio.label}}
-                            {{f.hora_de_inicio}}
+                                {{f.hora_de_inicio.label}}
+                                {{f.hora_de_inicio}}
 
-                            {{f.hora_de_fim.label}}
-                            {{f.hora_de_fim}}
+                                {{f.hora_de_fim.label}}
+                                {{f.hora_de_fim}}
 
-                            {{f.capacidade.label}}
-                            {{f.capacidade}}
+                                {{f.capacidade.label}}
+                                {{f.capacidade}}
+                            {% endfor %}
                             
+                           
+                           
                             
-                           {% endfor %}
-
-                           {% for f in form2 %}
+                            {% for f in form2 %}
                            <strong>Equipamento {{ forloop.counter }}</strong> 
                            {{f.dia_inicial.label}}
                            {{f.dia_inicial}}
@@ -67,9 +74,10 @@
                            {{f.tipo_equipamentoid}}
 
                            {% endfor %}
-
+                            
                            
 
+                            
                            {% for f in form3 %}
                            <strong>Servico {{ forloop.counter }}</strong> 
                            {{f.dia_inicial.label}}
@@ -91,6 +99,7 @@
                            Quantas Pessoas?
                            {{f.capacidade}}
                            {% endfor %}
+                           
                         </fieldset>
 
 

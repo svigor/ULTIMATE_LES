@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .tables import consultarEvento
-from django.template.defaultfilters import register, yesno
+from django.template.defaultfilters import phone2numeric_filter, register, yesno
 from django.contrib.sessions.backends.base import SessionBase
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
@@ -568,7 +568,7 @@ def criar_logistica3(request):
         form= SalaFormSet(request.POST,request.FILES)
         form2= EquipamentoFormSet(request.POST,request.FILES)
         form3= ServicoFormSet(request.POST,request.FILES)
-        if form.is_valid() and form2.is_valid() and form3.is_valid:
+        if form.is_valid() and form2.is_valid() and form3.is_valid():
             id = request.POST.get('id')
             evento_object = Evento.objects.get(id=id)
             logistica_object= Logistica.objects.get(eventoid=evento_object.id)
@@ -617,3 +617,11 @@ def criar_logistica3(request):
         SalaFormSet = formset_factory(LogisticaOpcoesForm_3)
        
     return render(request, 'evento/criar_logistica3.html',{'form':SalaFormSet})
+
+def visualizar_logistica(request,id):
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    
+    logistica_object = Logistica.objects.get(eventoid=id)
+    recursos = Periodo_logistica.objects.filter(logistica_id=logistica_object)
+    return render(request,'evento/visualizar_logistica.html',{'recursos':recursos})
