@@ -699,3 +699,84 @@ def apagar_recurso_logistica(request, id):
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     Periodo_logistica.objects.filter(id=id).delete()
     return render(request,'evento/mensagem.html',{'tipo':'success','m':'A equipamento foi apagado com o sucesso','link':'evento-home'})
+
+
+
+
+
+def alterar_recurso_logistica(request,id):
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+
+    if request.method == 'POST':
+        recurso_object = Periodo_logistica.objects.get(id=id)
+        form = LogisticaOpcoesForm_3(request.POST,initial=
+                                    {'capacidade':recurso_object.capacidade,
+                                    'dia_inicial':recurso_object.dia_inicial,
+                                    'dia_final':recurso_object.dia_final,
+                                    'hora_de_inicio':recurso_object.hora_de_inicio,
+                                    'hora_de_fim':recurso_object.hora_de_fim,
+                                    'tipos_de_recursosid':recurso_object.tipos_de_recursosid,
+                                    'tipo_equipamentoid':recurso_object.tipo_equipamentoid,
+                                    'tipo_servicoid':recurso_object.tipo_servicoid
+                                    })
+        tipo = recurso_object.tipos_de_recursosid.id                 
+
+        print("WALID: ", form.is_valid())
+        if form.is_valid():
+            print("TIPO: ", tipo)
+            if tipo == 1:
+                recurso_object.dia_inicial= request.POST.get('dia_inicial')
+                recurso_object.dia_final= request.POST.get('dia_final')
+                recurso_object.hora_de_inicio= request.POST.get('hora_de_inicio')
+                recurso_object.hora_de_fim= request.POST.get('hora_de_fim')                
+                recurso_object.capacidade = request.POST.get('capacidade')
+                recurso_object.save()
+            if tipo == 2:
+                recurso_object.dia_inicial= request.POST.get('dia_inicial')
+                recurso_object.dia_final=request.POST.get('dia_final')
+                recurso_object.hora_de_inicio=request.POST.get('hora_de_inicio')
+                recurso_object.hora_de_fim=request.POST.get('hora_de_fim')
+                eid=request.POST.get('tipo_equipamentoid')
+                tipo_equipamento_id = TipoEquipamento.objects.get(eid)
+                recurso_object.tipo_equipamentoid=tipo_equipamento_id
+                recurso_object.save()
+            if tipo == 3:
+                recurso_object.dia_inicial= request.POST.get('dia_inicial')
+                recurso_object.dia_final=request.POST.get('dia_final')
+                recurso_object.hora_de_inicio=request.POST.get('hora_de_inicio')
+                recurso_object.hora_de_fim=request.POST.get('hora_de_fim')
+                recurso_object.capacidade = request.POST.get('capacidade')
+                tipo_de_servico=request.POST.get('tipo_de_servico')
+                servico = TipoServico.objects.get(id=tipo_de_servico)
+                recurso_object.tipo_de_servico = servico
+                recurso_object.save()
+
+            return render(request,'evento/mensagem.html',{'tipo':'success','m':'O recurso foi alterado com o sucesso','link':'evento-home'})
+
+        else:
+            msg = 'Preenche todos os campos corretamente'
+            return render(
+                request= request,
+                template_name='evento/alterarequipamento.html',
+                context={
+                    'f':form, 'm':msg, 'id':id, 'tipo':recurso_object.tipos_de_recursosid
+                }
+            )
+    else:
+        recurso_object = Periodo_logistica.objects.get(id=id)
+        form = LogisticaOpcoesForm_3(initial=
+                                    {'capacidade':recurso_object.capacidade,
+                                    'dia_inicial':recurso_object.dia_inicial,
+                                    'dia_final':recurso_object.dia_final,
+                                    'hora_de_inicio':recurso_object.hora_de_inicio,
+                                    'hora_de_fim':recurso_object.hora_de_fim,
+                                    'tipos_de_recursosid':recurso_object.tipos_de_recursosid,
+                                    'tipo_equipamentoid':recurso_object.tipo_equipamentoid,
+                                    'tipo_servicoid':recurso_object.tipo_servicoid
+                                    })
+        return render(
+                request,
+                'evento/alterar_recurso_logistica.html',
+                {'f': form, 'id':id, 'tipo':recurso_object.tipos_de_recursosid.id}            
+            )

@@ -30,5 +30,6 @@ urlpatterns = [
     path('criarlogistica3/',views.criar_logistica3, name='criar-logistica3'),
     path('visualizarlogistica2/<int:id>',views.visualizar_logistica2,name='visualizar-logistica2'),
     path('adicionar_recurso_logistica/<int:id>/<int:tipo>', views.adicionar_recurso_logistica, name='adicionar_recurso_logistica'),
-    path('apagar_recurso_logistica/<int:id>', views.apagar_recurso_logistica,name='apagar_recurso_logistica')
+    path('apagar_recurso_logistica/<int:id>', views.apagar_recurso_logistica,name='apagar_recurso_logistica'), 
+    path('alterar_recurso_logistica/<int:id>', views.alterar_recurso_logistica,name='alterar_recurso_logistica')
 ]
