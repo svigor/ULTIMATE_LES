@@ -565,7 +565,9 @@ def criar_logistica3(request):
     EquipamentoFormSet = formset_factory(LogisticaOpcoesForm_3)
     ServicoFormSet = formset_factory(LogisticaOpcoesForm_3)
     if request.method == 'POST':
-        
+        numeroSalas = request.POST.get('numeroSalas')
+        numeroEquipamentos = request.POST.get('numeroEquipamentos')
+        numeroServicos = request.POST.get('numeroServicos')
         form= SalaFormSet(request.POST,request.FILES)
         form2= EquipamentoFormSet(request.POST,request.FILES)
         form3= ServicoFormSet(request.POST,request.FILES)
@@ -575,43 +577,44 @@ def criar_logistica3(request):
             logistica_object= Logistica.objects.get(eventoid=evento_object.id)
             logistica_object.valido = 1
             logistica_object.save()
-            for f in form:
-                cd=f.cleaned_data
-                dia_inicial= cd.get('dia_inicial')
-                dia_final=cd.get('dia_final')
-                hora_de_inicio=cd.get('hora_de_inicio')
-                hora_de_fim=cd.get('hora_de_fim')
-                capacidade = cd.get('capacidade')
-                recurso = TiposDeRecursos.objects.get(id=1)
-                
-                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade)
-                newPeriodo.save()
-        
-            for f in form2:
-                cd=f.cleaned_data
-                dia_inicial= cd.get('dia_inicial')
-                dia_final=cd.get('dia_final')
-                hora_de_inicio=cd.get('hora_de_inicio')
-                hora_de_fim=cd.get('hora_de_fim')
-                tipo_equipamentoid=cd.get('tipo_equipamentoid')
-                recurso = TiposDeRecursos.objects.get(id=2)
-                
-                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=0,tipo_equipamentoid=tipo_equipamentoid)
-                newPeriodo.save()
-
-            for f in form3:
-                print(form3)
-                cd=f.cleaned_data
-                dia_inicial= cd.get('dia_inicial')
-                dia_final=cd.get('dia_final')
-                hora_de_inicio=cd.get('hora_de_inicio')
-                hora_de_fim=cd.get('hora_de_fim')
-                capacidade = cd.get('capacidade')
-                tipo_de_servico=cd.get('tipo_de_servico')
-                recurso = TiposDeRecursos.objects.get(id=3)
-                
-                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade,tipo_servicoid=tipo_de_servico)
-                newPeriodo.save()
+            if int(numeroSalas)>0:
+                for f in form:
+                    cd=f.cleaned_data
+                    dia_inicial= cd.get('dia_inicial')
+                    dia_final=cd.get('dia_final')
+                    hora_de_inicio=cd.get('hora_de_inicio')
+                    hora_de_fim=cd.get('hora_de_fim')
+                    capacidade = cd.get('capacidade')
+                    recurso = TiposDeRecursos.objects.get(id=1)
+                    
+                    newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade)
+                    newPeriodo.save()
+            if int(numeroEquipamentos)>0:
+                for f in form2:
+                    cd=f.cleaned_data
+                    dia_inicial= cd.get('dia_inicial')
+                    dia_final=cd.get('dia_final')
+                    hora_de_inicio=cd.get('hora_de_inicio')
+                    hora_de_fim=cd.get('hora_de_fim')
+                    tipo_equipamentoid=cd.get('tipo_equipamentoid')
+                    recurso = TiposDeRecursos.objects.get(id=2)
+                    
+                    newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=0,tipo_equipamentoid=tipo_equipamentoid)
+                    newPeriodo.save()
+            if int(numeroServicos)>0:
+                for f in form3:
+                    print(form3)
+                    cd=f.cleaned_data
+                    dia_inicial= cd.get('dia_inicial')
+                    dia_final=cd.get('dia_final')
+                    hora_de_inicio=cd.get('hora_de_inicio')
+                    hora_de_fim=cd.get('hora_de_fim')
+                    capacidade = cd.get('capacidade')
+                    tipo_de_servico=cd.get('tipo_de_servico')
+                    recurso = TiposDeRecursos.objects.get(id=3)
+                    
+                    newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade,tipo_servicoid=tipo_de_servico)
+                    newPeriodo.save()
             return redirect(homepage)
             
     else:
@@ -656,9 +659,10 @@ def adicionar_recurso_logistica(request,id,tipo):
                 hora_de_inicio=request.POST.get('hora_de_inicio')
                 hora_de_fim=request.POST.get('hora_de_fim')
                 tipo_equipamentoid=request.POST.get('tipo_equipamentoid')
+                equipamento = TipoEquipamento.objects.get(id=tipo_equipamentoid)
                 recurso = TiposDeRecursos.objects.get(id=2)
                     
-                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=0,tipo_equipamentoid=tipo_equipamentoid)
+                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=0,tipo_equipamentoid=equipamento)
                 newPeriodo.save()
             if tipo == 3:
                 dia_inicial= request.POST.get('dia_inicial')
@@ -667,10 +671,13 @@ def adicionar_recurso_logistica(request,id,tipo):
                 hora_de_fim=request.POST.get('hora_de_fim')
                 capacidade = request.POST.get('capacidade')
                 tipo_de_servico=request.POST.get('tipo_de_servico')
+                servico = TipoServico.objects.get(id=tipo_de_servico)
                 recurso = TiposDeRecursos.objects.get(id=3)
                 
-                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade,tipo_servicoid=tipo_de_servico)
+                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade,tipo_servicoid=servico)
                 newPeriodo.save()
+            
+            
             link = 'evento-home'
             return render(
                 request,
@@ -685,3 +692,10 @@ def adicionar_recurso_logistica(request,id,tipo):
         form = LogisticaOpcoesForm_3()
     return render(request, 'evento/adicionar_logistica_recurso.html',{'f':form,'tipo':tipo,'id':id})
 
+
+def apagar_recurso_logistica(request, id):
+    print("WtF")
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    Periodo_logistica.objects.filter(id=id).delete()
+    return render(request,'evento/mensagem.html',{'tipo':'success','m':'A equipamento foi apagado com o sucesso','link':'evento-home'})

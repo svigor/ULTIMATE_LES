@@ -30,6 +30,20 @@
         <p style="margin-left: 2.5em"><strong>Recurso nº {{forloop.counter}}</strong>: capacidade para {{recurso.capacidade}} pessoas</p>
         <p style="margin-left: 8.8em">Horaio:{{recurso.hora_de_inicio}} : {{recurso.hora_de_fim}}</p>
         <p style="margin-left: 8.8em">Dias: De {{recurso.dia_inicial}} à {{recurso.dia_final}}</p>
+        <div style="margin-left: 20%">
+            <a href="{% url 'apagar_recurso_logistica' id=recurso.id %}">
+                <span class="icon has-text-danger">
+                    <i class="mdi mdi-trash-can mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+        <div style="margin-left: 23%; margin-top: -2.4%;">
+            <a href="{% url 'apagar_recurso_logistica' id=recurso.id %}">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+        </div>
         
         {% endif %}
     {% endfor %}
@@ -41,6 +55,20 @@
         <p style="margin-left: 2.5em"><strong>Recurso nº {{forloop.counter}}</strong>: equipamento de tipo {{recurso.tipo_equipamentoid.nome}}</p>
         <p style="margin-left: 8.8em">Horaio:{{recurso.hora_de_inicio}} : {{recurso.hora_de_fim}}</p>
         <p style="margin-left: 8.8em">Dias: De {{recurso.dia_inicial}} à {{recurso.dia_final}}</p>
+        <div style="margin-left: 20%">
+            <a href="{% url 'apagar_recurso_logistica' id=recurso.id %}">
+                <span class="icon has-text-danger">
+                    <i class="mdi mdi-trash-can mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+        <div style="margin-left: 23%; margin-top: -2.4%;">
+            <a href="{% url 'apagar_recurso_logistica' id=recurso.id %}">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+        </div>
         {% endif %}
     {% endfor %}
 
@@ -51,6 +79,21 @@
         <p style="margin-left: 2.5em"><strong>Recurso nº {{forloop.counter}}</strong>: serviço de tipo {{recurso.tipo_servicoid.nome}}</p>
         <p style="margin-left: 8.8em">Horaio:{{recurso.hora_de_inicio}} : {{recurso.hora_de_fim}}</p>
         <p style="margin-left: 8.8em">Dias: De {{recurso.dia_inicial}} à {{recurso.dia_final}}</p>
+        <div style="margin-left: 20%">
+            <a href="{% url 'apagar_recurso_logistica' id=recurso.id %}">
+                <span class="icon has-text-danger">
+                    <i class="mdi mdi-trash-can mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+        <div style="margin-left: 23%; margin-top: -2.4%;">
+            <a href="{% url 'apagar_recurso_logistica' id=recurso.id %}">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+        
         {% endif %}
     {% endfor %}
         
