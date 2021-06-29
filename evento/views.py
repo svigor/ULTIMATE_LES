@@ -729,19 +729,18 @@ def alterar_recurso_logistica(request,id):
                 recurso_object.dia_final=request.POST.get('dia_final')
                 recurso_object.hora_de_inicio=request.POST.get('hora_de_inicio')
                 recurso_object.hora_de_fim=request.POST.get('hora_de_fim')
-                eid=request.POST.get('tipo_equipamentoid')
-                tipo_equipamento_id = TipoEquipamento.objects.get(eid)
-                recurso_object.tipo_equipamentoid=tipo_equipamento_id
+                tipo_equipamento = TipoEquipamento.objects.get(id=request.POST.get('tipo_equipamentoid'))
+                recurso_object.tipo_equipamentoid=tipo_equipamento
                 recurso_object.save()
             if tipo == 3:
+                print("SERVICO: ",request.POST.get('tipo_de_servico'))
                 recurso_object.dia_inicial= request.POST.get('dia_inicial')
                 recurso_object.dia_final=request.POST.get('dia_final')
                 recurso_object.hora_de_inicio=request.POST.get('hora_de_inicio')
                 recurso_object.hora_de_fim=request.POST.get('hora_de_fim')
                 recurso_object.capacidade = request.POST.get('capacidade')
-                tipo_de_servico=request.POST.get('tipo_de_servico')
-                servico = TipoServico.objects.get(id=tipo_de_servico)
-                recurso_object.tipo_de_servico = servico
+                tipo_de_servico=TipoServico.objects.get(id=request.POST.get('tipo_de_servico'))
+                recurso_object.tipo_servicoid = tipo_de_servico
                 recurso_object.save()
 
             #return render(request,'evento/mensagem.html',{'tipo':'success','m':'O recurso foi alterado com o sucesso','link':'evento-home'})
