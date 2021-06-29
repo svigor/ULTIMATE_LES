@@ -677,29 +677,21 @@ def adicionar_recurso_logistica(request,id,tipo):
                 newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade,tipo_servicoid=servico)
                 newPeriodo.save()
             
+            return redirect('/visualizarlogistica2/'+str(evento_object.id))
             
-            link = 'evento-home'
-            return render(
-                request,
-                'evento/mensagem.html',
-                {
-                    'tipo':'success',
-                    'm':'Foi adicionado com o sucesso',
-                    'link':link
-                }
-            )
     else:
         form = LogisticaOpcoesForm_3()
     return render(request, 'evento/adicionar_logistica_recurso.html',{'f':form,'tipo':tipo,'id':id})
 
 
 def apagar_recurso_logistica(request, id):
-    print("WtF")
     if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    recurso_object = Periodo_logistica.objects.get(id=id)
+    evento_id = recurso_object.logistica_id.eventoid.id
     Periodo_logistica.objects.filter(id=id).delete()
-    return render(request,'evento/mensagem.html',{'tipo':'success','m':'A equipamento foi apagado com o sucesso','link':'evento-home'})
-
+    #return render(request,'evento/mensagem.html',{'tipo':'success','m':'A equipamento foi apagado com o sucesso','link':'evento-home'})
+    return redirect('/visualizarlogistica2/'+str(evento_id))
 
 
 
@@ -752,7 +744,9 @@ def alterar_recurso_logistica(request,id):
                 recurso_object.tipo_de_servico = servico
                 recurso_object.save()
 
-            return render(request,'evento/mensagem.html',{'tipo':'success','m':'O recurso foi alterado com o sucesso','link':'evento-home'})
+            #return render(request,'evento/mensagem.html',{'tipo':'success','m':'O recurso foi alterado com o sucesso','link':'evento-home'})
+            
+            return redirect('/visualizarlogistica2/'+str(recurso_object.logistica_id.eventoid.id))
 
         else:
             msg = 'Preenche todos os campos corretamente'
