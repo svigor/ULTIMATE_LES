@@ -1,3 +1,4 @@
+import evento
 from django.forms import fields
 from django.forms.formsets import formset_factory
 from django.forms.models import modelformset_factory
@@ -624,7 +625,63 @@ def visualizar_logistica2(request,id):
     
     logistica_object = Logistica.objects.get(eventoid=id)
     recursos = Periodo_logistica.objects.filter(logistica_id=logistica_object)
-    
-    return render(request,'evento/visualizar_logistica.html',{'recursos':recursos})
+    print(recursos)
+    return render(request,'evento/visualizar_logistica.html',{'recursos':recursos,'id':id})
 
+
+def adicionar_recurso_logistica(request,id,tipo):
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    
+    if request.method == 'POST':
+        form = LogisticaOpcoesForm_3(request.POST)
+        evento_object = Evento.objects.get(id=id)
+        logistica_object = Logistica.objects.get(eventoid=evento_object)
+        print(form.is_valid())
+        
+        if form.is_valid():
+            
+            if tipo == 1:
+                dia_inicial= request.POST.get('dia_inicial')
+                dia_final= request.POST.get('dia_final')
+                hora_de_inicio= request.POST.get('hora_de_inicio')
+                hora_de_fim= request.POST.get('hora_de_fim')                
+                capacidade = request.POST.get('capacidade')
+                recurso = TiposDeRecursos.objects.get(id=1)
+                newPeriodo = Periodo_logistica(logistica_id=logistica_object,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade,tipos_de_recursosid=recurso)
+                newPeriodo.save()
+            if tipo == 2:
+                dia_inicial= request.POST.get('dia_inicial')
+                dia_final=request.POST.get('dia_final')
+                hora_de_inicio=request.POST.get('hora_de_inicio')
+                hora_de_fim=request.POST.get('hora_de_fim')
+                tipo_equipamentoid=request.POST.get('tipo_equipamentoid')
+                recurso = TiposDeRecursos.objects.get(id=2)
+                    
+                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=0,tipo_equipamentoid=tipo_equipamentoid)
+                newPeriodo.save()
+            if tipo == 3:
+                dia_inicial= request.POST.get('dia_inicial')
+                dia_final=request.POST.get('dia_final')
+                hora_de_inicio=request.POST.get('hora_de_inicio')
+                hora_de_fim=request.POST.get('hora_de_fim')
+                capacidade = request.POST.get('capacidade')
+                tipo_de_servico=request.POST.get('tipo_de_servico')
+                recurso = TiposDeRecursos.objects.get(id=3)
+                
+                newPeriodo = Periodo_logistica(logistica_id=logistica_object,tipos_de_recursosid=recurso,dia_inicial=dia_inicial,dia_final=dia_final,hora_de_inicio=hora_de_inicio,hora_de_fim=hora_de_fim,capacidade=capacidade,tipo_servicoid=tipo_de_servico)
+                newPeriodo.save()
+            link = 'evento-home'
+            return render(
+                request,
+                'evento/mensagem.html',
+                {
+                    'tipo':'success',
+                    'm':'Foi adicionado com o sucesso',
+                    'link':link
+                }
+            )
+    else:
+        form = LogisticaOpcoesForm_3()
+    return render(request, 'evento/adicionar_logistica_recurso.html',{'f':form,'tipo':tipo,'id':id})
 

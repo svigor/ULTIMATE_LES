@@ -380,7 +380,7 @@ class LogisticaQuantityServicos(forms.Form):
 
 
 class LogisticaOpcoesForm_3(forms.Form):
-    dia_inicial = forms.DateField(label='Dia inicial', required=False,widget=forms.DateInput(
+    dia_inicial = forms.DateField(label='Dia inicial' ,required=False,widget=forms.DateInput(
         attrs={'class':'input'}
     ))
     
@@ -401,6 +401,7 @@ class LogisticaOpcoesForm_3(forms.Form):
     ) )
 
     tipo_equipamentoid = forms.ModelChoiceField(
+        required=False,
         queryset = TipoEquipamento.objects.all(),
         label = 'Tipo de quipamento',
         empty_label='Escolhe um tipo',
@@ -410,6 +411,7 @@ class LogisticaOpcoesForm_3(forms.Form):
     )
 
     tipo_de_servico = forms.ModelChoiceField(
+        required=False,
         queryset=TipoServico.objects.all(),
         label='Tipo de serviço',
         empty_label='Escolhe um serviço',

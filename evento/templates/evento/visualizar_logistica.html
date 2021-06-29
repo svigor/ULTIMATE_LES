@@ -8,7 +8,21 @@
         <h2 class="title is-4" style="text-align: center;">Visulizar logistica</h2>
     </div>
 
-    
+    <a href="{% url 'adicionar_recurso_logistica' id=id tipo=1 %}">
+        <button type="button" class="button is-success is-outlined" style="margin-bottom: 1rem;"><span
+                class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Adicionar Sala</span>
+        </button>
+    </a>
+    <a href="{% url 'adicionar_recurso_logistica' id=id tipo=2 %}">
+        <button type="button" class="button is-success is-outlined" style="margin-bottom: 1rem;"><span
+                class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Adicionar Equipamento</span>
+        </button>
+    </a>
+    <a href="{% url 'adicionar_recurso_logistica' id=id tipo=3 %}">
+        <button type="button" class="button is-success is-outlined" style="margin-bottom: 1rem;"><span
+                class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Adicionar Servico</span>
+        </button>
+    </a>
     <h1><strong>Salas:</strong></h1>
     {% for recurso in recursos %}
         {% if recurso.tipos_de_recursosid.id == 1 %}
