@@ -9,28 +9,31 @@
     </div>
 
     
-    
+    <h1><strong>Salas:</strong></h1>
     {% for recurso in recursos %}
         {% if recurso.tipos_de_recursosid.id == 1 %}
-        <h1><strong>Salas:</strong></h1>
+        
         <p style="margin-left: 2.5em"><strong>Recurso nº {{forloop.counter}}</strong>: capacidade para {{recurso.capacidade}} pessoas</p>
         <p style="margin-left: 8.8em">Horaio:{{recurso.hora_de_inicio}} : {{recurso.hora_de_fim}}</p>
         <p style="margin-left: 8.8em">Dias: De {{recurso.dia_inicial}} à {{recurso.dia_final}}</p>
+        
         {% endif %}
     {% endfor %}
 
+    <h1><strong>Equipamentos:</strong></h1>
     {% for recurso in recursos %}
         {% if recurso.tipos_de_recursosid.id == 2 %}
-        <h1><strong>Equipamentos:</strong></h1>
+        
         <p style="margin-left: 2.5em"><strong>Recurso nº {{forloop.counter}}</strong>: equipamento de tipo {{recurso.tipo_equipamentoid.nome}}</p>
         <p style="margin-left: 8.8em">Horaio:{{recurso.hora_de_inicio}} : {{recurso.hora_de_fim}}</p>
         <p style="margin-left: 8.8em">Dias: De {{recurso.dia_inicial}} à {{recurso.dia_final}}</p>
         {% endif %}
     {% endfor %}
 
+    <h1><strong>Serviços:</strong></h1>
     {% for recurso in recursos %}
         {% if recurso.tipos_de_recursosid.id == 3 %}
-        <h1><strong>Serviços:</strong></h1>
+        
         <p style="margin-left: 2.5em"><strong>Recurso nº {{forloop.counter}}</strong>: serviço de tipo {{recurso.tipo_servicoid.nome}}</p>
         <p style="margin-left: 8.8em">Horaio:{{recurso.hora_de_inicio}} : {{recurso.hora_de_fim}}</p>
         <p style="margin-left: 8.8em">Dias: De {{recurso.dia_inicial}} à {{recurso.dia_final}}</p>

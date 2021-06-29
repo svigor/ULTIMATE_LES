@@ -28,5 +28,5 @@ urlpatterns = [
     path('criarlogistica1/',views.criar_logistica1, name='criar-logistica1'),
     path('criarlogistica2/',views.criar_logistica2, name='criar-logistica2'),
     path('criarlogistica3/',views.criar_logistica3, name='criar-logistica3'),
-    path('visualizarlogistica/<int:id>',views.visualizar_logistica,name='visualizar-logistica')
+    path('visualizarlogistica2/<int:id>',views.visualizar_logistica2,name='visualizar-logistica2')
 ]

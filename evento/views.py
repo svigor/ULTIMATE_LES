@@ -499,7 +499,7 @@ def criar_logistica1(request):
             ## é o id do evento
             ## Apaga se no futuro fica como argumento na função
         
-            id = 2
+            id = 3
 
             return render(request,
                           'evento/criar_logistica2.html',
@@ -618,10 +618,13 @@ def criar_logistica3(request):
        
     return render(request, 'evento/criar_logistica3.html',{'form':SalaFormSet})
 
-def visualizar_logistica(request,id):
+def visualizar_logistica2(request,id):
     if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
     logistica_object = Logistica.objects.get(eventoid=id)
     recursos = Periodo_logistica.objects.filter(logistica_id=logistica_object)
+    
     return render(request,'evento/visualizar_logistica.html',{'recursos':recursos})
+
+
