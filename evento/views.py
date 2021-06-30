@@ -12,7 +12,7 @@ from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 from .tables import SalaTable, ServicoTable, EquipamentoTable
 
-from .forms import opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm, AlterarEquipamentoForm, LogisticaOpcoesForm_1,LogisticaOpcoesForm_2, LogisticaOpcoesForm_3
+from .forms import ValidarLogistica, opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm, AlterarEquipamentoForm, LogisticaOpcoesForm_1,LogisticaOpcoesForm_2, LogisticaOpcoesForm_3
 from .models import Logistica, TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento, TipoSala, Periodo_logistica, TiposDeRecursos
 from .filters import SalasFilter, ServicosFilter, EquipamentosFilter
 
@@ -628,8 +628,8 @@ def visualizar_logistica2(request,id):
     
     logistica_object = Logistica.objects.get(eventoid=id)
     recursos = Periodo_logistica.objects.filter(logistica_id=logistica_object)
-    print(recursos)
-    return render(request,'evento/visualizar_logistica.html',{'recursos':recursos,'id':id})
+    d = ValidarLogistica(initial={'decision':logistica_object.valido})
+    return render(request,'evento/visualizar_logistica.html',{'recursos':recursos,'id':id,'d':d})
 
 
 def adicionar_recurso_logistica(request,id,tipo):
@@ -773,3 +773,24 @@ def alterar_recurso_logistica(request,id):
                 'evento/alterar_recurso_logistica.html',
                 {'f': form, 'id':id, 'tipo':recurso_object.tipos_de_recursosid.id}            
             )
+
+
+def validar_logistica(request,id):
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+
+    if request.method == 'POST':
+        evento_object=Evento.objects.get(id=id)
+        logistica_object = Logistica.objects.get(eventoid=evento_object)
+        decision = request.POST.get('decision')
+        form = ValidarLogistica(request.POST)
+        print("DECISIO: ",request.POST.get('decision'))
+        if form.is_valid():
+            if decision == '1':
+                logistica_object.valido = 1
+            if decision == '0':
+                logistica_object.valido = 0
+            logistica_object.save()
+
+        return redirect(homepage)
+    

@@ -426,4 +426,8 @@ class LogisticaOpcoesForm_3(forms.Form):
         fields = ['dia_inicial','dia_final','hora_de_inicio','hora_de_fim','capacidade','tipo_equipamentoid','tipo_de_servico']
 
 
+class ValidarLogistica(forms.Form):
+    CHOICES = [(1,'validar'),
+                (0,'nao validar')]
+    decision = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect)
 
