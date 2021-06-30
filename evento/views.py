@@ -484,7 +484,7 @@ def apagar_equipamento(request, id):
 
 
 
-def criar_logistica1(request):
+def criar_logistica1(request,id):
     if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
         return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
     
@@ -500,7 +500,7 @@ def criar_logistica1(request):
             ## é o id do evento
             ## Apaga se no futuro fica como argumento na função
         
-            id = 3
+            #id = 3
 
             return render(request,
                           'evento/criar_logistica2.html',
@@ -512,7 +512,7 @@ def criar_logistica1(request):
                           })
     else:
         form = LogisticaOpcoesForm_1()
-    return render(request, 'evento/criar_logistica1.html',{'form':form})
+    return render(request, 'evento/criar_logistica1.html',{'form':form,'id':id})
 
 
 def criar_logistica2(request):
@@ -574,8 +574,9 @@ def criar_logistica3(request):
         if form.is_valid() and form2.is_valid() and form3.is_valid():
             id = request.POST.get('id')
             evento_object = Evento.objects.get(id=id)
-            logistica_object= Logistica.objects.get(eventoid=evento_object.id)
-            logistica_object.valido = 1
+            #logistica_object= Logistica.objects.get(eventoid=evento_object.id)
+            #logistica_object.valido = 1
+            logistica_object = Logistica(valido=0,eventoid=evento_object)
             logistica_object.save()
             if int(numeroSalas)>0:
                 for f in form:
