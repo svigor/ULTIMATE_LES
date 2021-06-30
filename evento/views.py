@@ -10,11 +10,11 @@ from django.template.defaultfilters import phone2numeric_filter, register, yesno
 from django.contrib.sessions.backends.base import SessionBase
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
-from .tables import SalaTable, ServicoTable, EquipamentoTable
+from .tables import SalaTable, ServicoTable, EquipamentoTable, LogisticaTable
 
 from .forms import ValidarLogistica, opcaoevento, r_a_form, r_c_form, n_tel, c_s_form, r_c_form_dis, InserirSalaForm, AlterarSalaForm, CriarServicoForm, AlterarServicoForm, CriarEquipamentoForm, AlterarEquipamentoForm, LogisticaOpcoesForm_1,LogisticaOpcoesForm_2, LogisticaOpcoesForm_3
 from .models import Logistica, TipoDeEvento, Formulario, Pergunta, TipoDePergunta, Campus, Evento, TipoDeFormulario, Edificio, Sala, TipoServico, Servicos, Equipamento, TipoEquipamento, TipoSala, Periodo_logistica, TiposDeRecursos
-from .filters import SalasFilter, ServicosFilter, EquipamentosFilter
+from .filters import SalasFilter, ServicosFilter, EquipamentosFilter, LogisticasFilter
 
 
 def homepage(request):
@@ -793,5 +793,28 @@ def validar_logistica(request,id):
                 logistica_object.valido = 0
             logistica_object.save()
 
-        return redirect(homepage)
+        return redirect('/consultarlogisticas/')
+
+
+class consultar_logisticas(SingleTableMixin, FilterView):
+    
+    table_class = LogisticaTable
+    template_name = 'evento/consultar_logisticas.html'
+    filterset_class = LogisticasFilter
+    table_pagination = {
+        'per_page': 10
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+            return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SingleTableMixin, self).get_context_data(**kwargs)
+        table = self.get_table(**self.get_table_kwargs())
+        table.request = self.request
+        table.fixed = True
+        context[self.get_context_table_name(table)] = table
+        return context
     

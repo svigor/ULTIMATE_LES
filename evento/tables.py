@@ -1,7 +1,7 @@
 from datetime import date
 
 import django_tables2 as django_tables
-from .models import Equipamento, Evento, Sala, Campus, Edificio, Servicos
+from .models import Equipamento, Evento, Sala, Campus, Edificio, Servicos, Logistica
 from django.utils.html import format_html
 from django.urls import reverse
 
@@ -186,6 +186,69 @@ class EquipamentoTable(django_tables.Table):
         if segundo_botao == "":
             segundo_botao = f"""
               <a onclick="alert.render('{alerta}','{reverse('apagar-equipamento', args=[record.id])}')"
+                    data-tooltip="Apagar">
+                    <span class="icon has-text-danger">
+                        <i class="mdi mdi-trash-can mdi-24px"></i>
+                    </span>
+                </a>
+            """
+        return format_html(f"""
+        <div>
+            {primeiro_botao}
+            {segundo_botao}
+        </div>
+        """)
+
+
+
+
+
+
+
+class LogisticaTable(django_tables.Table):
+    # Os nomes que aparecem na tabela
+    eventoid = django_tables.Column(empty_values=(), order_by='eventoid', accessor='eventoid.id')
+    valido = django_tables.Column('Estado')
+    acoes = django_tables.Column('Ações', empty_values=(
+    ), orderable=False, attrs={"th": {"width": "150"}})
+   
+
+    class Meta:
+        #template_name = 'evento/bulma_table_details'
+        model = Logistica
+        sequence = ('eventoid','valido','acoes')
+
+    def before_render(self, request):
+        self.columns.hide('id')
+
+    def render_valido(self, value):
+        if value == 0:
+            return format_html(
+                '<div><button class="button is-danger small"style="pointer-events:none;">Não Aprovado</button></div>')
+        elif value == 1:
+            return format_html(
+                '<div><button class="button is-success small" style="pointer-events:none;">Aprovado</button></div>')
+    
+
+    def render_acoes(self, record):
+        primeiro_botao = """<span class="icon"></span>"""
+       
+        primeiro_botao = ""
+        if self.request.user.role.role == 'Administrador':
+            primeiro_botao = f"""
+            <a href='{reverse('visualizar-logistica2', args=[record.eventoid.id])}'
+                data-tooltip="Editar">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+            """
+        
+        segundo_botao = ""
+        alerta = "Tem certeza que quer apagar a sala?"
+        if segundo_botao == "":
+            segundo_botao = f"""
+                <a onclick="alert.render('{alerta}','{reverse('visualizar-logistica2', args=[record.id])}')"
                     data-tooltip="Apagar">
                     <span class="icon has-text-danger">
                         <i class="mdi mdi-trash-can mdi-24px"></i>

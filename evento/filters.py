@@ -1,7 +1,7 @@
 from django.db.models import query
 from django.db.models.query import QuerySet
 import django_filters
-from evento.models import Equipamento, Sala, Campus, Edificio, Servicos
+from evento.models import Equipamento, Logistica, Sala, Campus, Edificio, Servicos
 from django.db.models import Q
 
 get_mobilidade_reduzida_choices = [
@@ -27,5 +27,12 @@ class EquipamentosFilter(django_filters.FilterSet):
     class Meta:
         model = Equipamento
         fields = ['tipo_equipamentoid', 'nome']
+
+
+class LogisticasFilter(django_filters.FilterSet):
+    class Meta:
+        model = Logistica
+        fields = []
+
 
 
