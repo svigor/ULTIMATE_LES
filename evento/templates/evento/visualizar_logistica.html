@@ -99,19 +99,20 @@
         {% endif %}
     {% endfor %}
         
-    <div>
-        
+    {% if role == 3 %}
+    <div>   
         <form action="{% url 'validar_logistica' id=id %}" method="POST" enctype="multipart/form-data" class="form"  %}">
             {% csrf_token %}
-            {{d}}
+            
             <div style="margin-top:7%;text-align: center;position:center;">
+                {{d}}
                 <button type="submit" class="button is-info is-outlined">
                     <span>Confirmar</span>
                 </button>
             </div>
         </form>
     </div>
-    
+    {% endif %}
     
     <div style="margin-left:35%; margin-right:35%;">
       

@@ -630,7 +630,12 @@ def visualizar_logistica2(request,id):
     logistica_object = Logistica.objects.get(eventoid=id)
     recursos = Periodo_logistica.objects.filter(logistica_id=logistica_object)
     d = ValidarLogistica(initial={'decision':logistica_object.valido})
-    return render(request,'evento/visualizar_logistica.html',{'recursos':recursos,'id':id,'d':d})
+
+    if request.user.role.role == 'Administrador':
+        role = 3
+    else:
+        role = 0
+    return render(request,'evento/visualizar_logistica.html',{'recursos':recursos,'id':id,'d':d,'role':role})
 
 
 def adicionar_recurso_logistica(request,id,tipo):
