@@ -9,6 +9,11 @@ get_mobilidade_reduzida_choices = [
     ('False','Não')
 ]
 
+get_valido_choices = [
+    (1,'Sim'),
+    (0,'Não')
+]
+
 
 class SalasFilter(django_filters.FilterSet):
     mobilidade_reduzida = django_filters.MultipleChoiceFilter(choices=get_mobilidade_reduzida_choices)
@@ -30,9 +35,10 @@ class EquipamentosFilter(django_filters.FilterSet):
 
 
 class LogisticasFilter(django_filters.FilterSet):
+    valido = django_filters.MultipleChoiceFilter(choices=get_valido_choices)
     class Meta:
         model = Logistica
-        fields = []
+        fields = ['valido']
 
 
 
