@@ -207,7 +207,7 @@ class EquipamentoTable(django_tables.Table):
 
 class LogisticaTable(django_tables.Table):
     # Os nomes que aparecem na tabela
-    eventoid = django_tables.Column(empty_values=(), order_by='eventoid', accessor='eventoid.id')
+    eventoid = django_tables.Column('Evento', order_by='eventoid', accessor='eventoid.id')
     valido = django_tables.Column('Estado')
     acoes = django_tables.Column('Ações', empty_values=(
     ), orderable=False, attrs={"th": {"width": "150"}})
@@ -220,6 +220,10 @@ class LogisticaTable(django_tables.Table):
 
     def before_render(self, request):
         self.columns.hide('id')
+
+    def render_eventoid(self,value):
+        evento_object = Evento.objects.get(id=value)
+        return '('+str(value)+')'+' '+str(evento_object.tipo_de_eventoid.nome)
 
     def render_valido(self, value):
         if value == 0:
