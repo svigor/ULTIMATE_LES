@@ -249,10 +249,10 @@ class LogisticaTable(django_tables.Table):
             """
         
         segundo_botao = ""
-        alerta = "Tem certeza que quer apagar a sala?"
+        alerta = "Tem a certeza que quer apagar a logistica?"
         if segundo_botao == "":
             segundo_botao = f"""
-                <a onclick="alert.render('{alerta}','{reverse('visualizar-logistica2', args=[record.id])}')"
+                <a onclick="alert.render('{alerta}','{reverse('apagar-logistica', args=[record.id])}')"
                     data-tooltip="Apagar">
                     <span class="icon has-text-danger">
                         <i class="mdi mdi-trash-can mdi-24px"></i>

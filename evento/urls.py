@@ -33,5 +33,6 @@ urlpatterns = [
     path('apagar_recurso_logistica/<int:id>', views.apagar_recurso_logistica,name='apagar_recurso_logistica'), 
     path('alterar_recurso_logistica/<int:id>', views.alterar_recurso_logistica,name='alterar_recurso_logistica'),
     path('validar_logistica/<int:id>', views.validar_logistica, name='validar_logistica'),
-    path('consultarlogisticas/', views.consultar_logisticas.as_view(), name='consultar_logisticas')
+    path('consultarlogisticas/', views.consultar_logisticas.as_view(), name='consultar_logisticas'),
+    path('apagarlogisticas/<int:id>', views.apagar_logistica,name='apagar-logistica')
 ]

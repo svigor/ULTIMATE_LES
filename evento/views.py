@@ -619,7 +619,12 @@ def criar_logistica3(request):
             return redirect(homepage)
             
     else:
-        SalaFormSet = formset_factory(LogisticaOpcoesForm_3)
+        numeroSalas = request.POST.get('numeroSalas')
+        numeroEquipamentos = request.POST.get('numeroEquipamentos')
+        numeroServicos = request.POST.get('numeroServicos')
+        EquipamentoFormSet = formset_factory(LogisticaOpcoesForm_3,extra=int(numeroEquipamentos))
+        ServicoFormSet = formset_factory(LogisticaOpcoesForm_3,extra=int(numeroServicos))
+        SalaFormSet = formset_factory(LogisticaOpcoesForm_3, extra=numeroSalas)
        
     return render(request, 'evento/criar_logistica3.html',{'form':SalaFormSet})
 
@@ -823,3 +828,15 @@ class consultar_logisticas(SingleTableMixin, FilterView):
         context[self.get_context_table_name(table)] = table
         return context
     
+
+
+
+def apagar_logistica(request, id):
+    if not request.user.is_authenticated or not request.user.role.role == 'Administrador':
+        return render(request,'evento/mensagem.html',{'tipo':'error','m':'Não é permetido','link':'evento-home'})
+    
+    logistica_object = Logistica.objects.get(id=id)
+    recursos = Periodo_logistica.objects.filter(logistica_id=logistica_object)
+    recursos.delete()
+    logistica_object.delete()
+    return render(request, 'evento/mensagem.html', {'tipo':'success', 'm':'A logistica foi apagada com o sucesso','link':'consultar_logisticas'})
