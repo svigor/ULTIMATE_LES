@@ -1,0 +1,168 @@
+{% extends 'evento/base.html' %}
+
+
+
+
+{% block content %}
+
+<div>
+    <div style="margin-bottom:3%;margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Alterar Pergunta</h2>
+    </div>
+
+
+    {% if msg %}
+    <div  style="margin-left:30%;margin-right:30%; margin-top:3%">
+      <div style="margin-top:7%;text-align: center;position:center;">
+      <article class="message is-danger">
+          <div class="message-body">
+          <p style="text-align: center;">
+          <strong>{{ msg }}</strong>
+          </p>
+          </div>
+      </article>  
+      </div>
+    </div>
+  {% endif %}
+
+    <div style="margin-top: 2%;"></div>
+
+
+    <div style="margin-left:35%; margin-right:35%">
+        <article class="message is-info">
+            <div class="message-header">
+             
+
+            </div>
+            <div class="message-body">
+
+
+                <div class="control is-clearfix">
+                    <form action="{% url 'alterar-pergunta' id=id %}" method="POST" enctype="multipart/form-data" class="form" id="AlterarPerguntaForm" data-edificios-url="{% url 'ajax_load_edificios' %}">
+                        {% csrf_token %}
+                        <fieldset class="form" id="form">
+                            {{ form.titulo.label}}
+                            {{ form.titulo }}
+
+                            {% comment %} <div style="margin-top: 2%;">
+                               
+                                {{ form.fotos.label}}
+                                {{ form.fotos }}</div> {% endcomment %}
+                            
+
+                            <div style="margin-top: 2%; margin-bottom: 2%;" id="lol">
+                                {{ form.tipo_pergunta.label}}
+                                {{ form.tipo_pergunta }}
+                            </div>
+
+                            <div id="opcoes_div">
+                            {% for key in opcoes %}
+                                <div class="field" id="lista_opcoes">
+                                    <label class="label">• {{ key.texto }} <a href="{% url 'remover-opcao' id=key.pk %}" class="button is-danger small" style="float:right;">Remover opção</a></label> 
+                                    <br>
+                                    {% comment %} <span onclick="popUp()" class="button is-danger">lol</span> {% endcomment %}
+                                </div>
+                            {% endfor %}
+
+
+                            <div style="margin-top: 2%; margin-bottom: 2%;display:none;" id="opcao">
+                                {{ form.opcao.label}} 
+                                {{ form.opcao }}
+                            </div>
+                            
+                            <div id="botao_opcao_div" style="text-align: center; position:center; margin-top:2%;">
+                                <span class="button is-grey is-outlined" id="botao_opcao" onclick="myFunction()">Adicionar opção</span>
+                            </div>
+                            </div>
+                            
+                        </fieldset>
+
+                        
+
+                        <div style="margin-top:7%;text-align: center;position:center;">
+                            <button type="submit" class="button is-grey is-outlined" style="margin-right:5%;" onclick="history.back();">
+                                <span>Voltar</span>
+                            </button>
+                            <button type="submit" class="button is-info is-outlined" >
+                                Salvar
+                            </button>
+                        </div>
+                        
+
+                    </form>
+
+
+                    
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script>
+$("#id_tipo_pergunta").change(function() {
+    
+    if ($("#id_tipo_pergunta option:selected").text() == "Escolha múltipla" || $("#id_tipo_pergunta option:selected").text() == "Caixa de seleção") {
+        $('#opcoes_div').show();
+        $('#opcao').show();
+        $('#id_opcao').attr('required', '');
+        $('#id_opcao').attr('data-error', 'This field is required.');
+    } else {
+        $('#opcoes_div').hide();
+        $('#opcao').hide();
+        $('#id_opcao').removeAttr('required');
+        $('#id_opcao').removeAttr('data-error');
+    }
+    });
+    $("#id_tipo_pergunta").trigger("change");
+
+function myFunction() {
+var x = document.getElementById("opcao");
+var button = document.getElementById("botao_opcao");
+if (x.style.display === "none") {
+    x.style.display = "block";
+    button.innerText = "Anular opcao";
+    $('#id_opcao').attr('required', '');
+    $('#id_opcao').attr('data-error', 'This field is required.');
+} else {
+    x.style.display = "none";
+    button.innerText = "Adicionar opcao";
+    $('#id_opcao').removeAttr('required');
+    $('#id_opcao').removeAttr('data-error');
+}
+}
+
+</script>
+<script>
+function popUp() {
+var txt;
+if (confirm("Tem a certeza que quer remover a pergunta do formulário?")) {
+    txt = "You pressed OK!";
+} else {
+}
+}
+</script>
+
+
+{% if form.email.errors %}
+<div style="margin-left:30%;margin-right:30%; margin-top:5%">
+    <div style="margin-top:7%;text-align: center;position:center;">
+        <article class="message is-danger">
+            <div class="message-body">
+                <p style="text-align: center;">
+                    <strong>{{ form.email.errors }}</strong>
+                </p>
+            </div>
+        </article>
+    </div>
+</div>
+
+{% endif %}
+{% endblock content %}
+
+
+
+</div>
+

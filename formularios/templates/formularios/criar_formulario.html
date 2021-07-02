@@ -1,0 +1,120 @@
+{% extends 'evento/base.html' %}
+
+
+
+
+{% block content %}
+
+<div>
+    <div style="margin-bottom:3%;margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Criar Formulário</h2>
+    </div>
+
+
+    {% if msg %}
+    <p style="color: #ff0000; text-align:center; margin-bottom:4%">{{error}}</p>
+    {% endif %}
+
+
+
+    <div style="margin-left:35%; margin-right:35%">
+        <article class="message is-info">
+            <div class="message-header">
+
+
+            </div>
+            <div class="message-body">
+
+                <div class="control is-clearfix">
+                    <form action="{% url 'criar-formulario' %}" method="POST" enctype="multipart/form-data" class="form" id="CriarFormularioForm" >
+                        {% csrf_token %}
+
+                        <fieldset class="form">
+                            
+                            <div style="margin-top: 2.1%;" id='tipoForm'>
+                                {{ form.tipo_form.label}}
+                                {{ form.tipo_form }}
+                            </div>
+
+                            <div style="margin-top: 2.1%;" id='tipoEvento'>
+                                {{ form.tipo_evento.label}}
+                                {{ form.tipo_evento }}
+                            </div> 
+
+                            <div style="margin-top: 2.1%;">
+                                {{ form.pergunta.label}}
+                                {{ form.pergunta }}
+                            </div> 
+                            
+                        </fieldset>
+
+
+                        <div style="margin-top:7%;text-align: center;position:center;">
+                            <button type="submit" class="button is-grey is-outlined" style="margin-right:5%;" onclick="history.back();">
+                                <span>Voltar</span>
+                            </button>
+                            <button type="submit" class="button is-info is-outlined">
+                                <span>Salvar</span>
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+                    {% comment %} <script>
+                        
+                        $("#id_campus").change(function () {
+                        var url = $("#InserirSalaForm").attr("data-edificios-url");  // get the url of the `load_cities` view
+                        var campusId = $(this).val();  // get the selected country ID from the HTML input
+                        $.ajax({                       // initialize an AJAX request
+                            url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                            data: {
+                            'campus': campusId       // add the country id to the GET parameters
+                            },
+                            success: function (data) {   // `data` is the return of the `load_cities` view function
+                            $("#id_edificioid").html(data);  // replace the contents of the city input with the data that came from the server
+                            }
+                        });
+
+                        });
+                    </script> {% endcomment %}
+
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+ <script>
+    $("#id_tipo_form").change(function() {
+        
+        if ($("#id_tipo_form option:selected").text() == "Evento") {
+            $('#tipoEvento').show();
+            $('#id_tipo_evento').attr('required', '');
+            $('#id_tipo_evento').attr('data-error', 'This field is required.');
+        } else {
+            $('#tipoEvento').hide();
+            $('#id_tipo_evento').removeAttr('required');
+            $('#id_tipo_evento').removeAttr('data-error');
+        }
+    });
+    $("#id_tipo_form").trigger("change");
+</script>
+
+{% if form.email.errors %}
+<div style="margin-left:30%;margin-right:30%; margin-top:5%">
+    <div style="margin-top:7%;text-align: center;position:center;">
+        <article class="message is-danger">
+            <div class="message-body">
+                <p style="text-align: center;">
+                    <strong>{{ form.email.errors }}</strong>
+                </p>
+            </div>
+        </article>
+    </div>
+</div>
+
+{% endif %}
+{% endblock content %}
+
+</div>

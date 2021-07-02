@@ -1,0 +1,16 @@
+{% extends 'evento/bulma_table_details.html' %}
+{% load poll_extras %}
+
+{% block details_content %}
+
+<table>
+    <tbody>
+        <tr>
+            <td><strong>Participante:</strong></td>
+            <td>{{row.record.participanteutilizadorid}}</td>
+        </tr>
+    </tbody>
+</table>
+
+
+{% endblock details_content %}

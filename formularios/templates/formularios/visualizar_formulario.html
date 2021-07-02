@@ -1,0 +1,172 @@
+{% extends 'evento/base.html' %}
+{% load poll_extras %}
+
+
+
+{% block title %}- Visualizar Formulário{% endblock title %}
+
+
+{% block content %}
+    <div style="margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Formulario de {{ tipo.tipo_de_formularioid.nome }}
+                {% if not tipo.tipo_de_eventoid.nome %} {% else %} de {{ tipo.tipo_de_eventoid.nome }} {% endif %} </h2>
+    </div>
+
+    <div>
+        <form method="post" action="#">
+            {% csrf_token %}
+
+            <div style="padding: 1rem 2vw 0px;">
+                <hr>
+                <h2 class="title has-text-grey is-uppercase" style="font-size: 0.9rem;">
+                </h2>
+                {% for key, value in  perguntas.items %}
+                    <div class="row">
+                        <div class="column">
+                            <div class="field">
+                                <label class="label">{{ key }}</label>
+                                {{ value }}
+                                
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                
+                <hr>
+            </div>
+
+            <div class="columns">
+
+                <hr>
+            </div>
+            <div style="margin-top:2%;text-align:center;position:center;">
+                <button type="button" value="Voltar" class="button is-outlined" style="margin-right:5%"
+                        onclick="voltar();">Voltar
+                </button>
+                <button style="" type="submit" class="button is-success is-outlined">
+                    <span>Confirmar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+    </div>
+
+
+
+    {% if msg %}
+        <div style="margin-left:30%;margin-right:30%; margin-top:%">
+            <div style="margin-top:2%;text-align: center;position:center;">
+                <article class="message is-danger">
+                    <div class="message-body">
+                        <p style="text-align: center;">
+                            {% if form.non_field_errors %}
+                                {% for error in form.non_field_errors %}
+                                    <p style="color: #ff0000; text-align:center">{{ error }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        {% for error in erros %}
+                            <p style="color: #ff0000; text-align:center">{{ error }}</p>
+                        {% endfor %}
+
+
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                {% if field.name == "email" %}
+                                    <p style="color: #ff0000;">{{ error }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    {% endif %}
+
+
+{% endblock content %}
+
+</div>
+
+
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+
+        function voltar() {
+            location.href = "/formularios/"
+        }
+
+
+        {% if registo == 2 %}
+            $("#id_faculdade").change(function () {
+                var url = $("#ProfessorUniversitarioRegisterForm").attr("data-departamentos-url");
+                var faculdadeid = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'faculdade': faculdadeid
+                    },
+                    success: function (data) {
+                        $("#id_departamento").html(data);
+                    }
+                });
+
+            });
+        {% elif registo == 3 %}
+            $("#id_faculdade").change(function () {
+                var url = $("#CoordenadorRegisterForm").attr("data-departamentos-url");
+                var faculdadeid = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'faculdade': faculdadeid
+                    },
+                    success: function (data) {
+                        $("#id_departamento").html(data);
+                    }
+                });
+
+            });
+        {% elif registo == 4 %}
+            $("#id_faculdade").change(function () {
+
+                var url = $("#ColaboradorRegisterForm").attr("data-cursos-url");
+                var faculdadeid = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'faculdade': faculdadeid
+                    },
+                    success: function (data) {
+                        $("#id_curso").html(data);
+
+                    }
+                });
+
+            });
+            $("#id_faculdade").change(function () {
+
+                var url = $("#ColaboradorRegisterForm").attr("data-departamentos-url");
+                var faculdadeid = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'faculdade': faculdadeid
+                    },
+                    success: function (data) {
+                        $("#id_departamento").html(data);
+
+                    }
+                });
+
+            });
+        {% endif %}
+    </script>
+{% endblock scripts %}

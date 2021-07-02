@@ -1,0 +1,91 @@
+{% extends 'evento/base.html' %}
+{% load django_tables2 %}
+{% load static %}
+
+{% block title %}- Consultar Equipamentos
+{% endblock title %}
+
+{% block content %}
+<div class="columns">
+    <div class="column is-3">
+        <div class="menu">
+            <div class="menu-label">
+                Filtros Equipamentos
+            </div>
+            <form method="get">
+                <ul class="menu-list">
+                    <li>
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input class="input" name="{{ filter.form.nome.name }}"
+                                    value="{{ filter.form.nome.value|default_if_none:'' }}" type="text"
+                                    placeholder="Nome">
+                                <span class="icon is-left">
+                                    <i class="mdi mdi-magnify mdi-24px"></i>
+                                </span>
+                            </div>
+                        </div>
+                      
+                    </li>
+                    
+
+                    <li>
+                        <div class="field">
+                            <label>Tipo de equipamento:</label>
+                        </div>
+                        <ul>
+                            {% for value, label in filter.form.fields.tipo_equipamentoid.choices %}
+                            {% if label == '---------' %}
+                            {%else%}
+                            <div class="field" style="padding-left: 1rem;">
+                                <label class="checkbox">
+                                    <input type="checkbox" name="{{filter.form.tipo_equipamentoid.name}}"
+                                        value="{{value|stringformat:'s'}}"
+                                        {% if value|stringformat:'s' in filter.form.tipo_equipamentoid.value %}checked{% endif %}>
+                                    {{label}}
+                                </label>
+                            </div>
+                            {%endif%}
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                </ul>
+                <div class="field is-grouped">
+                    <p class="control is-expanded">
+                        <input class="button is-light is-fullwidth" type="reset"
+                            onclick="event.preventDefault(); window.location='{% url 'consultar-equipamentos' %}';"
+                            value="Limpar">
+                    </p>
+                    <p class="control is-expanded">
+                        <button class="button is-primary is-fullwidth" type="submit">
+                            <span class="icon">
+                                <i class="mdi mdi-magnify"></i>
+                            </span>
+                            <span>Pesquisar</span>
+                        </button>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="column">
+        <nav aria-label="breadcrumbs" class="breadcrumb">
+            <ul>
+                <li><a href="{% url 'consultar-servicos' %}">Início</a></li>
+                <li class="is-active"><a href="{% url 'consultar-equipamentos' %}">Equipamentos</a>
+                </li>
+            </ul>
+        </nav>
+        <a href="{% url 'criar-equipamento' %}">
+            <button type="button" class="button is-success is-outlined" style="margin-bottom: 1rem;"><span
+                    class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Adicionar Equipamento</span>
+            </button>
+        </a>
+
+        
+
+        {% render_table table 'recursos/consultar_equipamentos_tabela.html' %}
+    </div>
+</div>
+{% endblock content %}

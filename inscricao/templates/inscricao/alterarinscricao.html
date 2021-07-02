@@ -1,0 +1,105 @@
+{% extends 'evento/base.html' %}
+{% load static %}
+{% load poll_extras %}
+
+
+
+{% block title %}- Alterar Perfil{% endblock title %}
+
+
+{% block content %}
+    <div style="margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Mudar Inscricao </h2>
+    </div>
+
+    <div>
+        <form method="POST" action="{% url 'alterarinscricao' id=id %}">
+            {% csrf_token %}
+
+            <div style="padding: 1rem 2vw 0px;">
+                <hr>
+                <h2 class="title has-text-grey is-uppercase" style="font-size: 0.9rem;">
+                </h2>
+                {% for key, value in  respostas.items %}
+                    <div class="row">
+                        <div class="column">
+                            <div class="field">
+                                <label class="label">{{ key }}</label>
+                                {% if  value.perguntaid.tipo_de_perguntaid.nome == 'Resposta Aberta' %}
+                                    <div class="control is-clearfix">
+                                    <textarea name="{{ key }}" style="resize: none;"
+                                              class="textarea">{{ value.texto }}</textarea>
+                                    </div>
+                                {% endif %}
+                                <!---->
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <h1 class="label"> Estado da Inscricao:</h1>
+                <div style="margin-left: 2%; margin-top: 2%; height: 30%">
+                    {% if aproved == 3 %}
+                        <h3 class="subtitle">Não Aprovado</h3>
+                    {% elif aproved == 2 %}
+                        <h3 class="subtitle">Aprovado</h3>
+                    {% elif aproved == 1 %}
+                        <h3 class="subtitle">Pendente</h3>
+                    {% endif %}
+
+                </div>
+                <hr>
+            </div>
+
+            <div class="columns">
+
+                <hr>
+            </div>
+            <div style="margin-top:2%;text-align:center;position:center;">
+                <button type="button" value="Voltar" class="button is-outlined" style="margin-right:5%"
+                        onclick="voltar();">Voltar
+                </button>
+                {{ button }}
+                <div id="msg1" class="dialog modal" style="display: none;">
+                    <div class="modal-background"></div>
+                    <div class="modal-card animation-content" style="margin-top: 18%">
+                        <section class="modal-card-body is-titleless"
+                                 style="border-top-left-radius: 6px; border-top-right-radius: 6px;">
+                            <div class="media">
+                                <div class="media-content">
+                                    <p style="text-align: center" id='text-01'>Deseja Editar Inscricao</p>
+                                </div>
+                            </div>
+                        </section>
+                        <footer class="modal-card-foot">
+                            <div style="margin-left: 30%">
+                                <button onclick="editar1.confirmar()" type="submit" class="button is-danger"
+                                        id='dialog-confirm1'>Confirmar
+                                </button>
+                                <button onclick="unclicked()" class="button" type="button" id='dialog-cancel1'>Cancelar
+                                </button>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    </div>
+
+{% endblock content %}
+
+</div>
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+
+        function voltar() {
+            location.href = "{% url 'viewinscricao' %}"
+        }
+    </script>
+    <script>
+        function caller() {
+        }
+    </script>
+{% endblock scripts%}

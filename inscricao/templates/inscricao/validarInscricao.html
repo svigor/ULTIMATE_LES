@@ -1,0 +1,82 @@
+{% extends 'evento/base.html' %}
+{% load poll_extras %}
+
+
+
+{% block title %}- Alterar Perfil{% endblock title %}
+
+
+{% block content %}
+    <div style="margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Validar Inscricao </h2>
+    </div>
+
+    <div>
+        <form method="post" action="{% url 'finalizarvalidacao' %}">
+            {% csrf_token %}
+
+            <div style="padding: 1rem 2vw 0px;">
+                <hr>
+                <h2 class="title has-text-grey is-uppercase" style="font-size: 0.9rem;">
+                </h2>
+                {% for key, value in  respostas.items %}
+                    <div class="row">
+                        <div class="column">
+                            <div class="field">
+                                <label class="label">{{ key }}</label>
+                                {% if  value.perguntaid.tipo_de_perguntaid.nome == 'Resposta Aberta' %}
+                                    <div class="control is-clearfix">
+                                    <textarea disabled
+                                              style="resize: none; background: white; color: black; pointer-events: none"
+                                              class="textarea">{{ value.texto }}</textarea>
+                                    </div>
+                                {% elif value.perguntaid.tipo_de_perguntaid.nome == 'Resposta Curta' %}
+                                    <div class="control is-clearfix">
+                                        <input disabled style="background: white; color: black; pointer-events: none"
+                                               class="input" value="{{ value.texto }}">
+                                    </div>
+                                {% endif %}
+                                <!---->
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <h1 class="label"> Estado da Inscricao:</h1>
+                <div style="margin-left: 2%; margin-top: 2%; height: 30%">
+                    {% if inscricao.estado == 3 %}
+                        <input type="radio" id="{{ inscricao.id }}" name="decision" value="Não aprovado" checked>
+                        <input hidden name="idinscricao" value="{{ inscricao.id }}">
+                        <label style="margin-left: 1%; margin-top: -0.5%">Não Aprovado<br></label>
+                        <input type="radio" id="{{ inscricao.id }}" name="decision" value="Aprovado">
+                        <label style="margin-left: 1%; margin-top: -0.5%">Aprovado</label>
+                    {% else %}
+                        <input type="radio" id="{{ inscricao.id }}" name="decision" value="Não aprovado">
+                        <input hidden name="idinscricao" value="{{ inscricao.id }}">
+                        <label style="margin-left: 1%; margin-top: -0.5%">Não Aprovado<br></label>
+                        <input type="radio" id="{{ inscricao.id }}" name="decision" value="Aprovado" checked>
+                        <label style="margin-left: 1%; margin-top: -0.5%">Aprovado</label>
+                    {% endif %}
+
+                </div>
+                <hr>
+            </div>
+
+            <div class="columns">
+
+                <hr>
+            </div>
+            <div style="margin-top:2%;text-align:center;position:center;">
+                <button type="button" value="Voltar" class="button is-outlined" style="margin-right:5%"
+                        onclick="voltar();">Voltar
+                </button>
+                <button style="" type="submit" class="button is-success is-outlined">
+                    <span>Confirmar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+    </div>
+
+{% endblock content %}
+
+</div>
