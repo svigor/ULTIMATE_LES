@@ -75,10 +75,11 @@
 
                         <div id="botao_pergunta_div" style="text-align: center; position:center; margin-top:2%;">
                                 <span class="button is-grey is-outlined" id="botao_pergunta" onclick="myFunction()">Adicionar pergunta</span>
+                                <a href="{% url 'criar-pergunta' %}" class="button is-success is-outlined" id="botao_criar" style="display:none;">Criar pergunta</a>
                         </div>
 
                         <div style="margin-top:7%;text-align: center;position:center;">
-                            <button type="submit" class="button is-grey is-outlined" style="margin-right:5%;" onclick="history.back();">
+                            <button type="button" class="button is-grey is-outlined" style="margin-right:5%;" onclick="history.back();">
                                 <span>Voltar</span>
                             </button>
                             <button type="submit" class="button is-info is-outlined" >
@@ -129,6 +130,7 @@
                             $('#id_tipo_evento').attr('required', '');
                             $('#id_tipo_evento').attr('data-error', 'This field is required.');
                         } else {
+                            
                             $('#evento').hide();
                             $('#id_tipo_evento').removeAttr('required');
                             $('#id_tipo_evento').removeAttr('data-error');
@@ -139,16 +141,20 @@
                     function myFunction() {
                     var x = document.getElementById("pergunta");
                     var button = document.getElementById("botao_pergunta");
+                    var button_criar = document.getElementById("botao_criar");
                     if (x.style.display === "none") {
                         x.style.display = "block";
+                        button_criar.style.display = "inline-block";
                         button.innerText = "Anular pergunta";
-                        $('#id_tipo_evento').attr('required', '');
-                        $('#id_tipo_evento').attr('data-error', 'This field is required.');
+                        $('#id_pergunta').attr('required', '');
+                        $('#id_pergunta').attr('data-error', 'This field is required.');
                     } else {
+                        console.log('geh');
                         x.style.display = "none";
+                        button_criar.style.display = "none";
                         button.innerText = "Adicionar pergunta";
-                        $('#id_tipo_evento').removeAttr('required');
-                        $('#id_tipo_evento').removeAttr('data-error');
+                        $('#id_pergunta').removeAttr('required');
+                        $('#id_pergunta').removeAttr('data-error');
                     }
                     }
 
