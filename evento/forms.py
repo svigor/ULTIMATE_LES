@@ -3,7 +3,9 @@ from django.db.models import query
 from django.forms.models import ModelChoiceField
 from .models import Pergunta, Sala, Edificio, Campus, TipoDeEvento, TipoDeFormulario, TipoDePergunta
 
-
+class returnedstring():
+    def init(self, name):
+        self.name = name
 
 class InserirSalaForm(forms.ModelForm):
     capacidade = forms.IntegerField(label='Capacidade',max_value=2000, widget = forms.NumberInput (

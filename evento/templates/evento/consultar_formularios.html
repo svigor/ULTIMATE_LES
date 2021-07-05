@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="columns">
-    <div class="column is-3">
+    {% comment %} <div class="column is-3">
         <div class="menu">
             <div class="menu-label">
                 Filtros Formulários
@@ -48,15 +48,16 @@
 
                     <li>
                         <div class="field">
-                            <label>Mobilidade reduzida:</label>
+                            <label>Tipo de formulário:</label>
                         </div>
                         <ul>
-                            {% for value, label in filter.form.fields.mobilidade_reduzida.choices %}
+                            {% for value, label in filter.form.fields.tipo_de_formularioid.choices %}
+                            
                             <div class="field" style="padding-left: 1rem;">
                                 <label class="checkbox">
-                                    <input type="checkbox" name="{{filter.form.mobilidade_reduzida.name}}"
+                                    <input type="checkbox" name="{{filter.form.tipo_de_formularioid.name}}"
                                         value="{{value|stringformat:'s'}}"
-                                        {% if value|stringformat:'s' in filter.form.m_r.value %}checked{% endif %}>
+                                        {% if value|stringformat:'s' in filter.form.tipo_de_formularioid.value %}checked{% endif %}>
                                     {{label}}
                                 </label>
                             </div>
@@ -82,7 +83,7 @@
                 </div>
             </form>
         </div>
-    </div>
+    </div> {% endcomment %}
     <div class="column">
         <nav aria-label="breadcrumbs" class="breadcrumb">
             <ul>

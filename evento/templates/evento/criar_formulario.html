@@ -44,10 +44,15 @@
                             <div style="margin-top: 2.1%;">
                                 {{ form.pergunta.label}}
                                 {{ form.pergunta }}
+                                
                             </div> 
+                            
                             
                         </fieldset>
 
+                        <div style="margin-top:2%;text-align:center;position:center;">
+                                <a href="{% url 'criar-pergunta' %}" class="button is-success is-outlined" id="botao_criar" >Criar pergunta</a>
+                            </div>
 
                         <div style="margin-top:7%;text-align: center;position:center;">
                             <button type="submit" class="button is-grey is-outlined" style="margin-right:5%;" onclick="history.back();">

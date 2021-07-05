@@ -14,7 +14,7 @@ from .models import Evento, Opcoes, Sala, Edificio, Formulario, Pergunta, TipoDe
 from utilizadores.models import Administrador
 from utilizadores.views import user_check, mensagem
 from evento.tables import PerguntaTable, SalaTable, FormularioTable
-from evento.filters import SalasFilter
+from evento.filters import SalasFilter, FormulariosFilter
 from django.contrib.auth import *
 from django.contrib import messages
 # Create your views here.
@@ -223,7 +223,9 @@ class consultar_formularios(SingleTableMixin, ListView):
     model = Formulario
     table_class = FormularioTable
     template_name = 'evento/consultar_formularios.html'
+    filterset_class = FormulariosFilter
     table_pagination = {'per_page':10}
+    
 
 def show_perguntas(request, id):
     print(id)
