@@ -35,6 +35,7 @@
                     </a>
                     <div class="navbar-dropdown">
                         <a href="{% url 'consultar-formularios' %}" class="navbar-item">Formularios</a>
+                        <a href="{% url 'consultar-perguntas' %}" class="navbar-item">Perguntas</a>
                     </div>
                 </div>
             {% endif %}
@@ -43,13 +44,14 @@
                     Eventos
                 </a>
                 <div class="navbar-dropdown">
-                    {% if request.session.role == 'Administrador' or request.session.role == 'Proponentes' %}
+                    {% if request.session.role == 'Administrador' or request.session.role == 'Proponente' %}
                         <a href="{% url 'meus_eventos' %}" class="navbar-item">Meus Eventos</a>
                     {% endif %}
                     {% if request.session.role == 'Administrador' %}
                         <a href="{% url 'consultar' %}" class="navbar-item">Aprovar Eventos</a>
+                        <a href="{% url 'consultar_logisticas' %}" class="navbar-item">Logisticas</a>
                     {% endif %}
-                    <a href="" class="navbar-item">Eventos a decorrer</a>
+                    <a href="{% url 'eventos-aprovados' %}" class="navbar-item">Eventos a decorrer</a>
                 </div>
             </div>
             {% if request.session.role == 'Administrador' %}
@@ -72,64 +74,6 @@
 
             {% if user.is_authenticated %}
                 <div class="dropdown is-bottom-left is-mobile-modal">
-
-                <div onclick="notificacoes()">
-                    <div id="notificacoes_trigger" role="button" class="dropdown-trigger">
-              <span role="button">
-
-                <div type="button" data-badge="0" class="button has-badge-rounded has-badge-warning is-text"
-                     style="margin-right: 0.9rem">
-                  <span>
-
-                    <span class="icon">
-                      <span id="badge-inject" style="display:none;" title="Badge top right"
-                            class="badge is-warning"></span>
-
-
-                      <i class=" mdi mdi-bell mdi-24px"></i>
-
-
-
-                    </span>
-
-                  </span>
-
-                </div>
-
-              </span>
-                    </div>
-                </div>
-                <div id="ver_notificacoes" class="modal">
-                    <div class="modal-background"></div>
-                    <div class="modal-card">
-                        <header class="modal-card-head">
-                            <p class="modal-card-title">Notificações</p>
-
-                            <button onclick="notificacoes()" class="delete" aria-label="close"></button>
-
-                        </header>
-                        <section class="modal-card-body">
-                            <nav class="panel">
-
-                                <p class="panel-tabs">
-                                    <a class="tablinks is-active" onclick="openNotificacoes(event, 'Todas')">Todas</a>
-                                    <a class="tablinks" onclick="openNotificacoes(event, 'Novas')">Novas</a>
-                                    <a class="tablinks" onclick="openNotificacoes(event, 'Anteriores')">Anteriores</a>
-                                </p>
-                                <div id="Todas" style="display:block" class="tabcontent">
-
-
-                                </div>
-                                <div id="Anteriores" style="display:none" class="tabcontent">
-
-
-                                </div>
-
-
-                            </nav>
-                        </section>
-                    </div>
-                </div>
             {% endif %}
 
 
@@ -142,16 +86,27 @@
                      style="margin-right: 0.9rem">
                   <span>
                     <span class="icon">
-
-                      <i class="mdi mdi-message mdi-24px"></i>
+                      <i id="messageicon" class="mdi mdi-message mdi-24px"></i>
+                       <p style="transform: translate(-15px, -2px); font-size: small; color: white" id="counter">0</p>
                     </span>
                   </span>
                 </div>
               </span>
                     </div>
                     <div class="dropdown-menu" id="dropdown-menu6" role="menu" style="min-width: 23rem">
-                        <div class="dropdown-content">
-
+                        <div class="dropdown-content" id="dropdown-content1">
+                            <h5 style="transform: translateX(2%)"><strong>Mensagens:</strong></h5>
+                            <div id="mensagens">
+                                <div class="dropdown-item" onclick="" id="mensagem">
+                                    <p id="emissor"></p>
+                                    <p id="viewer"></p>
+                                    <p id="hora"></p>
+                                    <p hidden id="viwed"></p>
+                                    <p hidden id="idms"></p>
+                                    <a id="seems" style="display: none"></a>
+                                    <hr id="divider" class="dropdown-divider">
+                                </div>
+                            </div>
                             <hr class="dropdown-divider">
                             <div class="dropdown-item level">
                                 <div class="level-left">
@@ -189,7 +144,7 @@
                             {% if user.is_authenticated %}
 
                                 <div role="menuitem" tabindex="0" class="dropdown-item">
-                                    <a href="" role="listitem" tabindex="0"
+                                    <a href="{% url 'mudarperfil' %}" role="listitem" tabindex="0"
                                        class="dropdown-item is-disabled">
                       <span class="icon">
                         <i class="mdi mdi-account-edit mdi-24px"></i>
@@ -258,12 +213,128 @@
             </div>
 </nav>
 
-
+<script type="text/javascript" src="{% static 'evento/js/notificacoes.js' %}"></script>
+<script type="text/javascript" src="{% static 'evento/js/jquery-3.4.1.min.js' %}"></script>
 <script>
     function detalhes_url_notificacoes(item) {
         var tmp = String(item.id)
         return "".replace("12345", tmp);
     }
 </script>
-<script type="text/javascript" src="{% static 'evento/js/notificacoes.js' %}"></script>
-<script type="text/javascript" src="{% static 'evento/js/jquery-3.4.1.min.js' %}"></script>
+
+<script>
+
+    {% if request.user.is_authenticated %}
+        $(document).ready(function () {
+            let cookie = document.cookie
+            let csrfToken = cookie.substring(cookie.indexOf('=') + 1)
+            setInterval(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: {% url 'getnotifications' %},
+                    success: function (response) {
+                        em = document.getElementById('emissor')
+                        des = document.getElementById('viewer')
+
+                        if (response.notifications.length === 0) {
+                            des.innerText = "Não existe Notificações";
+                        } else if (response.notifications.length === 1) {
+                            emissorr = response.notifications[0]['emissor_id']
+                            splited = emissorr.split(" ");
+                            if (response.notifications[0]['viewed'] === false) {
+                                emisori = "Usuário: " + splited[1];
+                                result = emisori.bold();
+                                em.innerHTML = result;
+                                descri = "Mensagem: " + response.notifications[0]['descricao'];
+                                result1 = descri.bold();
+                                des.innerHTML = result1;
+                                criadoee = response.notifications[0]['criadoem'];
+                                document.getElementById('hora').innerHTML = criadoee.bold()
+                                document.getElementById('idms').innerText = response.notifications[0]['id']
+                                tag1 = document.getElementById('seems')
+                                tag1.href = "{% url 'seenotify' id=1234 %}".replace(/1234/, response.notifications[0]['id'])
+                                tag1.innerText = 'Ver Mensagem'
+                                tag1.style.display = "block";
+                                document.getElementById('messageicon').style.color = 'red';
+                                document.getElementById('counter').innerText = 1;
+
+                            } else {
+                                em.innerText = "Usuário: " + splited[1];
+                                des.innerText = "Mensagem: " + response.notifications[0]['descricao'];
+                                document.getElementById('idms').innerText = response.notifications[0]['id'];
+                                tag1 = document.getElementById('seems');
+                                tag1.href = "{% url 'seenotify' id=1234 %}".replace(/1234/, response.notifications[0]['id'])
+                                tag1.innerText = 'Ver Mensagem'
+                                tag1.style.display = "block";
+                            }
+                        } else if (response.notifications.length > 1) {
+                            let array = []
+                            numberofdivs = response.notifications.length;
+                            divmessage = document.getElementById('mensagem')
+                            mensag = document.getElementById('mensagens')
+                            let l = parseInt(document.getElementById('counter').innerText);
+                            coun = document.getElementById('counter').innerText = l;
+                            for (let i = 0; i < numberofdivs; i++) {
+                                array[i] = divmessage.cloneNode(true)
+                                emissorr = response.notifications[i]['emissor_id'];
+                                splited = emissorr.split(" ");
+                                array[i].childNodes[1].innerText = "Usuário: " + splited[1];
+                                array[i].childNodes[3].innerText = "Mensagem: " + response.notifications[i]['descricao'];
+                                array[i].childNodes[5].innerText = response.notifications[i]['criadoem']
+                                array[i].childNodes[7].innerText = response.notifications[i]['viewed']
+                                array[i].childNodes[9].innerText = response.notifications[i]['id']
+                                if (response.notifications[i]['viewed'] === false) {
+                                    emisori = "Usuário: " + splited[1];
+                                    result = emisori.bold();
+                                    array[i].childNodes[1].innerHTML = result;
+                                    descri = array[i].childNodes[3].innerText = "Mensagem: " + response.notifications[i]['descricao'];
+                                    result1 = descri.bold();
+                                    array[i].childNodes[3].innerHTML = result1;
+                                    criadoee = response.notifications[i]['criadoem'];
+                                    result2 = criadoee.bold()
+                                    array[i].childNodes[5].innerHTML = result2
+                                }
+                            }
+                            for (let i = 0; i < array.length; i++) {
+                                flag = 0;
+                                for (let j = 0; j < mensag.childNodes.length; j++) {
+                                    if (mensag.childNodes[j].firstChild === null) {
+                                        continue;
+                                    }
+                                    if (mensag.childNodes[j].childNodes[5].innerText === array[i].childNodes[5].innerText) {
+                                        flag = 1;
+                                        break;
+                                    }
+                                }
+                                if (flag === 0) {
+                                    if (array[i].childNodes[7].innerText === false.toString()) {
+                                        l++;
+                                    }
+                                    if (l > 0) {
+                                        document.getElementById('messageicon').style.color = 'red';
+                                        document.getElementById('counter').innerText = l;
+                                    }
+                                    array[i].id = 'mensagem' + i
+                                    tag1 = document.createElement('a')
+                                    tag1.href = "{% url 'seenotify' id=1234 %}".replace(/1234/, array[i].childNodes[9].innerText.toString())
+                                    tag1.innerText = 'Ver Mensagem'
+                                    divder = array[i].childNodes[array[i].childNodes.length - 2]
+                                    array[i].removeChild(divder)
+                                    array[i].appendChild(tag1)
+                                    array[i].appendChild(divder)
+                                    mensag.appendChild(array[i])
+                                }
+                            }
+                        }
+                    },
+                    error: function (response) {
+
+                    },
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                })
+            }, 1000);
+        });
+    {% endif %}
+</script>

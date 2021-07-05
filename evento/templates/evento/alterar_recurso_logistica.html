@@ -1,0 +1,123 @@
+{% extends 'evento/base.html' %}
+
+
+{% block content %}
+
+<div>
+  
+
+
+    <div style="margin-left:35%; margin-right:35%;">
+        <article class="message is-info">
+            <div class="message-header">
+
+
+            </div>
+            <div class="message-body">
+
+                <div class="control is-clearfix">
+                    <form action="{% url 'alterar_recurso_logistica' id=id%}" method="POST" enctype="multipart/form-data" class="form">
+                        {% csrf_token %}
+                    
+                        <fieldset class="form">
+                            {{tipo}}
+                            {% if tipo == 1 %}
+                            
+                            <strong>Sala </strong> 
+                                {{f.dia_inicial.label}}
+                                {{f.dia_inicial}}
+
+                                {{f.dia_final.label}}
+                                {{f.dia_final}}
+
+                                {{f.hora_de_inicio.label}}
+                                {{f.hora_de_inicio}}
+
+                                {{f.hora_de_fim.label}}
+                                {{f.hora_de_fim}}
+
+                                {{f.capacidade.label}}
+                                {{f.capacidade}}
+                            
+                            {% elif tipo == 2 %}
+                           
+                           
+                            
+                            <strong>Sala </strong> 
+                           
+                           {{f.dia_inicial.label}}
+                           {{f.dia_inicial}}
+
+                           {{f.dia_final.label}}
+                           {{f.dia_final}}
+
+                           {{f.hora_de_inicio.label}}
+                           {{f.hora_de_inicio}}
+
+                           {{f.hora_de_fim.label}}
+                           {{f.hora_de_fim}}
+
+                           {{f.tipo_equipamentoid.label}}
+                           {{f.tipo_equipamentoid}}
+
+                           
+                            
+                           
+
+                           {%elif tipo == 3%}
+                           
+                           <strong>Servico</strong> 
+                           {{f.dia_inicial.label}}
+                           {{f.dia_inicial}}
+
+                           {{f.dia_final.label}}
+                           {{f.dia_final}}
+
+                           {{f.hora_de_inicio.label}}
+                           {{f.hora_de_inicio}}
+
+                           {{f.hora_de_fim.label}}
+                           {{f.hora_de_fim}}
+                           
+
+                           {{f.tipo_de_servico.label}}
+                           {{f.tipo_de_servico}}
+
+                           Quantas Pessoas?
+                           {{f.capacidade}}
+                           
+                           {%endif%}
+                        </fieldset>
+
+
+                        <div style="margin-top:7%;text-align: center;position:center;">
+                            <button type="submit" class="button is-info is-outlined">
+                                <span>Concluir</span>
+                            </button>
+                        </div>
+
+                    </form>
+
+
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+{% if form.email.errors %}
+<div style="margin-left:30%;margin-right:30%; margin-top:5%">
+    <div style="margin-top:7%;text-align: center;position:center;">
+        <article class="message is-danger">
+            <div class="message-body">
+                <p style="text-align: center;">
+                    <strong>{{ form.email.errors }}</strong>
+                </p>
+            </div>
+        </article>
+    </div>
+</div>
+
+{% endif %}
+{% endblock content %}
+
+</div>

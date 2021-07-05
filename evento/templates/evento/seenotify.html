@@ -1,0 +1,46 @@
+{% extends 'evento/base.html' %}
+
+
+
+{% block title %}- Registar{% endblock title %}
+
+
+
+{% block content %}
+
+    <div>
+
+
+    <div style="padding: 3rem 2vw 1rem;">
+        <h1 class="title is-3"
+            style="text-align: left;">Mensagem
+            de: {{ mensagem.emissor.NomeProprio }} {{ mensagem.emissor.SecondName }}</h1>
+
+        <div style="margin-bottom:3%;margin-top:3%;">
+            <textarea class="textarea" style="background-color: white; color: black; resize: none; pointer-events: none"
+                      disabled>{{ mensagem.descricao }}</textarea>
+        </div>
+        <p>Enviado a: {{ mensagem.criadoem }}</p>
+        <div class="columns is-gapless">
+            <div class="column" style="margin-left: 70%; padding: 0">
+                <a onclick="history.back()">
+                    <button style="margin-left: 45%" type="submit" class="button is-outlined">
+                        <span>voltar</span>
+                    </button>
+                </a>
+            </div>
+            <div class="column">
+                <a href="{% url 'responde' id=mensagem.id %}">
+                    <button style="margin-left: 45%" type="submit" class="button is-success is-outlined">
+                        <span>Responder</span>
+                    </button>
+                </a>
+            </div>
+        </div>
+
+
+    </div>
+
+{% endblock content %}
+
+</div>

@@ -53,7 +53,7 @@ def criarinscricao(request, pk_test):
                                      eventoid=evento_id_r)
                 resposta.save()
             return render(request, 'inscricao/mensagem.html',
-                          {'tipo': 'success', 'm': 'Inscrição feita com sucesso', 'link': 'recursos-home'})
+                          {'tipo': 'success', 'm': 'Inscrição feita com sucesso', 'link': 'evento-home'})
         # if a GET (or any other method) we'll create a blank form
         else:
             form = InserirInscricao()
@@ -75,7 +75,7 @@ def criarinscricao(request, pk_test):
                            'recursos': Evento.objects.get(pk=pk_test)})
     else:
         return render(request, 'inscricao/mensagem.html',
-                      {'tipo': 'error', 'm': 'Realizar o login primeiro', 'link': 'recursos-home'})
+                      {'tipo': 'error', 'm': 'Realizar o login primeiro', 'link': 'evento-home'})
 
 
 class viewinscricao(SingleTableMixin, FilterView):

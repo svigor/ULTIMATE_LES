@@ -5,91 +5,97 @@
 
 {% block content %}
 
-<div>
-    <div style="margin-bottom:3%;margin-top:3%;">
-        <h2 class="title is-4" style="text-align: center;">Alterar Formulario</h2>
-    </div>
+    <div>
+        <div style="margin-bottom:3%;margin-top:3%;">
+            <h2 class="title is-4" style="text-align: center;">Alterar Formulario</h2>
+        </div>
 
 
-    {% if msg %}
-    <div  style="margin-left:30%;margin-right:30%; margin-top:3%">
-      <div style="margin-top:7%;text-align: center;position:center;">
-      <article class="message is-danger">
-          <div class="message-body">
-          <p style="text-align: center;">
-          <strong>{{ msg }}</strong>
-          </p>
-          </div>
-      </article>  
-      </div>
-    </div>
-  {% endif %}
-
-    <div style="margin-top: 2%;"></div>
-
-
-    <div style="margin-left:35%; margin-right:35%">
-        <article class="message is-info">
-            <div class="message-header">
-             
-
+        {% if msg %}
+            <div style="margin-left:30%;margin-right:30%; margin-top:3%">
+                <div style="margin-top:7%;text-align: center;position:center;">
+                    <article class="message is-danger">
+                        <div class="message-body">
+                            <p style="text-align: center;">
+                                <strong>{{ msg }}</strong>
+                            </p>
+                        </div>
+                    </article>
+                </div>
             </div>
-            <div class="message-body">
+        {% endif %}
+
+        <div style="margin-top: 2%;"></div>
 
 
-                <div class="control is-clearfix">
-                    <form action="{% url 'alterar-formulario' id=id %}" method="POST" enctype="multipart/form-data" class="form" id="AlterarFormularioForm" data-edificios-url="{% url 'ajax_load_edificios' %}">
-                        {% csrf_token %}
-                        <fieldset class="form" id="form">
-                            {{ form.tipo_form.label}}
-                            {{ form.tipo_form }}
+        <div style="margin-left:35%; margin-right:35%">
+            <article class="message is-info">
+                <div class="message-header">
 
-                            {% comment %} <div style="margin-top: 2%;">
+
+                </div>
+                <div class="message-body">
+
+
+                    <div class="control is-clearfix">
+                        <form action="{% url 'alterar-formulario' id=id %}" method="post" enctype="multipart/form-data"
+                              class="form" id="AlterarFormularioForm">
+                            {% csrf_token %}
+                            <fieldset class="form" id="form">
+                                {{ form.tipo_form.label }}
+                                {{ form.tipo_form }}
+
+                                {% comment %} <div style="margin-top: 2%;">
                                
                                 {{ form.fotos.label}}
                                 {{ form.fotos }}</div> {% endcomment %}
-                            
 
-                            <div style="margin-top: 2%; margin-bottom: 2%;" id="evento">
-                                {{ form.tipo_evento.label}}
-                                {{ form.tipo_evento }}
-                            </div>
 
-                            {% for key in perguntas %}
-                                <div class="field">
-                                    <label class="label">{{ key.titulo }} <a href="{% url 'remover-pergunta' id=key.pk %}" class="button is-danger" style="float:right;">Remover pergunta</a> </label>
-                                    {{ key.tipo_de_perguntaid.nome }}
-                                    {% comment %} <span onclick="popUp()" class="button is-danger">lol</span> {% endcomment %}
+                                <div style="margin-top: 2%; margin-bottom: 2%;" id="evento">
+                                    {{ form.tipo_evento.label }}
+                                    {{ form.tipo_evento }}
                                 </div>
-                            {% endfor %}
 
-                            
+                                {% for key in perguntas %}
+                                    <div class="field">
+                                        <label class="label">{{ key.titulo }} <a
+                                                href="{% url 'remover-pergunta' id=key.pk %}" class="button is-danger"
+                                                style="float:right;">Remover pergunta</a> </label>
+                                        {{ key.tipo_de_perguntaid.nome }}
+                                        {% comment %} <span onclick="popUp()" class="button is-danger">lol</span> {% endcomment %}
+                                    </div>
+                                {% endfor %}
 
-                            <div style="margin-top: 2%; margin-bottom: 2%;display:none;" id="pergunta">
-                                {{ form.pergunta.label}} 
-                                {{ form.pergunta }}
-                            </div>
-                            
-                            
-                        </fieldset>
 
-                        <div id="botao_pergunta_div" style="text-align: center; position:center; margin-top:2%;">
+
+                                <div style="margin-top: 2%; margin-bottom: 2%;display:none;" id="pergunta">
+                                    {{ form.pergunta.label }}
+                                    {{ form.pergunta }}
+                                </div>
+
+
+                            </fieldset>
+
+                            <div id="botao_pergunta_div" style="text-align: center; position:center; margin-top:2%;">
                                 <span class="button is-grey is-outlined" id="botao_pergunta" onclick="myFunction()">Adicionar pergunta</span>
-                        </div>
+                                <a href="{% url 'criar-pergunta' %}" class="button is-success is-outlined"
+                                   id="botao_criar" style="display:none;">Criar pergunta</a>
+                            </div>
 
-                        <div style="margin-top:7%;text-align: center;position:center;">
-                            <button type="submit" class="button is-grey is-outlined" style="margin-right:5%;" onclick="history.back();">
-                                <span>Voltar</span>
-                            </button>
-                            <button type="submit" class="button is-info is-outlined" >
-                                Salvar
-                            </button>
-                        </div>
+                            <div style="margin-top:7%;text-align: center;position:center;">
+                                <button type="button" class="button is-grey is-outlined" style="margin-right:5%;"
+                                        onclick="history.back();">
+                                    <span>Voltar</span>
+                                </button>
+                                <button type="submit" value="submit" class="button is-info is-outlined">
+                                    Salvar
+                                </button>
+                            </div>
 
-                    </form>
+                        </form>
 
 
-                     {% comment %}
+                        {% comment %}
                     <script>
                         
                         $("#id_campus").change(function () {
@@ -108,7 +114,7 @@
                         });
                     </script> {% endcomment %}
 
-                      {% comment %} <script>
+                        {% comment %} <script>
                          count = 0;
                         $("#botao_pergunta").on("click", (index, value) => {
 
@@ -121,69 +127,73 @@
                         
                     </script>  {% endcomment %}
 
-                    
+
+                    </div>
                 </div>
-            </div>
-        </article>
+            </article>
+        </div>
     </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script>
-                    
-$("#id_tipo_form").change(function() {
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+     <script>
+                    $("#id_tipo_form").change(function() {
 
-    if ($("#id_tipo_form option:selected").text() == "Evento") {
-        $('#recursos').show();
-        $('#id_tipo_evento').attr('required', '');
-        $('#id_tipo_evento').attr('data-error', 'This field is required.');
-    } else {
-        $('#recursos').hide();
-        $('#id_tipo_evento').removeAttr('required');
-        $('#id_tipo_evento').removeAttr('data-error');
-    }
-    });
-    $("#id_tipo_form").trigger("change");
+                        if ($("#id_tipo_form option:selected").text() == "Evento") {
+                            $('#evento').show();
+                            $('#id_tipo_evento').attr('required', '');
+                            $('#id_tipo_evento').attr('data-error', 'This field is required.');
+                        } else {
 
-function myFunction() {
-var x = document.getElementById("pergunta");
-var button = document.getElementById("botao_pergunta");
-if (x.style.display === "none") {
-    x.style.display = "block";
-    button.innerText = "Anular pergunta";
-    $('#id_pergunta').attr('required', '');
-    $('#id_pergunta').attr('data-error', 'This field is required.');
-} else {
-    x.style.display = "none";
-    button.innerText = "Adicionar pergunta";
-    $('#id_pergunta').removeAttr('required');
-    $('#id_pergunta').removeAttr('data-error');
-}
-}
+                            $('#evento').hide();
+                            $('#id_tipo_evento').removeAttr('required');
+                            $('#id_tipo_evento').removeAttr('data-error');
+                        }
+                        });
+                        $("#id_tipo_form").trigger("change");
 
-</script>
-<script>
-function popUp() {
-var txt;
-if (confirm("Tem a certeza que quer remover a pergunta do formulário?")) {
-    txt = "You pressed OK!";
-} else {
-}
-}
-</script>
-{% if form.email.errors %}
-<div style="margin-left:30%;margin-right:30%; margin-top:5%">
-    <div style="margin-top:7%;text-align: center;position:center;">
-        <article class="message is-danger">
-            <div class="message-body">
-                <p style="text-align: center;">
-                    <strong>{{ form.email.errors }}</strong>
-                </p>
+                    function myFunction() {
+                    var x = document.getElementById("pergunta");
+                    var button = document.getElementById("botao_pergunta");
+                    var button_criar = document.getElementById("botao_criar");
+                    if (x.style.display === "none") {
+                        x.style.display = "block";
+                        button_criar.style.display = "inline-block";
+                        button.innerText = "Anular pergunta";
+                        $('#id_pergunta').attr('required', '');
+                        $('#id_pergunta').attr('data-error', 'This field is required.');
+                    } else {
+                        console.log('geh');
+                        x.style.display = "none";
+                        button_criar.style.display = "none";
+                        button.innerText = "Adicionar pergunta";
+                        $('#id_pergunta').removeAttr('required');
+                        $('#id_pergunta').removeAttr('data-error');
+                    }
+                    }
+
+                    </script>
+    <script>
+        function popUp() {
+            var txt;
+            if (confirm("Tem a certeza que quer remover a pergunta do formulário?")) {
+                txt = "You pressed OK!";
+            } else {
+            }
+        }
+    </script>
+    {% if form.email.errors %}
+        <div style="margin-left:30%;margin-right:30%; margin-top:5%">
+            <div style="margin-top:7%;text-align: center;position:center;">
+                <article class="message is-danger">
+                    <div class="message-body">
+                        <p style="text-align: center;">
+                            <strong>{{ form.email.errors }}</strong>
+                        </p>
+                    </div>
+                </article>
             </div>
-        </article>
-    </div>
-</div>
+        </div>
 
-{% endif %}
+    {% endif %}
 {% endblock content %}
 
 

@@ -45,6 +45,7 @@ class consultar_perguntas(SingleTableMixin, ListView):
     model = Pergunta
     table_class = PerguntaTable
     template_name = 'formularios/consultar_perguntas.html'
+    table_data = Pergunta.objects.all().filter(generico=0)
     table_pagination = {'per_page': 10}
 
 
@@ -75,8 +76,6 @@ def apagar_pergunta(request, id):
                 formulariofeedbackid=formulario):
             Opcoes.objects.filter(perguntaid=id).delete()
             Pergunta.objects.filter(id=id).delete()
-            # Pergunta.objects.filter(formularioid=id).update(formularioid=None)
-            # Formulario.objects.filter(id=id).delete()
             return render(request, 'formularios/mensagem.html',
                           {'tipo': 'success', 'm': 'A pergunta foi apagada com sucesso', 'link': 'consultar-perguntas'})
         else:
@@ -123,6 +122,8 @@ def criar_formulario(request):
                 else:
                     Form_r = Formulario(tipo_de_formularioid=Tipo_Form_r, tipo_de_eventoid=Tipo_Evento_r,
                                         disponibilidade=0)
+
+
             else:
                 Form_r = Formulario(tipo_de_formularioid=Tipo_Form_r, tipo_de_eventoid=None, disponibilidade=0)
 
@@ -130,20 +131,37 @@ def criar_formulario(request):
             Pergunta_r.formularioid = Form_r
             Pergunta_r.save()
 
-            return render(
-                request,
-                'formularios/mensagem.html',
-                {
-                    'tipo': 'success',
-                    'm': 'O formulário foi criado com o sucesso',
-                    'link': 'consultar-formularios'
-                }
-            )
+            if Form_r.tipo_de_eventoid is not None:
+                tp = TipoDePergunta.objects.get(nome='Resposta Curta')
+                tp1 = TipoDePergunta.objects.get(nome='Caixa de Seleção')
+                p1 = Pergunta(titulo="Nome Do Evento", formularioid=Form_r, tipo_de_perguntaid=tp, generico=1)
+                p2 = Pergunta(titulo='Lotação', formularioid=Form_r, tipo_de_perguntaid=tp, generico=1)
+                p3 = Pergunta(titulo='Duração Do Evento', formularioid=Form_r, tipo_de_perguntaid=tp, generico=1)
+                p4 = Pergunta(titulo='Campus', formularioid=Form_r, tipo_de_perguntaid=tp1, generico=1)
+                p5 = Pergunta(titulo='Dia', formularioid=Form_r, tipo_de_perguntaid=tp, generico=1)
+                p6 = Pergunta(titulo='Hora De Início', formularioid=Form_r, tipo_de_perguntaid=tp, generico=1)
+                p7 = Pergunta(titulo='Dia Final', formularioid=Form_r, tipo_de_perguntaid=tp, generico=1)
+                p1.save()
+                p2.save()
+                p3.save()
+                p4.save()
+                p5.save()
+                p6.save()
+                p7.save()
+
+        return render(
+            request,
+            'formularios/mensagem.html',
+            {
+                'tipo': 'success',
+                'm': 'O formulário foi criado com o sucesso',
+                'link': 'consultar-formularios'
+            }
+        )
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = CriarFormularioForm()
-
     return render(request, 'formularios/criar_formulario.html', {'form': form})
 
 
@@ -155,7 +173,7 @@ def alterar_formulario(request, id):
     if Evento.objects.filter(formulariofeedbackid=form_object) or Evento.objects.filter(
             formularioinscricaoid=form_object):
         return render(request, 'formularios/mensagem.html',
-                      {'tipo': 'error', 'm': 'O formulario já está associado a um recursos e não pode ser alterado.',
+                      {'tipo': 'error', 'm': 'O formulario já está associado a um evento e não pode ser alterado.',
                        'link': 'consultar-formularios'})
 
     if request.method == 'POST':
@@ -182,7 +200,7 @@ def alterar_formulario(request, id):
                 form_object.tipo_de_eventoid = Tipo_Evento_r
                 if Formulario.objects.filter(tipo_de_formularioid=Tipo_Form_r).filter(
                         tipo_de_eventoid=Tipo_Evento_r).exclude(id=id):
-                    msg = "Já existe um formulário de eventos para esse tipo de recursos."
+                    msg = "Já existe um formulário de eventos para esse tipo de evento."
                     return render(request, 'formularios/alterar_formulario.html', {'msg': msg, 'id': id, 'form': form})
             else:
                 form_object.tipo_de_eventoid = None
@@ -232,7 +250,6 @@ def alterar_formulario(request, id):
 
         )
 
-
 def remover_pergunta(request, id):
     perg = Pergunta.objects.get(pk=id)
     form = perg.formularioid
@@ -265,7 +282,7 @@ def criar_pergunta(request):
             titulo_r = request.POST.get('titulo')
             tipo_pergunta_r = request.POST.get('tipo_pergunta')
             Tipo_Pergunta_r = TipoDePergunta.objects.get(pk=tipo_pergunta_r)
-            pergunta = Pergunta(titulo=titulo_r, tipo_de_perguntaid=Tipo_Pergunta_r)
+            pergunta = Pergunta(titulo=titulo_r, tipo_de_perguntaid=Tipo_Pergunta_r, generico=0)
             pergunta.save()
             if Tipo_Pergunta_r.nome == 'Escolha múltipla' or Tipo_Pergunta_r.nome == 'Caixa de seleção':
                 opcao1_r = request.POST.get('opcao1')

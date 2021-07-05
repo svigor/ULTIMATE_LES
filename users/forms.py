@@ -74,6 +74,17 @@ class loginForm(forms.ModelForm):
     def clean(self):
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password1')
-        if not authenticate(email=email,password=password):
+        if not authenticate(email=email, password=password):
             raise ValidationError('Email ou password não estão corretos')
 
+
+class alterarperfil(forms.ModelForm):
+    dict = []
+    #roles = Role.objects.all()
+    #for role in roles:
+     #   dict.append(role)
+    role = forms.ModelChoiceField(queryset=Role.objects.all(), label='', to_field_name="role", widget=forms.Select(attrs={'class': 'input'}))
+
+    class Meta:
+        model = Role
+        fields = ('role',)

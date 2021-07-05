@@ -34,36 +34,41 @@
 
                             {% for key,valuez in forms.items %}
                                 <fieldset class="form" style="margin-bottom: 2%;">
-                                    <label>{{ key }}</label>
-                                    {% if key == 'Nome Do Proponente' %}
-                                        <input required class="input" style="background: #eef6fc; color: black" disabled
-                                               name="{{ request.session.nome_completo }}"
-                                               value="{{ request.session.nome_completo }}">
-                                    {% elif key == 'Nº De Telefone' %}
-                                        <input required class="input" style="background: #eef6fc; color: black" disabled
-                                               name="{{ request.session.n_telefone }}"
-                                               value="{{ request.session.n_telefone }}">
-                                    {% elif valuez == 'Resposta Curta' %}
-                                        <input required class="input" name="{{ key }}" type="text">
-                                    {% elif valuez == 'Resposta Aberta' %}
-                                        <textarea required class="textarea" style="resize: none" rows="5" cols="60"
-                                                  name="{{ key }}"></textarea>
-                                    {% elif key == "Campus" %}
-                                        {{ key }}
-                                        <div class="select" style="width: 100%">
-                                            <select class="input" name="{{ key }}" id="{{ key }}">
-                                                {% for option in valuez.dict %}
-                                                    <option value="{{ option }}">{{ option }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
+                                <label>{{ key }}</label>
+                                {% if key == 'Nome Do Proponente' %}
+                                    <input required class="input" style="background: #eef6fc; color: black" disabled
+                                           name="{{ request.session.nome_completo }}"
+                                           value="{{ request.session.nome_completo }}">
+                                {% elif key == 'Nº De Telefone' %}
+                                    <input required class="input" style="background: #eef6fc; color: black" disabled
+                                           name="{{ request.session.n_telefone }}"
+                                           value="{{ request.session.n_telefone }}">
+                                {% elif valuez == 'Resposta Curta' %}
+                                    <input required class="input" name="{{ key }}" type="text">
+                                {% elif valuez == 'Resposta Aberta' %}
+                                    <textarea required class="textarea" style="resize: none" rows="5" cols="60"
+                                              name="{{ key }}"></textarea>
+                                {% elif key == "Campus" %}
+                                    <div class="select" style="width: 100%">
+                                        <select class="input" name="{{ key }}" id="{{ key }}">
+                                            {% for option in valuez.dict %}
+                                                <option value="{{ option }}">{{ option }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
 
-                                    {% endif %}
-                                    <input hidden value="{{ tipo }}" name="tipodeevento">
-
-
-                                </fieldset>
+                                {% endif %}
+                                <input hidden value="{{ tipo }}" name="tipodeevento">
                             {% endfor %}
+                            <div class="select" style="width: 100%">
+                                <label>Formulário de Inscrição:</label>
+                                <select class="input" name="inscricaoform" id="inscricaoform">
+                                    {% for option in inscform.dict %}
+                                        <option value="{{ option }}">{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            </fieldset>
 
 
                             <div style="margin-top:7%;text-align: center;position:center;">

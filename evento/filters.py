@@ -1,7 +1,7 @@
 import django_filters as filters
 from django.forms import SelectMultiple
 
-from .models import Evento
+from .models import Evento, Logistica
 from users.models import MyUser
 
 get_aprovado = [
@@ -9,7 +9,10 @@ get_aprovado = [
     (1, 'Pendente')
 ]
 
-
+get_valido_choices = [
+    (1,'Sim'),
+    (0,'Não')
+]
 
 
 class eventofilter(filters.FilterSet):
@@ -19,3 +22,9 @@ class eventofilter(filters.FilterSet):
     class Meta:
         model = Evento
         fields = ('campusid', 'aprovado', 'tipo_de_eventoid', 'proponenteutilizadorid')
+
+class LogisticasFilter(filters.FilterSet):
+    valido = filters.MultipleChoiceFilter(choices=get_valido_choices)
+    class Meta:
+        model = Logistica
+        fields = ['valido']

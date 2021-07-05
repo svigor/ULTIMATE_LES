@@ -73,3 +73,16 @@ class MyUser(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
+
+class pedidomudar(models.Model):
+    usuario = models.ForeignKey(MyUser, models.CASCADE, verbose_name='CurrentUser', db_column='Usuario')
+    asked_role = models.CharField(max_length=40, null=True)
+
+    def return_role(self):
+        return self.usuario.role.role
+
+    def return_email(self):
+        return self.usuario.email
+
+    def return_user_id(self):
+        return self.usuario.id

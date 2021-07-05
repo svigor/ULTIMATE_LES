@@ -106,14 +106,8 @@ $("#id_tipo_pergunta").change(function() {
     
     if ($("#id_tipo_pergunta option:selected").text() == "Escolha múltipla" || $("#id_tipo_pergunta option:selected").text() == "Caixa de seleção") {
         $('#opcoes_div').show();
-        $('#opcao').show();
-        $('#id_opcao').attr('required', '');
-        $('#id_opcao').attr('data-error', 'This field is required.');
     } else {
         $('#opcoes_div').hide();
-        $('#opcao').hide();
-        $('#id_opcao').removeAttr('required');
-        $('#id_opcao').removeAttr('data-error');
     }
     });
     $("#id_tipo_pergunta").trigger("change");

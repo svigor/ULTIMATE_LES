@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -26,7 +26,6 @@ SECRET_KEY = '((^g(f4#x%ifn2sg67f0xr%^&!al*suyck@-*op_jm62qmwujn'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -76,21 +75,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'final_gestaodeEventos.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '', #Name of the Database
-        'USER': '', #User that manage that Database
-        'PASSWORD': '', #Password of that user
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'NAME': 'les',
+        'USER': 'root1',
+        'PASSWORD': '',
+        'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -110,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -124,7 +120,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -133,3 +128,4 @@ AUTH_USER_MODEL = 'users.MyUser'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '/media')
 MEDIA_URL = '/media/'
+STATICFILES_DIRS = [STATIC_DIR, ]

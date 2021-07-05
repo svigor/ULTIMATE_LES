@@ -47,7 +47,7 @@ class SalaTable(django_tables.Table):
             <a href='{reverse('alterar-sala', args=[record.id])}'
                 data-tooltip="Editar">
                 <span class="icon">
-                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                    <i class="mdi mdi mdi-pencil mdi-24px mdi-24px"></i>
                 </span>
             </a>
             """
@@ -94,7 +94,7 @@ class ServicoTable(django_tables.Table):
             <a href='{reverse('alterar-servico', args=[record.id])}'
                 data-tooltip="Editar">
                 <span class="icon">
-                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                    <i class="mdi mdi-pencil mdi-24px"></i>
                 </span>
             </a>
             """
@@ -142,7 +142,7 @@ class EquipamentoTable(django_tables.Table):
             <a href='{reverse('alterar-equipamento', args=[record.id])}'
                 data-tooltip="Editar">
                 <span class="icon">
-                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                    <i class="mdi mdi-pencil mdi-24px"></i>
                 </span>
             </a>
             """

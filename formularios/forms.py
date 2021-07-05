@@ -13,8 +13,8 @@ class CriarFormularioForm(forms.Form):
 
     tipo_evento = forms.ModelChoiceField(
         queryset=TipoDeEvento.objects.all(),
-        label='Tipo de recursos',
-        empty_label='Escolha um tipo de recursos',
+        label='Tipo de Evento',
+        empty_label='Escolha um tipo de Evento',
         widget=forms.Select(
             attrs={'class': 'input'})
     )
@@ -39,8 +39,8 @@ class AlterarFormularioForm(forms.Form):
 
     tipo_evento = forms.ModelChoiceField(
         queryset=TipoDeEvento.objects.all(),
-        label='Tipo de recursos',
-        empty_label='Escolha um tipo de recursos',
+        label='Tipo de Evento',
+        empty_label='Escolha um tipo de Evento',
         widget=forms.Select(
             attrs={'class': 'input'})
     )
@@ -50,7 +50,8 @@ class AlterarFormularioForm(forms.Form):
         label='Adicionar pergunta',
         empty_label='Escolha uma pergunta',
         widget=forms.Select(
-            attrs={'class': 'input'})
+            attrs={'class': 'input'}),
+        required=False
     )
 
 
@@ -89,6 +90,6 @@ class AlterarPerguntaForm(forms.Form):
             attrs={'class': 'input'})
     )
 
-    opcao = forms.CharField(label="Adicionar opção", max_length=128, required=True, widget=forms.TextInput(
+    opcao = forms.CharField(label="Adicionar opção", max_length=128, required=False, widget=forms.TextInput(
         attrs={'class': 'input'}
     ))

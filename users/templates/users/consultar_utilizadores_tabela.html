@@ -1,111 +1,107 @@
 {% extends 'evento/base.html' %}
 {% load render_table from django_tables2 %}
 {% load bootstrap3 %}
-<!
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title></title>
-</head>
-<body>
 {% block content %}
     {% block details_content %}
     {% endblock %}
     <div class="columns">
-    <div class="column is-3">
-        <div class="menu">
-            <div class="menu-label">
-                Filtros Eventos
-            </div>
-            <form method="get">
-                <ul class="menu-list">
-                    <li>
-                        <div class="field">
-                            <div class="control has-icons-left">
-                                <input class="input" name="{{ filter.form.nome }}"
-                                    value="{{ filter.form.nome.value|default_if_none:'' }}" type="text"
-                                    placeholder="Nome">
-                                <span class="icon is-left">
+        <div class="column is-3">
+            <div class="menu">
+                <div class="menu-label">
+                    Filtros Eventos
+                </div>
+                <form method="get">
+                    <ul class="menu-list">
+                        <li>
+                            <div class="field">
+                                <div class="control has-icons-left">
+                                    <input class="input" name="{{ filter.form.nome }}"
+                                           value="{{ filter.form.nome.value|default_if_none:'' }}" type="text"
+                                           placeholder="Nome">
+                                    <span class="icon is-left">
                                     <i class="mdi mdi-magnify mdi-24px"></i>
                                 </span>
+                                </div>
                             </div>
-                        </div>
 
-                    </li>
+                        </li>
 
-                    <li>
-                        <div class="field">
-                            <label>Interno:</label>
-                        </div>
-                        <ul>
-                            {% for value, label in filter.form.fields.interno.choices %}
-                                <div class="field" style="padding-left: 1rem;">
-                                    {% if label == '---------' %}
-                                        <label class="checkbox">
-                                            <input type="checkbox" hidden name="{{ filter.form.interno.name }}"
-                                                   value="{{ value|stringformat:'s' }}"
-                                                   {% if value|stringformat:'s' in filter.form.interno.value %}checked{% endif %}>
-                                            {% else %}
+                        <li>
+                            <div class="field">
+                                <label>Interno:</label>
+                            </div>
+                            <ul>
+                                {% for value, label in filter.form.fields.interno.choices %}
+                                    <div class="field" style="padding-left: 1rem;">
+                                        {% if label == '---------' %}
+                                            <label class="checkbox">
+                                                <input type="checkbox" hidden name="{{ filter.form.interno.name }}"
+                                                       value="{{ value|stringformat:'s' }}"
+                                                       {% if value|stringformat:'s' in filter.form.interno.value %}checked{% endif %}>
+                                            </label>
+                                        {% else %}
                                             <label class="checkbox">
                                                 <input type="checkbox" name="{{ filter.form.interno.name }}"
                                                        value="{{ value|stringformat:'s' }}"
                                                        {% if value|stringformat:'s' in filter.form.interno.value %}checked{% endif %}>
                                                 {{ label }}
                                             </label>
-                                        </div>
-                                    {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </li>
+                                            </div>
+                                        {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
 
-                    <li>
-                        <div class="field">
-                            <label>Perfil:</label>
-                        </div>
-                        <ul>
-                            {% for value, label in filter.form.fields.role.choices %}
-                                <div class="field" style="padding-left: 1rem;">
-                                    <label class="checkbox">
-                                        <input type="checkbox" name="{{ filter.form.role.name }}"
-                                               value="{{ value|stringformat:'s' }}"
-                                               {% if value|stringformat:'s' in filter.form.m_r.value %}checked{% endif %}>
-                                        {{ label }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                </ul>
-                <div class="field is-grouped">
-                    <p class="control is-expanded">
-                        <input class="button is-light is-fullwidth" type="reset"
-                               onclick="event.preventDefault(); window.location='';"
-                               value="Limpar">
-                    </p>
-                    <p class="control is-expanded">
-                        <button class="button is-primary is-fullwidth" type="submit">
+                        <li>
+                            <div class="field">
+                                <label>Perfil:</label>
+                            </div>
+                            <ul>
+                                {% for value, label in filter.form.fields.role.choices %}
+                                    <div class="field" style="padding-left: 1rem;">
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="{{ filter.form.role.name }}"
+                                                   value="{{ value|stringformat:'s' }}"
+                                                   {% if value|stringformat:'s' in filter.form.m_r.value %}checked{% endif %}>
+                                            {{ label }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="field is-grouped">
+                        <p class="control is-expanded">
+                            <input class="button is-light is-fullwidth" type="reset"
+                                   onclick="event.preventDefault(); window.location='';"
+                                   value="Limpar">
+                        </p>
+                        <p class="control is-expanded">
+                            <button class="button is-primary is-fullwidth" type="submit">
                             <span class="icon">
                                 <i class="mdi mdi-magnify"></i>
                             </span>
-                            <span>Pesquisar</span>
-                        </button>
-                    </p>
-                </div>
-            </form>
+                                <span>Pesquisar</span>
+                            </button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="column">
+            <nav aria-label="breadcrumbs" class="breadcrumb">
+                <ul>
+                    <li><a href="">Início</a></li>
+                    <li class="is-active"><a href="">Eventos</a>
+                    </li>
+                </ul>
+                <ul style="margin-top: 2%">
+                    <li><a href="{% url 'consultarpedidosperfil' %}">
+                        <button class="button is-info is-outlined">Pedidos de Mudar Perfil</button>
+                    </a></li>
+                </ul>
+            </nav>
+            {% render_table table %}
         </div>
     </div>
-    <div class="column">
-    <nav aria-label="breadcrumbs" class="breadcrumb">
-        <ul>
-            <li><a href="">Início</a></li>
-            <li class="is-active"><a href="">Eventos</a>
-            </li>
-        </ul>
-    </nav>
-    {% render_table table %}
 {% endblock %}
-</body>
-</html>

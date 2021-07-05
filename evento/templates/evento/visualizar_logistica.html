@@ -1,0 +1,124 @@
+{% extends 'evento/base.html' %}
+
+
+{% block content %}
+
+<div>
+    <div style="margin-bottom:3%;margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Visulizar logistica</h2>
+    </div>
+
+    <a href="{% url 'adicionar_recurso_logistica' id=id tipo=1 %}">
+        <button type="button" class="button is-success is-outlined" style="margin-bottom: 1rem;"><span
+                class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Adicionar Sala</span>
+        </button>
+    </a>
+    <a href="{% url 'adicionar_recurso_logistica' id=id tipo=2 %}">
+        <button type="button" class="button is-success is-outlined" style="margin-bottom: 1rem;"><span
+                class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Adicionar Equipamento</span>
+        </button>
+    </a>
+    <a href="{% url 'adicionar_recurso_logistica' id=id tipo=3 %}">
+        <button type="button" class="button is-success is-outlined" style="margin-bottom: 1rem;"><span
+                class="icon is-small"><i class="mdi mdi-plus"></i></span> <span>Adicionar Servico</span>
+        </button>
+    </a>
+    <h1><strong>Salas:</strong></h1>
+    {% for recurso in recursos %}
+        {% if recurso.tipos_de_recursosid.id == 1 %}
+        
+        <p style="margin-left: 2.5em"><strong>Recurso nº {{forloop.counter}}</strong>: capacidade para {{recurso.capacidade}} pessoas</p>
+        <p style="margin-left: 8.8em">Horaio:{{recurso.hora_de_inicio}} : {{recurso.hora_de_fim}}</p>
+        <p style="margin-left: 8.8em">Dias: De {{recurso.dia_inicial}} à {{recurso.dia_final}}</p>
+        <div style="margin-left: 20%">
+            <a href="{% url 'apagar_recurso_logistica' id=recurso.id %}">
+                <span class="icon has-text-danger">
+                    <i class="mdi mdi-trash-can mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+        <div style="margin-left: 23%; margin-top: -2.4%;">
+            <a href="{% url 'alterar_recurso_logistica' id=recurso.id %}">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+        
+        {% endif %}
+    {% endfor %}
+
+    <h1><strong>Equipamentos:</strong></h1>
+    {% for recurso in recursos %}
+        {% if recurso.tipos_de_recursosid.id == 2 %}
+        
+        <p style="margin-left: 2.5em"><strong>Recurso nº {{forloop.counter}}</strong>: equipamento de tipo {{recurso.tipo_equipamentoid.nome}}</p>
+        <p style="margin-left: 8.8em">Horaio:{{recurso.hora_de_inicio}} : {{recurso.hora_de_fim}}</p>
+        <p style="margin-left: 8.8em">Dias: De {{recurso.dia_inicial}} à {{recurso.dia_final}}</p>
+        <div style="margin-left: 20%">
+            <a href="{% url 'apagar_recurso_logistica' id=recurso.id %}">
+                <span class="icon has-text-danger">
+                    <i class="mdi mdi-trash-can mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+        <div style="margin-left: 23%; margin-top: -2.4%;">
+            <a href="{% url 'alterar_recurso_logistica' id=recurso.id %}">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+    <h1><strong>Serviços:</strong></h1>
+    {% for recurso in recursos %}
+        {% if recurso.tipos_de_recursosid.id == 3 %}
+        
+        <p style="margin-left: 2.5em"><strong>Recurso nº {{forloop.counter}}</strong>: serviço de tipo {{recurso.tipo_servicoid.nome}}</p>
+        <p style="margin-left: 8.8em">Horaio:{{recurso.hora_de_inicio}} : {{recurso.hora_de_fim}}</p>
+        <p style="margin-left: 8.8em">Dias: De {{recurso.dia_inicial}} à {{recurso.dia_final}}</p>
+        <div style="margin-left: 20%">
+            <a href="{% url 'apagar_recurso_logistica' id=recurso.id %}">
+                <span class="icon has-text-danger">
+                    <i class="mdi mdi-trash-can mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+        <div style="margin-left: 23%; margin-top: -2.4%;">
+            <a href="{% url 'alterar_recurso_logistica' id=recurso.id %}">
+                <span class="icon">
+                    <i class="mdi mdi-circle-edit-outline mdi-24px"></i>
+                </span>
+            </a>
+        </div>
+
+        
+        
+        {% endif %}
+    {% endfor %}
+        
+    {% if role == 3 %}
+    <div>   
+        <form action="{% url 'validar_logistica' id=id %}" method="POST" enctype="multipart/form-data" class="form">
+            {% csrf_token %}
+            
+            <div style="margin-top:7%;text-align: center;position:center;">
+                {{d}}
+                <button type="submit" class="button is-info is-outlined">
+                    <span>Confirmar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    <div style="margin-left:35%; margin-right:35%;">
+      
+    </div>
+</div>
+
+{% endblock content %}
+
+</div>

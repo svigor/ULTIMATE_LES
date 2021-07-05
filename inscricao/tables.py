@@ -1,8 +1,9 @@
 import django_tables2 as django_tables
-from evento.models import Inscricao
+from evento.models import Inscricao, Evento
 from django.utils.html import format_html
 from django.urls import reverse
 from .filters import InscricaoFilter
+from users.models import MyUser
 
 
 class InscricaoTable(django_tables.Table):
@@ -53,7 +54,9 @@ class InscricaoTable(django_tables.Table):
         primeiro_botao = """<span class="icon"></span>"""
 
         primeiro_botao = ""
-        if self.request.user.role.role == 'Proponente':
+        try:
+            evento1 = Inscricao.objects.get(id=record.id).eventoid
+            Inscricao.objects.get(eventoid=evento1, participanteutilizadorid=self.request.user.id)
             primeiro_botao = f"""
             <a href='{reverse('alterarinscricao', args={record.id})}'
                 data-tooltip="Editar">
@@ -62,6 +65,8 @@ class InscricaoTable(django_tables.Table):
                 </span>
             </a>
             """
+        except Inscricao.DoesNotExist:
+            return 0
 
         segundo_botao = ""
         alerta = "Tem certeza que quer apagar a sua inscrição?"
@@ -119,7 +124,7 @@ class InscricaoTableProponente(django_tables.Table):
         primeiro_botao = """<span class="icon"></span>"""
 
         primeiro_botao = ""
-        if self.request.user.role.role == 'Proponente':
+        if self.request.user.id == Evento.objects.get(id=record.id).proponenteutilizadorid.id:
             primeiro_botao = f"""
             <a href='{reverse('validarInscricao', args={record.id})}'
                 data-tooltip="Validar">

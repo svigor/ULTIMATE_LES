@@ -1,0 +1,125 @@
+{% extends 'evento/base.html' %}
+{% include 'evento/bulma_table_details.html' %}
+{% load render_table from django_tables2 %}
+{% load bootstrap3 %}
+{% load poll_extras %}
+{% block card %}
+    <div id="page-content">
+    <div class="card">
+        <div class="card-content" style="width: 90%">
+            {% block content %}
+                <div class="columns">
+                <div class="column is-3">
+                    <div class="menu" style="max-width: fit-content">
+                        <div class="menu-label">
+                            Filtros Eventos
+                        </div>
+                        <form method="get" name="filterform">
+                            <ul class="menu-list">
+                                <li>
+                                    <div class="field">
+                                        <label class="label" for="id_tipo_de_eventoid">Tipo de Evento:</label>
+                                    </div>
+                                    <div class="select" style="width: 100%; margin-bottom: 5%">
+                                        <select class="input" style="margin-bottom: 5%" name="tipo_de_eventoid"
+                                                id="id_tipo_de_eventoid">
+                                            {% for value, label in filter.form.fields.tipo_de_eventoid.choices %}
+                                                <div class="option" style="padding-left: 1rem;">
+                                                    {% if label == '---------' %}
+                                                    {% else %}
+                                                        <option name="{{ filter.form.tipo_de_eventoid.name }}"
+                                                                value="{{ value|stringformat:'s' }}"
+                                                                {% if value|stringformat:'s' in filter.form.tipo_de_eventoid.value %}selected{% endif %}>
+                                                            {{ label }}
+                                                        </option>
+                                                        </div>
+                                                    {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <label for="id_proponenteutilizadorid" class="label">Escolha um Proponente:</label>
+                                    <div class="select" style="width: 100%; margin-bottom: 5%">
+                                        <select name="proponenteutilizadorid" id="id_proponenteutilizadorid"
+                                                class="input"
+                                                style="margin-bottom: 5%">
+                                            {% for value,label in filter.form.fields.proponenteutilizadorid.choices %}
+                                                {% if value|getname == 0 %}
+                                                {% else %}
+                                                    <option value="{{ value }}" data-target=""
+                                                            {% if value|stringformat:'s' in filter.form.proponenteutilizadorid.value %}selected{% endif %}>{{ value|getname }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="field">
+                                        <label class="label" for="id_campusid">Campus:</label>
+                                    </div>
+                                    <div class="select" style="width: 100%; margin-bottom: 5%">
+                                        <select class="input" style="margin-bottom: 5%" name="campusid"
+                                                id="id_campusid">
+                                            <option disabled selected id="reset_campus">Escolha um Campus</option>
+                                            {% for value, label in filter.form.fields.campusid.choices %}
+                                                <div class="option" style="padding-left: 1rem;">
+                                                    {% if label == '---------' %}
+                                                    {% else %}
+                                                        <option name="{{ filter.form.campusid.name }}"
+                                                                value="{{ value|stringformat:'s' }}"
+                                                                {% if value|stringformat:'s' in filter.form.campusid.value %}selected{% endif %}>
+                                                            {{ label }}
+                                                        </option>
+                                                        </div>
+                                                    {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="field is-grouped">
+                                <p class="control is-expanded">
+                                    <input class="button is-light is-fullwidth" type="reset"
+                                           onclick="alerts()"
+                                           value="Limpar">
+                                </p>
+                                <p class="control is-expanded">
+                                    <button class="button is-primary is-fullwidth" type="submit">
+                            <span class="icon">
+                                <i class="mdi mdi-magnify"></i>
+                            </span>
+                                        <span>Pesquisar</span>
+                                    </button>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="column" style="margin-left: -3%;">
+                    <nav aria-label="breadcrumbs" class="breadcrumb">
+                        <ul style="margin-bottom: 1%">
+                            <li><a href="{% url 'evento-home' %}">Início</a></li>
+                            <li class="is-active"><a href="">Eventos</a>
+                            </li>
+                        </ul>
+
+                    </nav>
+                    <div style="margin-right: 4%">{% render_table table %}</div>
+                </div>
+            {% endblock %}
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        function alerts() {
+            const get_ulr = window.location.href
+            console.log(get_ulr)
+            index_q_m = get_ulr.indexOf('?')
+            window.location.href = get_ulr.substring(0, index_q_m + 1)
+        }
+    </script>
+{% endblock %}

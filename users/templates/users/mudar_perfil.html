@@ -1,0 +1,173 @@
+{% extends 'evento/base.html' %}
+{% load poll_extras %}
+
+
+
+{% block title %}- Alterar Perfil{% endblock title %}
+
+
+{% block content %}
+    <div style="margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Mudar dados da
+            conta {{ request.session.nome_completo }} </h2>
+    </div>
+    <div style="margin-top:3%; margin-left: 45%">
+    </div>
+
+    <div>
+        <form method="post" action="{% url 'mudarperfil' %}">
+            {% csrf_token %}
+            {% for key, value in dados.items %}
+                <div style="padding: 1rem 2vw 0px;">
+                    <hr>
+                    <h2 class="title has-text-grey is-uppercase" style="font-size: 0.9rem;">
+                    </h2>
+                    {% if key == 'Data de Nascimento:' %}
+                        <label class="label">{{ key }}</label>
+                        <input class="input" id="{{ key }}" type="date" name="{{ key }}"
+                               value="{{ value }}">
+                    {% elif key == 'Numero de telefone:' %}
+                        <label class="label">{{ key }}</label>
+                        <input class="input" type="number" max="999999999" name="{{ key }}" value="{{ value }}">
+                    {% elif key == 'Atual Perfil de Utilizador' and request.user.role.role != 'Administrador' %}
+                        <label class="label">{{ key }}</label>
+                        {{ form }}
+                    {% elif key != 'Atual Perfil de Utilizador' %}
+                        <label class="label">{{ key }}</label>
+                        <input class="input" type="text" name="{{ key }}" value="{{ value }}">
+                    {% endif %}
+                    <div style="margin-left: 2%; margin-top: 2%; height: 30%">
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="columns">
+
+                <hr>
+            </div>
+            <div style="margin-top:2%;text-align:center;position:center;">
+                <button type="button" value="Voltar" class="button is-outlined" style="margin-right:5%"
+                        onclick="voltar();">Voltar
+                </button>
+                <button style="" type="submit" class="button is-success is-outlined">
+                    <span>Confirmar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+    </div>
+    {% if msg %}
+        <div style="margin-left:30%;margin-right:30%; margin-top:%">
+            <div style="margin-top:2%;text-align: center;position:center;">
+                <article class="message is-danger">
+                    <div class="message-body">
+                        <p style="text-align: center;">
+                            {% if form.non_field_errors %}
+                                {% for error in form.non_field_errors %}
+                                    <p style="color: #ff0000; text-align:center">{{ error }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        {% for error in erros %}
+                            <p style="color: #ff0000; text-align:center">{{ error }}</p>
+                        {% endfor %}
+
+
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                {% if field.name == "email" %}
+                                    <p style="color: #ff0000;">{{ error }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    {% endif %}
+
+
+{% endblock content %}
+
+</div>
+
+
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+
+        function voltar() {
+            location.href = "{% url 'evento-home' %}"
+        }
+
+
+        {% if registo == 2 %}
+            $("#id_faculdade").change(function () {
+                var url = $("#ProfessorUniversitarioRegisterForm").attr("data-departamentos-url");
+                var faculdadeid = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'faculdade': faculdadeid
+                    },
+                    success: function (data) {
+                        $("#id_departamento").html(data);
+                    }
+                });
+
+            });
+        {% elif registo == 3 %}
+            $("#id_faculdade").change(function () {
+                var url = $("#CoordenadorRegisterForm").attr("data-departamentos-url");
+                var faculdadeid = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'faculdade': faculdadeid
+                    },
+                    success: function (data) {
+                        $("#id_departamento").html(data);
+                    }
+                });
+
+            });
+        {% elif registo == 4 %}
+            $("#id_faculdade").change(function () {
+
+                var url = $("#ColaboradorRegisterForm").attr("data-cursos-url");
+                var faculdadeid = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'faculdade': faculdadeid
+                    },
+                    success: function (data) {
+                        $("#id_curso").html(data);
+
+                    }
+                });
+
+            });
+            $("#id_faculdade").change(function () {
+
+                var url = $("#ColaboradorRegisterForm").attr("data-departamentos-url");
+                var faculdadeid = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                        'faculdade': faculdadeid
+                    },
+                    success: function (data) {
+                        $("#id_departamento").html(data);
+
+                    }
+                });
+
+            });
+        {% endif %}
+    </script>
+{% endblock scripts %}

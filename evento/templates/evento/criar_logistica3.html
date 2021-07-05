@@ -1,0 +1,136 @@
+{% extends 'evento/base.html' %}
+
+
+{% block content %}
+
+<div>
+    <div style="margin-bottom:3%;margin-top:3%;">
+        <h2 class="title is-4" style="text-align: center;">Criar logistica</h2>
+    </div>
+
+
+    {% if msg %}
+    <p style="color: #ff0000; text-align:center; margin-bottom:4%">{{error}}</p>
+    {% endif %}
+
+
+
+    <div style="margin-left:35%; margin-right:35%;">
+        <article class="message is-info">
+            <div class="message-header">
+
+
+            </div>
+            <div class="message-body">
+
+                <div class="control is-clearfix">
+                    <form action="{% url 'criar-logistica3' %}" method="POST" enctype="multipart/form-data" class="form" id="InserirServicoForm"  %}">
+                        {% csrf_token %}
+                        {{ form.management_form }}
+                        <fieldset class="form">
+                            <input type="hidden" name="id" value={{id}}>
+                            <input type="hidden" name="numeroSalas" value={{numeroSalas}}>
+                            <input type="hidden" name="numeroEquipamentos" value={{numeroEquipamentos}}>
+                            <input type="hidden" name="numeroServicos" value={{numeroServicos}}>
+                            <h1>NUMERO SALAS: {{numeroSalas}}</h1>
+                            <h1>NUMERO EQUIPAMENTOS: {{numeroEquipamentos}}</h1>
+                            <h1>NUMERO SERVICOS: {{numeroServicos}}</h1>
+                            {% for f in form %}
+                            <strong>Sala {{ forloop.counter }}</strong> 
+                                {{f.dia_inicial.label}}
+                                {{f.dia_inicial}}
+
+                                {{f.dia_final.label}}
+                                {{f.dia_final}}
+
+                                {{f.hora_de_inicio.label}}
+                                {{f.hora_de_inicio}}
+
+                                {{f.hora_de_fim.label}}
+                                {{f.hora_de_fim}}
+
+                                {{f.capacidade.label}}
+                                {{f.capacidade}}
+                            {% endfor %}
+                            
+                           
+                           
+                            
+                            {% for f in form2 %}
+                           <strong>Equipamento {{ forloop.counter }}</strong> 
+                           {{f.dia_inicial.label}}
+                           {{f.dia_inicial}}
+
+                           {{f.dia_final.label}}
+                           {{f.dia_final}}
+
+                           {{f.hora_de_inicio.label}}
+                           {{f.hora_de_inicio}}
+
+                           {{f.hora_de_fim.label}}
+                           {{f.hora_de_fim}}
+
+                           {{f.tipo_equipamentoid.label}}
+                           {{f.tipo_equipamentoid}}
+
+                           {% endfor %}
+                            
+                           
+
+                            
+                           {% for f in form3 %}
+                           <strong>Servico {{ forloop.counter }}</strong> 
+                           {{f.dia_inicial.label}}
+                           {{f.dia_inicial}}
+
+                           {{f.dia_final.label}}
+                           {{f.dia_final}}
+
+                           {{f.hora_de_inicio.label}}
+                           {{f.hora_de_inicio}}
+
+                           {{f.hora_de_fim.label}}
+                           {{f.hora_de_fim}}
+                           
+
+                           {{f.tipo_de_servico.label}}
+                           {{f.tipo_de_servico}}
+
+                           Quantas Pessoas?
+                           {{f.capacidade}}
+                           {% endfor %}
+                           
+                        </fieldset>
+
+
+                        <div style="margin-top:7%;text-align: center;position:center;">
+                            <button type="submit" class="button is-info is-outlined">
+                                <span>Concluir</span>
+                            </button>
+                        </div>
+
+                    </form>
+
+
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+{% if form.email.errors %}
+<div style="margin-left:30%;margin-right:30%; margin-top:5%">
+    <div style="margin-top:7%;text-align: center;position:center;">
+        <article class="message is-danger">
+            <div class="message-body">
+                <p style="text-align: center;">
+                    <strong>{{ form.email.errors }}</strong>
+                </p>
+            </div>
+        </article>
+    </div>
+</div>
+
+{% endif %}
+{% endblock content %}
+
+</div>
