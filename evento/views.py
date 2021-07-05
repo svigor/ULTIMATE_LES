@@ -324,9 +324,9 @@ def criar_formulario(request):
                             'link':'consultar-formularios'
                         })
                 else :
-                    Form_r = Formulario(tipo_de_formularioid=Tipo_Form_r, tipo_de_eventoid=Tipo_Evento_r)
+                    Form_r = Formulario(tipo_de_formularioid=Tipo_Form_r, tipo_de_eventoid=Tipo_Evento_r, disponibilidade=0)
             else :
-                Form_r = Formulario(tipo_de_formularioid=Tipo_Form_r, tipo_de_eventoid=None)
+                Form_r = Formulario(tipo_de_formularioid=Tipo_Form_r, tipo_de_eventoid=None, disponibilidade=0)
             
             Form_r.save()
             Pergunta_r.formularioid = Form_r
