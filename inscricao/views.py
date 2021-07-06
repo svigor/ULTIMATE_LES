@@ -123,6 +123,7 @@ def alterarinscricao(request, id):
                     continue
 
                 Respostas.objects.all().filter(inscricaoid=id).update(texto=fields_final.get(key))
+                inscricao.objects.filter(id=id).update(estado=1)
             return redirect('viewinscricao')
 
         return render(request, 'inscricao/alterarinscricao.html',
