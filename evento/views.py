@@ -216,7 +216,9 @@ def editar_final(request):
             if key == 'csrfmiddlewaretoken' or key == 'estado' or key == 'evento':
                 continue
             else:
-                respo = Respostas.objects.get(perguntaid=Pergunta.objects.get(titulo=key).id, eventoid=even.pk)
+                ti = TipoDeFormulario.objects.get(nome='Evento')
+                formu = Formulario.objects.get(tipo_de_eventoid=even.tipo_de_eventoid, tipo_de_formularioid=ti)
+                respo = Respostas.objects.get(perguntaid=Pergunta.objects.get(titulo=key, formularioid=formu).id, eventoid=even.pk)
                 respo.texto = value
                 respo.save()
         even.duracao = request.POST.get('Duração Do Evento')
